@@ -1,0 +1,555 @@
+# Copyright (C) 2026 Julien Perrot
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: AutoLingo — DeepL Translation for Polylang 1.1.4\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/autolingo-polylang-translate\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-05-19T13:50:53+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: autolingo-polylang-translate\n"
+
+#. Plugin Name of the plugin
+#: autolingo-polylang-translate.php
+#: admin/settings.php:14
+#: admin/settings.php:187
+msgid "AutoLingo — DeepL Translation for Polylang"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: autolingo-polylang-translate.php
+msgid "https://github.com/jpa44/autolingo-polylang-translate"
+msgstr ""
+
+#. Description of the plugin
+#: autolingo-polylang-translate.php
+msgid "Traduction automatique FR → EN (et autres langues) via l'API DeepL, avec intégration Polylang. Audit, traduction en masse, bouton manuel dans l'éditeur."
+msgstr ""
+
+#. Author of the plugin
+#: autolingo-polylang-translate.php
+msgid "Julien Perrot"
+msgstr ""
+
+#. Author URI of the plugin
+#: autolingo-polylang-translate.php
+msgid "https://github.com/jpa44"
+msgstr ""
+
+#: admin/dashboard-widget.php:13
+msgid "AutoLingo — Credit"
+msgstr ""
+
+#: admin/dashboard-widget.php:22
+msgid "Unable to retrieve DeepL balance."
+msgstr ""
+
+#: admin/dashboard-widget.php:24
+msgid "Check configuration →"
+msgstr ""
+
+#: admin/dashboard-widget.php:32
+msgid "Free — one-time credit"
+msgstr ""
+
+#: admin/dashboard-widget.php:33
+msgid "Pro — monthly"
+msgstr ""
+
+#: admin/dashboard-widget.php:37
+msgid "Plan"
+msgstr ""
+
+#: admin/dashboard-widget.php:38
+msgid "Used"
+msgstr ""
+
+#: admin/dashboard-widget.php:39
+msgid "Remaining"
+msgstr ""
+
+#: admin/dashboard-widget.php:40
+msgid "Total"
+msgstr ""
+
+#: admin/dashboard-widget.php:48
+msgid "Updated every hour"
+msgstr ""
+
+#: admin/dashboard-widget.php:50
+msgid "Settings"
+msgstr ""
+
+#: admin/metabox.php:15
+msgid "DeepL Translation"
+msgstr ""
+
+#. translators: %s: uppercase language code, e.g. "FR"
+#: admin/metabox.php:30
+#, php-format
+msgid "Only available on %s content."
+msgstr ""
+
+#. translators: %s: formatted number of characters
+#: admin/metabox.php:60
+#, php-format
+msgid "%s characters remaining"
+msgstr ""
+
+#. translators: %s: target language codes, e.g. "EN, DE"
+#: admin/metabox.php:76
+#, php-format
+msgid "Translate → %s"
+msgstr ""
+
+#: admin/metabox.php:85
+msgid "Translating…"
+msgstr ""
+
+#: admin/metabox.php:90
+msgid "Translations will be published automatically."
+msgstr ""
+
+#: admin/metabox.php:183
+msgid "Translation in progress, please wait…"
+msgstr ""
+
+#: admin/metabox.php:185
+msgid "The page will reload automatically when done."
+msgstr ""
+
+#: admin/settings.php:15
+msgid "AutoLingo"
+msgstr ""
+
+#: admin/settings.php:30
+msgid "DeepL Connection"
+msgstr ""
+
+#: admin/settings.php:31
+msgid "Languages"
+msgstr ""
+
+#: admin/settings.php:32
+msgid "Behavior"
+msgstr ""
+
+#: admin/settings.php:34
+msgid "DeepL API Key"
+msgstr ""
+
+#: admin/settings.php:35
+msgid "Source Language"
+msgstr ""
+
+#: admin/settings.php:36
+msgid "Target Languages"
+msgstr ""
+
+#: admin/settings.php:37
+msgid "Content Types"
+msgstr ""
+
+#: admin/settings.php:38
+msgid "Auto-translate"
+msgstr ""
+
+#: admin/settings.php:39
+msgid "Credit Alert Threshold"
+msgstr ""
+
+#. translators: %s: DeepL API key suffix example
+#: admin/settings.php:61
+#, php-format
+msgid "DeepL API key (ends with %s for the Free plan)."
+msgstr ""
+
+#: admin/settings.php:65
+msgid "Get a key →"
+msgstr ""
+
+#: admin/settings.php:77
+msgid "Language in which you write your content."
+msgstr ""
+
+#: admin/settings.php:90
+msgid "Languages to automatically translate into."
+msgstr ""
+
+#: admin/settings.php:103
+msgid "Content types to include in automatic translation."
+msgstr ""
+
+#: admin/settings.php:109
+msgid "Automatically translate on each publish"
+msgstr ""
+
+#: admin/settings.php:110
+msgid "If disabled, translation only happens via the manual button or WP-CLI."
+msgstr ""
+
+#: admin/settings.php:116
+msgid "characters"
+msgstr ""
+
+#: admin/settings.php:117
+msgid "Shows an admin alert when remaining credit falls below this threshold."
+msgstr ""
+
+#: admin/settings.php:125
+msgid "Arabic"
+msgstr ""
+
+#: admin/settings.php:126
+msgid "Bulgarian"
+msgstr ""
+
+#: admin/settings.php:127
+msgid "Czech"
+msgstr ""
+
+#: admin/settings.php:128
+msgid "Danish"
+msgstr ""
+
+#: admin/settings.php:129
+msgid "German"
+msgstr ""
+
+#: admin/settings.php:130
+msgid "Greek"
+msgstr ""
+
+#: admin/settings.php:131
+msgid "English"
+msgstr ""
+
+#: admin/settings.php:132
+msgid "Spanish"
+msgstr ""
+
+#: admin/settings.php:133
+msgid "Estonian"
+msgstr ""
+
+#: admin/settings.php:134
+msgid "Finnish"
+msgstr ""
+
+#: admin/settings.php:135
+msgid "French"
+msgstr ""
+
+#: admin/settings.php:136
+msgid "Hungarian"
+msgstr ""
+
+#: admin/settings.php:137
+msgid "Indonesian"
+msgstr ""
+
+#: admin/settings.php:138
+msgid "Italian"
+msgstr ""
+
+#: admin/settings.php:139
+msgid "Japanese"
+msgstr ""
+
+#: admin/settings.php:140
+msgid "Korean"
+msgstr ""
+
+#: admin/settings.php:141
+msgid "Lithuanian"
+msgstr ""
+
+#: admin/settings.php:142
+msgid "Latvian"
+msgstr ""
+
+#: admin/settings.php:143
+msgid "Norwegian"
+msgstr ""
+
+#: admin/settings.php:144
+msgid "Dutch"
+msgstr ""
+
+#: admin/settings.php:145
+msgid "Polish"
+msgstr ""
+
+#: admin/settings.php:146
+msgid "Portuguese"
+msgstr ""
+
+#: admin/settings.php:147
+msgid "Romanian"
+msgstr ""
+
+#: admin/settings.php:148
+msgid "Russian"
+msgstr ""
+
+#: admin/settings.php:149
+msgid "Slovak"
+msgstr ""
+
+#: admin/settings.php:150
+msgid "Slovenian"
+msgstr ""
+
+#: admin/settings.php:151
+msgid "Swedish"
+msgstr ""
+
+#: admin/settings.php:152
+msgid "Turkish"
+msgstr ""
+
+#: admin/settings.php:153
+msgid "Ukrainian"
+msgstr ""
+
+#: admin/settings.php:154
+msgid "Chinese"
+msgstr ""
+
+#. translators: 1: remaining characters, 2: total characters
+#: admin/settings.php:171
+#, php-format
+msgid "DeepL connection OK — %1$s characters remaining out of %2$s."
+msgstr ""
+
+#: admin/settings.php:178
+msgid "Unable to reach the DeepL API. Please check your API key."
+msgstr ""
+
+#: admin/settings.php:193
+msgid "DeepL Credit"
+msgstr ""
+
+#: admin/settings.php:199
+msgid "Free plan · one-time credit"
+msgstr ""
+
+#: admin/settings.php:200
+msgid "Pro plan · monthly"
+msgstr ""
+
+#: admin/settings.php:206
+msgid "remaining"
+msgstr ""
+
+#: admin/settings.php:207
+msgid "total"
+msgstr ""
+
+#: admin/settings.php:208
+msgid "Refresh"
+msgstr ""
+
+#: admin/settings.php:211
+msgid "Test DeepL connection"
+msgstr ""
+
+#: admin/settings.php:218
+msgid "Save Settings"
+msgstr ""
+
+#: admin/settings.php:223
+msgid "WP-CLI Commands"
+msgstr ""
+
+#: admin/settings.php:226
+msgid "Command"
+msgstr ""
+
+#: admin/settings.php:227
+msgid "Description"
+msgstr ""
+
+#: admin/settings.php:230
+msgid "Lists all source posts with translation status per language"
+msgstr ""
+
+#: admin/settings.php:231
+msgid "Same output in CSV format (export)"
+msgstr ""
+
+#: admin/settings.php:232
+msgid "Simulates without creating anything"
+msgstr ""
+
+#: admin/settings.php:233
+msgid "Translates only missing translations"
+msgstr ""
+
+#: admin/settings.php:234
+msgid "Translates or updates all source posts"
+msgstr ""
+
+#. translators: %s: target language codes, e.g. "EN/DE"
+#: includes/hooks.php:56
+#, php-format
+msgid "Translate %s"
+msgstr ""
+
+#: includes/hooks.php:70
+msgid "Missing post ID."
+msgstr ""
+
+#: includes/hooks.php:73
+msgid "Permission denied."
+msgstr ""
+
+#: includes/hooks.php:76
+msgid "Polylang not loaded."
+msgstr ""
+
+#: includes/hooks.php:105
+msgid "Translations created successfully."
+msgstr ""
+
+#. translators: %s: link to settings page
+#: includes/hooks.php:112
+#, php-format
+msgid "Translation error. Check your %s and the logs."
+msgstr ""
+
+#: includes/hooks.php:114
+msgid "API key"
+msgstr ""
+
+#. translators: 1: formatted remaining characters, 2: percentage
+#: includes/hooks.php:126
+#, php-format
+msgid "Low DeepL credit: %1$s characters remaining (%2$s%%)."
+msgstr ""
+
+#: includes/licensing.php:78
+msgid "Activate your licence"
+msgstr ""
+
+#: includes/logger.php:213
+#: includes/logger.php:263
+msgid "Translation Log — AutoLingo"
+msgstr ""
+
+#: includes/logger.php:214
+msgid "DeepL Log"
+msgstr ""
+
+#. translators: %d: number of deleted log entries
+#: includes/logger.php:230
+#, php-format
+msgid "%d entry deleted."
+msgid_plural "%d entries deleted."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/logger.php:254
+msgid "Success"
+msgstr ""
+
+#: includes/logger.php:255
+msgid "Error"
+msgstr ""
+
+#: includes/logger.php:256
+msgid "Warning"
+msgstr ""
+
+#: includes/logger.php:257
+msgid "Info"
+msgstr ""
+
+#: includes/logger.php:283
+msgid "Reset filters"
+msgstr ""
+
+#: includes/logger.php:288
+msgid "Clear all logs?"
+msgstr ""
+
+#: includes/logger.php:290
+msgid "Clear logs"
+msgstr ""
+
+#. translators: %d: total number of log entries
+#: includes/logger.php:299
+#, php-format
+msgid "%d entry"
+msgid_plural "%d entries"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: filter level label
+#: includes/logger.php:305
+#, php-format
+msgid "filter: %s"
+msgstr ""
+
+#: includes/logger.php:310
+msgid "Auto-retention: 30 days"
+msgstr ""
+
+#: includes/logger.php:317
+msgid "No logs found for this filter."
+msgstr ""
+
+#: includes/logger.php:318
+msgid "No logs found."
+msgstr ""
+
+#: includes/logger.php:326
+msgid "Date"
+msgstr ""
+
+#: includes/logger.php:327
+msgid "Level"
+msgstr ""
+
+#: includes/logger.php:328
+msgid "Language"
+msgstr ""
+
+#: includes/logger.php:329
+msgid "Message"
+msgstr ""
+
+#: includes/logger.php:330
+msgid "Post"
+msgstr ""
+
+#: includes/logger.php:356
+msgid "Details"
+msgstr ""
+
+#: includes/logger.php:364
+msgid "Filter by this post"
+msgstr ""
+
+#: includes/logger.php:371
+msgid "Edit →"
+msgstr ""
+
+#: includes/logger.php:384
+msgid "Previous"
+msgstr ""
+
+#. translators: 1: current page number, 2: total pages
+#: includes/logger.php:388
+#, php-format
+msgid "Page %1$s / %2$s"
+msgstr ""
+
+#: includes/logger.php:392
+msgid "Next"
+msgstr ""

@@ -1,0 +1,388 @@
+# French translations for AutoLingo — DeepL Translation for Polylang.
+# Copyright (C) 2026 Julien Perrot
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: AutoLingo — DeepL Translation for Polylang 1.1.5\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/autolingo-polylang-translate\n"
+"PO-Revision-Date: 2026-05-19 00:00+0000\n"
+"Last-Translator: Julien Perrot <julien.perrot@akeneo.com>\n"
+"Language-Team: French\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "AutoLingo — DeepL Translation for Polylang"
+msgstr "AutoLingo — Traduction DeepL pour Polylang"
+
+msgid "AutoLingo"
+msgstr "AutoLingo"
+
+msgid "AutoLingo — Credit"
+msgstr "AutoLingo — Crédit"
+
+msgid "DeepL Connection"
+msgstr "Connexion DeepL"
+
+msgid "Languages"
+msgstr "Langues"
+
+msgid "Behavior"
+msgstr "Comportement"
+
+msgid "DeepL API Key"
+msgstr "Clé API DeepL"
+
+msgid "DeepL API key (ends with %s for the Free plan)."
+msgstr "Clé API DeepL (se termine par %s pour le plan gratuit)."
+
+msgid "Get a key →"
+msgstr "Obtenir une clé →"
+
+msgid "Source Language"
+msgstr "Langue source"
+
+msgid "Language in which you write your content."
+msgstr "Langue dans laquelle vous rédigez votre contenu."
+
+msgid "Target Languages"
+msgstr "Langues cibles"
+
+msgid "Languages to automatically translate into."
+msgstr "Langues vers lesquelles traduire automatiquement."
+
+msgid "Content Types"
+msgstr "Types de contenu"
+
+msgid "Content types to include in automatic translation."
+msgstr "Types de contenu à inclure dans la traduction automatique."
+
+msgid "Auto-translate"
+msgstr "Traduction automatique"
+
+msgid "Automatically translate on each publish"
+msgstr "Traduire automatiquement à chaque publication"
+
+msgid "If disabled, translation only happens via the manual button or WP-CLI."
+msgstr "Si désactivé, la traduction n'a lieu que via le bouton manuel ou WP-CLI."
+
+msgid "Credit Alert Threshold"
+msgstr "Seuil d'alerte de crédit"
+
+msgid "Shows an admin alert when remaining credit falls below this threshold."
+msgstr "Affiche une alerte dans l'admin quand le crédit restant passe sous ce seuil."
+
+msgid "characters"
+msgstr "caractères"
+
+msgid "DeepL connection OK — %1$s characters remaining out of %2$s."
+msgstr "Connexion DeepL OK — %1$s caractères restants sur %2$s."
+
+msgid "Unable to reach the DeepL API. Please check your API key."
+msgstr "Impossible de contacter l'API DeepL. Vérifiez votre clé API."
+
+msgid "DeepL Credit"
+msgstr "Crédit DeepL"
+
+msgid "Free plan · one-time credit"
+msgstr "Plan gratuit · crédit unique"
+
+msgid "Pro plan · monthly"
+msgstr "Plan Pro · mensuel"
+
+msgid "Free — one-time credit"
+msgstr "Gratuit — crédit unique"
+
+msgid "Pro — monthly"
+msgstr "Pro — mensuel"
+
+msgid "remaining"
+msgstr "restants"
+
+msgid "total"
+msgstr "total"
+
+msgid "Refresh"
+msgstr "Actualiser"
+
+msgid "Test DeepL connection"
+msgstr "Tester la connexion DeepL"
+
+msgid "Save Settings"
+msgstr "Enregistrer les réglages"
+
+msgid "WP-CLI Commands"
+msgstr "Commandes WP-CLI"
+
+msgid "Command"
+msgstr "Commande"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Lists all source posts with translation status per language"
+msgstr "Liste tous les posts sources avec le statut de traduction par langue"
+
+msgid "Same output in CSV format (export)"
+msgstr "Même résultat au format CSV (export)"
+
+msgid "Simulates without creating anything"
+msgstr "Simule sans rien créer"
+
+msgid "Translates only missing translations"
+msgstr "Traduit uniquement les traductions manquantes"
+
+msgid "Translates or updates all source posts"
+msgstr "Traduit ou met à jour tous les posts sources"
+
+msgid "DeepL Translation"
+msgstr "Traduction DeepL"
+
+msgid "Only available on %s content."
+msgstr "Disponible uniquement sur les contenus en %s."
+
+msgid "%s characters remaining"
+msgstr "%s caractères restants"
+
+msgid "Translate → %s"
+msgstr "Traduire → %s"
+
+msgid "Translate %s"
+msgstr "Traduire %s"
+
+msgid "Translating…"
+msgstr "Traduction en cours…"
+
+msgid "Translations will be published automatically."
+msgstr "Les traductions seront publiées automatiquement."
+
+msgid "Translation in progress, please wait…"
+msgstr "Traduction en cours, veuillez patienter…"
+
+msgid "The page will reload automatically when done."
+msgstr "La page se rechargera automatiquement une fois terminé."
+
+msgid "Unable to retrieve DeepL balance."
+msgstr "Impossible de récupérer le solde DeepL."
+
+msgid "Check configuration →"
+msgstr "Vérifier la configuration →"
+
+msgid "Plan"
+msgstr "Plan"
+
+msgid "Used"
+msgstr "Utilisés"
+
+msgid "Remaining"
+msgstr "Restants"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Updated every hour"
+msgstr "Mis à jour toutes les heures"
+
+msgid "Settings"
+msgstr "Réglages"
+
+msgid "Translations created successfully."
+msgstr "Traductions créées avec succès."
+
+msgid "Translation error. Check your %s and the logs."
+msgstr "Erreur lors de la traduction. Vérifiez votre %s et les logs."
+
+msgid "API key"
+msgstr "clé API"
+
+msgid "Low DeepL credit: %1$s characters remaining (%2$s%%)."
+msgstr "Crédit DeepL faible : %1$s caractères restants (%2$s%%)."
+
+msgid "Missing post ID."
+msgstr "ID de post manquant."
+
+msgid "Permission denied."
+msgstr "Permission refusée."
+
+msgid "Polylang not loaded."
+msgstr "Polylang non chargé."
+
+msgid "Activate your licence"
+msgstr "Activer votre licence"
+
+msgid "Arabic"
+msgstr "Arabe"
+
+msgid "Bulgarian"
+msgstr "Bulgare"
+
+msgid "Czech"
+msgstr "Tchèque"
+
+msgid "Danish"
+msgstr "Danois"
+
+msgid "German"
+msgstr "Allemand"
+
+msgid "Greek"
+msgstr "Grec"
+
+msgid "English"
+msgstr "Anglais"
+
+msgid "Spanish"
+msgstr "Espagnol"
+
+msgid "Estonian"
+msgstr "Estonien"
+
+msgid "Finnish"
+msgstr "Finnois"
+
+msgid "French"
+msgstr "Français"
+
+msgid "Hungarian"
+msgstr "Hongrois"
+
+msgid "Indonesian"
+msgstr "Indonésien"
+
+msgid "Italian"
+msgstr "Italien"
+
+msgid "Japanese"
+msgstr "Japonais"
+
+msgid "Korean"
+msgstr "Coréen"
+
+msgid "Lithuanian"
+msgstr "Lituanien"
+
+msgid "Latvian"
+msgstr "Letton"
+
+msgid "Norwegian"
+msgstr "Norvégien"
+
+msgid "Dutch"
+msgstr "Néerlandais"
+
+msgid "Polish"
+msgstr "Polonais"
+
+msgid "Portuguese"
+msgstr "Portugais"
+
+msgid "Romanian"
+msgstr "Roumain"
+
+msgid "Russian"
+msgstr "Russe"
+
+msgid "Slovak"
+msgstr "Slovaque"
+
+msgid "Slovenian"
+msgstr "Slovène"
+
+msgid "Swedish"
+msgstr "Suédois"
+
+msgid "Turkish"
+msgstr "Turc"
+
+msgid "Ukrainian"
+msgstr "Ukrainien"
+
+msgid "Chinese"
+msgstr "Chinois"
+
+msgid "Translation Log — AutoLingo"
+msgstr "Journal des traductions — AutoLingo"
+
+msgid "DeepL Log"
+msgstr "Journal DeepL"
+
+msgid "%d entry deleted."
+msgid_plural "%d entries deleted."
+msgstr[0] "%d entrée supprimée."
+msgstr[1] "%d entrées supprimées."
+
+msgid "%d entry"
+msgid_plural "%d entries"
+msgstr[0] "%d entrée"
+msgstr[1] "%d entrées"
+
+msgid "Success"
+msgstr "Succès"
+
+msgid "Error"
+msgstr "Erreur"
+
+msgid "Warning"
+msgstr "Avertissement"
+
+msgid "Info"
+msgstr "Info"
+
+msgid "Reset filters"
+msgstr "Réinitialiser les filtres"
+
+msgid "Clear all logs?"
+msgstr "Vider tous les logs ?"
+
+msgid "Clear logs"
+msgstr "Vider les logs"
+
+msgid "filter: %s"
+msgstr "filtre : %s"
+
+msgid "Auto-retention: 30 days"
+msgstr "Rétention automatique : 30 jours"
+
+msgid "No logs found."
+msgstr "Aucun log trouvé."
+
+msgid "No logs found for this filter."
+msgstr "Aucun log trouvé pour ce filtre."
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Level"
+msgstr "Niveau"
+
+msgid "Language"
+msgstr "Langue"
+
+msgid "Message"
+msgstr "Message"
+
+msgid "Post"
+msgstr "Post"
+
+msgid "Details"
+msgstr "Détails"
+
+msgid "Filter by this post"
+msgstr "Filtrer par ce post"
+
+msgid "Edit →"
+msgstr "Modifier →"
+
+msgid "Previous"
+msgstr "Précédent"
+
+msgid "Page %1$s / %2$s"
+msgstr "Page %1$s / %2$s"
+
+msgid "Next"
+msgstr "Suivant"
+
+msgid "Upgrade to a premium licence to enable these modules."
+msgstr "Passez à une licence Premium pour activer ces modules."
