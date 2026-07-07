@@ -3,7 +3,7 @@
  * Plugin Name:       AutoLingo — Translation for Polylang
  * Plugin URI:        https://auto-lingo.com
  * Description:       Automatic translation via DeepL, OpenAI or Google Translate, natively integrated with Polylang. Supports Elementor, Beaver Builder, Bricks, WooCommerce, ACF, and all major SEO plugins.
- * Version:           1.1.16
+ * Version:           1.1.17
  * Requires at least: 6.0
  * Requires PHP:      8.0
  * Author:            AutoLingo
@@ -12,12 +12,13 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       autolingo-polylang-translate
  * Domain Path:       /languages
+ * WP HealthKit:      whk_verify_52082ec2f373259648ec8044fdb6a8c3
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // ── Constantes ────────────────────────────────────────────
-define( 'AUTOLINGO_VERSION',     '1.1.16' );
+define( 'AUTOLINGO_VERSION',     '1.1.17' );
 define( 'AUTOLINGO_PLUGIN_DIR',  plugin_dir_path( __FILE__ ) );
 define( 'AUTOLINGO_PLUGIN_URL',  plugin_dir_url( __FILE__ ) );
 define( 'AUTOLINGO_PLUGIN_FILE', __FILE__ );

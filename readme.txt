@@ -1,16 +1,18 @@
 === AutoLingo — Translation for Polylang ===
-Contributors: autolingo
+Contributors: delsuza
 Tags: polylang, translation, multilingual, automatic-translation, woocommerce
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.1.16
+Stable tag: 1.1.17
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Automatic translation via DeepL, OpenAI or Google Translate, natively integrated with Polylang. Supports page builders, SEO plugins and WooCommerce.
 
 == Description ==
+
+<a href="https://wphealthkit.com/directory/autolingo-polylang-translate"><img src="https://wphealthkit.com/api/badge/autolingo-polylang-translate" alt="Autolingo Polylang Translate security audit by WP HealthKit" /></a>
 
 AutoLingo connects your Polylang-powered site to DeepL, Google Translate, or OpenAI and automates the entire translation workflow — from a single post to your full content library.
 
@@ -161,6 +163,9 @@ No. Shortcodes (`[contact-form-7 …]`, `[vc_row]`, Divi modules, etc.) are repl
 The plugin retries automatically up to 3 times with exponential back-off (2 s, 4 s, 8 s). If all retries fail the error is logged and the translation is skipped for that request.
 
 == Changelog ==
+
+= 1.1.17 =
+* Fix Elementor hook firing for free users — `elementor/document/after_save` is now gated on premium, preventing unwanted API calls on free installs
 
 = 1.1.7 =
 * WordPress.org compliance: remove premium license gating — all features (page builders, SEO, ACF, WooCommerce) are now fully available without a license

@@ -45,6 +45,7 @@ function autolingo_on_save_post( int $post_id, WP_Post $post, bool $update ): vo
 add_action( 'elementor/document/after_save', 'autolingo_on_elementor_document_save', 20, 2 );
 
 function autolingo_on_elementor_document_save( $document, array $data ): void {
+    if ( ! autolingo_is_premium() ) return;
     if ( ! autolingo_auto_translate_enabled() ) return;
 
     $post_id = $document->get_post()->ID;
