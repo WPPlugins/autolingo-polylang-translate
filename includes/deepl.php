@@ -96,30 +96,44 @@ function autolingo_call_deepl( string $text, string $target_lang ): string|false
 function autolingo_protect_opaque_blocks( string $content, array &$protected ): string {
     if ( ! str_contains( $content, '<!-- wp:' ) ) return $content;
 
-    $opaque = 'html|embed|code|preformatted';
-    $i      = 0;
+    // strpos-based scan: no PCRE backtrack limits, safe on arbitrarily large blocks.
+    foreach ( [ 'html', 'embed', 'code', 'preformatted' ] as $block_name ) {
+        $open_prefix = '<!-- wp:' . $block_name;
+        $close_open  = '<!-- /wp:' . $block_name;
 
-    // Self-closing variant: <!-- wp:embed {...} /-->
-    $content = preg_replace_callback(
-        '/<!--\s*wp:(?:' . $opaque . ')(?:\s[^>]*)?\s*\/-->/i',
-        static function ( array $m ) use ( &$protected, &$i ): string {
-            $key             = '<!--ALOP' . $i++ . '-->';
-            $protected[$key] = $m[0];
-            return $key;
-        },
-        $content
-    );
+        while ( ( $start = strpos( $content, $open_prefix ) ) !== false ) {
+            // Verify the character immediately after the block name is ' ', '/', or '-'
+            // so '<!-- wp:html -->' matches but '<!-- wp:htmlblock -->' does not.
+            $char = $content[ $start + strlen( $open_prefix ) ] ?? '';
+            if ( $char !== ' ' && $char !== '/' && $char !== '-' ) {
+                break; // no valid block of this type remains
+            }
 
-    // Full blocks: <!-- wp:html --> ... <!-- /wp:html -->
-    $content = preg_replace_callback(
-        '/<!--\s*wp:(' . $opaque . ')(?:\s[^>]*)?\s*-->[\s\S]*?<!--\s*\/wp:\1\s*-->/i',
-        static function ( array $m ) use ( &$protected, &$i ): string {
-            $key             = '<!--ALOP' . $i++ . '-->';
-            $protected[$key] = $m[0];
-            return $key;
-        },
-        $content
-    );
+            // Find end of opening comment
+            $open_end = strpos( $content, '-->', $start );
+            if ( $open_end === false ) break;
+            $open_end += 3;
+
+            $opening = substr( $content, $start, $open_end - $start );
+
+            // Self-closing block: <!-- wp:embed {"url":"..."} /-->
+            if ( str_ends_with( rtrim( $opening ), '/-->' ) ) {
+                $block = $opening;
+            } else {
+                // Find matching closing comment: <!-- /wp:html ... -->
+                $close_start = strpos( $content, $close_open, $open_end );
+                if ( $close_start === false ) break;
+                $close_end = strpos( $content, '-->', $close_start );
+                if ( $close_end === false ) break;
+                $close_end += 3;
+                $block = substr( $content, $start, $close_end - $start );
+            }
+
+            $key             = '<!--ALOP' . count( $protected ) . '-->';
+            $protected[$key] = $block;
+            $content         = substr_replace( $content, $key, $start, strlen( $block ) );
+        }
+    }
 
     return $content;
 }
