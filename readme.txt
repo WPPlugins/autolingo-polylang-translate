@@ -4,7 +4,7 @@ Tags: polylang, translation, multilingual, automatic-translation, woocommerce
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.1.17
+Stable tag: 1.1.18
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -163,6 +163,9 @@ No. Shortcodes (`[contact-form-7 …]`, `[vc_row]`, Divi modules, etc.) are repl
 The plugin retries automatically up to 3 times with exponential back-off (2 s, 4 s, 8 s). If all retries fail the error is logged and the translation is skipped for that request.
 
 == Changelog ==
+
+= 1.1.18 =
+* Skip translation of custom HTML blocks (wp:html), embed blocks (wp:embed), code blocks (wp:code) and preformatted blocks (wp:preformatted) — their inner content is now preserved verbatim and never sent to the translation API
 
 = 1.1.17 =
 * Fix Elementor hook firing for free users — `elementor/document/after_save` is now gated on premium, preventing unwanted API calls on free installs
