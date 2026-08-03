@@ -6,6 +6,36 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
+ * Insert or update a translated post without KSES sanitization.
+ *
+ * In cron / async context there is no logged-in user, so WordPress adds
+ * wp_filter_post_kses to content_save_pre and strips tags like <input>,
+ * <style>, <script> that are present inside wp:html blocks. Bypass it for the
+ * duration of the save — the source content was already trusted by an admin.
+ *
+ * @param array $postarr Post data.
+ * @param bool  $update  True → wp_update_post, false → wp_insert_post.
+ * @return int|WP_Error
+ */
+function autolingo_save_post( array $postarr, bool $update = false ): int|WP_Error {
+    $hooks = [
+        'content_save_pre'          => 'wp_filter_post_kses',
+        'content_filtered_save_pre' => 'wp_filter_post_kses',
+        'excerpt_save_pre'          => 'wp_filter_post_kses',
+    ];
+    $had = [];
+    foreach ( $hooks as $hook => $cb ) {
+        $had[ $hook ] = has_filter( $hook, $cb );
+        if ( $had[ $hook ] ) remove_filter( $hook, $cb );
+    }
+    $result = $update ? wp_update_post( $postarr ) : wp_insert_post( $postarr );
+    foreach ( $hooks as $hook => $cb ) {
+        if ( $had[ $hook ] ) add_filter( $hook, $cb );
+    }
+    return $result;
+}
+
+/**
  * Fingerprint of the translatable basic fields (title, content, excerpt).
  * Stored as post meta after each successful translation so subsequent saves
  * with identical content skip the API entirely.
@@ -113,7 +143,7 @@ function autolingo_create_translation( WP_Post $source_post, string $target_lang
         // Fallback : création manuelle si le modèle Polylang n'est pas accessible.
         // On crée directement avec le contenu traduit et le statut final pour éviter
         // tout wp_update_post() supplémentaire qui écraserait la langue assignée.
-        $new_post_id = wp_insert_post( [
+        $new_post_id = autolingo_save_post( [
             'post_title'   => $translated_title,
             'post_content' => $translated_content,
             'post_excerpt' => $translated_excerpt,
@@ -196,7 +226,7 @@ function autolingo_polylang_create_post( WP_Post $source_post, string $lang_slug
         'post_parent'    => $source_post->post_parent,
     ];
 
-    $new_id = wp_insert_post( $postarr );
+    $new_id = autolingo_save_post( $postarr );
     if ( is_wp_error( $new_id ) || ! $new_id ) return false;
 
     // Récupérer l'objet langue Polylang
@@ -266,13 +296,13 @@ function autolingo_update_translation( WP_Post $source_post, int $translated_id,
             pll_set_post_language( $translated_id, $lang_slug );
         }
 
-        wp_update_post( [
+        autolingo_save_post( [
             'ID'           => $translated_id,
             'post_title'   => $translated_title,
             'post_content' => $translated_content,
             'post_excerpt' => $translated_excerpt,
             'post_status'  => 'publish',
-        ] );
+        ], true );
 
         // Réaffirmer la langue après wp_update_post (Polylang peut la réinitialiser)
         pll_set_post_language( $translated_id, $lang_slug );

@@ -4,7 +4,7 @@ Tags: polylang, translation, multilingual, automatic-translation, woocommerce
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.1.22
+Stable tag: 1.1.23
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -163,6 +163,9 @@ No. Shortcodes (`[contact-form-7 …]`, `[vc_row]`, Divi modules, etc.) are repl
 The plugin retries automatically up to 3 times with exponential back-off (2 s, 4 s, 8 s). If all retries fail the error is logged and the translation is skipped for that request.
 
 == Changelog ==
+
+= 1.1.23 =
+* Fix HTML tags (<input>, <style>, <script>) being stripped from wp:html blocks when async (WP-Cron) translation runs without a logged-in user — WordPress KSES sanitization is now bypassed for translated post saves
 
 = 1.1.22 =
 * Add [notranslate]…[/notranslate] shortcode: wrap any passage to have it reproduced verbatim in every language — brand names, codes, or quotes are never sent to the translation API
