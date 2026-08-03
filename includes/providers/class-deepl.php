@@ -93,6 +93,80 @@ class AUTOLINGO_Provider_DeepL implements AUTOLINGO_Provider {
         return $translated;
     }
 
+    /**
+     * Translate multiple texts in a single HTTP request.
+     * Returns an array of translated strings in the same order as $texts,
+     * or false on error.
+     *
+     * @param  string[] $texts        Prepared texts (protections already applied by the caller).
+     * @param  string   $target_lang  Target language code.
+     * @return string[]|false
+     */
+    public function translate_batch( array $texts, string $target_lang ): array|false {
+        if ( empty( $texts ) ) return [];
+
+        $api_key = $this->api_key();
+        if ( empty( $api_key ) ) return false;
+
+        $payloads = array_map( fn( $t ) => '<div>' . $t . '</div>', $texts );
+
+        $args = [
+            'timeout' => 30,
+            'headers' => [
+                'Authorization' => 'DeepL-Auth-Key ' . $api_key,
+                'Content-Type'  => 'application/json',
+            ],
+            'body' => wp_json_encode( array_filter( [
+                'text'         => $payloads,
+                'source_lang'  => strtoupper( explode( '-', str_replace( '_', '-', autolingo_source_lang() ) )[0] ),
+                'target_lang'  => autolingo_deepl_normalize_lang( $target_lang ),
+                'tag_handling' => 'html',
+                'formality'    => autolingo_deepl_formality( $target_lang ),
+                'glossary_id'  => $this->get_glossary_id( autolingo_source_lang(), $target_lang ),
+            ], fn( $v ) => $v !== null ) ),
+        ];
+
+        $response = wp_remote_post( $this->endpoint( '/v2/translate' ), $args );
+
+        if ( is_wp_error( $response ) ) {
+            autolingo_log_error( 'DeepL batch error: ' . $response->get_error_message(), [ 'lang' => $target_lang ] );
+            return false;
+        }
+
+        $code    = wp_remote_retrieve_response_code( $response );
+        $retries = 0;
+        while ( $code === 429 && $retries < 3 ) {
+            sleep( 2 ** ( $retries + 1 ) );
+            $retries++;
+            $retry = wp_remote_post( $this->endpoint( '/v2/translate' ), $args );
+            if ( ! is_wp_error( $retry ) ) {
+                $response = $retry;
+                $code     = wp_remote_retrieve_response_code( $response );
+            }
+        }
+
+        if ( $code !== 200 ) {
+            autolingo_log_error( "DeepL batch HTTP {$code}.", [ 'lang' => $target_lang, 'response' => mb_substr( wp_remote_retrieve_body( $response ), 0, 300 ) ] );
+            return false;
+        }
+
+        $body    = json_decode( wp_remote_retrieve_body( $response ), true );
+        $results = [];
+        foreach ( ( $body['translations'] ?? [] ) as $t ) {
+            $translated = $t['text'] ?? false;
+            if ( $translated !== false ) {
+                $translated = preg_replace( '/^\s*<div>(.*)<\/div>\s*$/s', '$1', $translated );
+            }
+            $results[] = $translated;
+        }
+
+        if ( ! empty( $results ) ) {
+            $this->invalidate_usage_cache();
+        }
+
+        return count( $results ) === count( $texts ) ? $results : false;
+    }
+
     public function get_usage(): array|false {
         $cached = get_transient( 'autolingo_deepl_usage' );
         if ( $cached !== false ) return $cached;

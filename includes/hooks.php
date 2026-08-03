@@ -7,6 +7,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 // ── 1. Traduction automatique à la publication ─────────────
 
+// Cron hook for async translation (scheduled by autolingo_maybe_translate).
+add_action( 'autolingo_async_translate', 'autolingo_translate_post' );
+
 add_action( 'save_post', 'autolingo_on_save_post', 20, 3 );
 
 function autolingo_on_save_post( int $post_id, WP_Post $post, bool $update ): void {
@@ -34,7 +37,7 @@ function autolingo_on_save_post( int $post_id, WP_Post $post, bool $update ): vo
     }
     set_transient( $lock_key, 1, 30 );
 
-    autolingo_translate_post( $post_id );
+    autolingo_maybe_translate( $post_id );
 
     delete_transient( $lock_key );
     unset( $in_progress[ $post_id ] );
@@ -68,10 +71,37 @@ function autolingo_on_elementor_document_save( $document, array $data ): void {
     }
     set_transient( $lock_key, 1, 30 );
 
-    autolingo_translate_post( $post_id );
+    autolingo_maybe_translate( $post_id );
 
     delete_transient( $lock_key );
     unset( $in_progress[ $post_id ] );
+}
+
+/**
+ * Translate synchronously or schedule an async WP-Cron job, depending on
+ * the configured threshold and whether WP-Cron is available.
+ *
+ * Async is skipped when:
+ *   - threshold is 0 (always sync)
+ *   - post_content is shorter than the threshold
+ *   - DISABLE_WP_CRON is true (server-side cron, no loopback available)
+ */
+function autolingo_maybe_translate( int $post_id ): void {
+    $threshold = autolingo_async_threshold();
+    $post      = get_post( $post_id );
+
+    $use_async = autolingo_async_enabled()
+        && $threshold > 0
+        && $post
+        && strlen( $post->post_content ) >= $threshold
+        && ! ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON );
+
+    if ( $use_async ) {
+        wp_schedule_single_event( time(), 'autolingo_async_translate', [ $post_id ] );
+        spawn_cron(); // fire pending cron jobs immediately (best-effort)
+    } else {
+        autolingo_translate_post( $post_id );
+    }
 }
 
 // ── 2. Bouton dans la liste des posts/pages ────────────────

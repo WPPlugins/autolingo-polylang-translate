@@ -33,6 +33,10 @@ function autolingo_get_provider(): AUTOLINGO_Provider {
 function autolingo_call_deepl( string $text, string $target_lang ): string|false {
     if ( empty( trim( $text ) ) ) return $text;
 
+    // Protect [notranslate]...[/notranslate] spans — inner content preserved verbatim.
+    $notranslate = [];
+    $text        = autolingo_protect_notranslate( $text, $notranslate );
+
     // Protect entire blocks whose inner content must never be sent to the API
     // (custom HTML, embeds, code…). Must run before strip_block_comments so the
     // opaque block's opening/closing comments are included in the placeholder.
@@ -69,6 +73,11 @@ function autolingo_call_deepl( string $text, string $target_lang ): string|false
         $result = str_replace( array_keys( $opaque ), array_values( $opaque ), $result );
     }
 
+    // Restore [notranslate] inner content
+    if ( ! empty( $notranslate ) ) {
+        $result = str_replace( array_keys( $notranslate ), array_values( $notranslate ), $result );
+    }
+
     // Strip any residual translate="no" spans added by DeepL
     if ( str_contains( $result, 'translate="no"' ) ) {
         $result = preg_replace( '/<span translate="no">(.*?)<\/span>/s', '$1', $result );
@@ -76,6 +85,108 @@ function autolingo_call_deepl( string $text, string $target_lang ): string|false
 
     return $result;
 }
+
+/**
+ * Translate multiple texts in a single provider call, applying all standard
+ * protections (opaque blocks, block comments, shortcodes, SEO vars) to each
+ * text individually before sending and restoring them after.
+ *
+ * Falls back to sequential single-text calls for providers that do not
+ * implement translate_batch().
+ *
+ * @param  string[] $texts        Raw texts to translate.
+ * @param  string   $target_lang  Target language code.
+ * @return string[]|false         Translated strings in the same order, or false on error.
+ */
+function autolingo_call_deepl_batch( array $texts, string $target_lang ): array|false {
+    if ( empty( $texts ) ) return [];
+
+    $provider = autolingo_get_provider();
+
+    $notranslate_maps = [];
+    $opaque_maps      = [];
+    $block_maps       = [];
+    $placeholder_maps = [];
+    $prepared         = [];
+
+    foreach ( $texts as $text ) {
+        $nt = [];
+        $t  = autolingo_protect_notranslate( $text, $nt );
+        $opaque = [];
+        $t      = autolingo_protect_opaque_blocks( $t, $opaque );
+        $blocks = [];
+        $t      = autolingo_strip_block_comments( $t, $blocks );
+        $ph     = [];
+        $t      = autolingo_protect_shortcodes( $t, $ph );
+        $t      = autolingo_protect_seo_vars( $t );
+
+        $prepared[]           = $t;
+        $notranslate_maps[]   = $nt;
+        $opaque_maps[]        = $opaque;
+        $block_maps[]         = $blocks;
+        $placeholder_maps[]   = $ph;
+    }
+
+    if ( method_exists( $provider, 'translate_batch' ) ) {
+        $results = $provider->translate_batch( $prepared, $target_lang );
+    } else {
+        $results = [];
+        foreach ( $prepared as $t ) {
+            $results[] = $provider->translate( $t, $target_lang );
+        }
+    }
+
+    if ( $results === false ) return false;
+
+    foreach ( $results as $i => &$result ) {
+        if ( ! is_string( $result ) ) continue;
+        if ( ! empty( $placeholder_maps[ $i ] ) ) {
+            $result = str_replace( array_keys( $placeholder_maps[ $i ] ), array_values( $placeholder_maps[ $i ] ), $result );
+        }
+        if ( ! empty( $block_maps[ $i ] ) ) {
+            $result = str_replace( array_keys( $block_maps[ $i ] ), array_values( $block_maps[ $i ] ), $result );
+        }
+        if ( ! empty( $opaque_maps[ $i ] ) ) {
+            $result = str_replace( array_keys( $opaque_maps[ $i ] ), array_values( $opaque_maps[ $i ] ), $result );
+        }
+        if ( ! empty( $notranslate_maps[ $i ] ) ) {
+            $result = str_replace( array_keys( $notranslate_maps[ $i ] ), array_values( $notranslate_maps[ $i ] ), $result );
+        }
+        if ( str_contains( $result, 'translate="no"' ) ) {
+            $result = preg_replace( '/<span translate="no">(.*?)<\/span>/s', '$1', $result );
+        }
+    }
+    unset( $result );
+
+    return $results;
+}
+
+// ── No-translate shortcode ────────────────────────────────────────────────────
+
+/**
+ * Replace [notranslate]...[/notranslate] spans with a placeholder so their
+ * inner content is never sent to the translation API and is restored verbatim.
+ * The shortcode tags themselves are discarded; only the inner content survives.
+ *
+ * Usage in post content:  [notranslate]Brand Name[/notranslate]
+ */
+function autolingo_protect_notranslate( string $text, array &$map ): string {
+    if ( ! str_contains( $text, '[notranslate]' ) ) return $text;
+    return preg_replace_callback(
+        '/\[notranslate\](.*?)\[\/notranslate\]/s',
+        static function ( array $m ) use ( &$map ): string {
+            $key      = '<!--ALNO' . count( $map ) . '-->';
+            $map[$key] = $m[1];
+            return $key;
+        },
+        $text
+    );
+}
+
+// Passthrough handler so [notranslate] renders cleanly when no translation runs.
+add_shortcode( 'notranslate', static function ( $atts, ?string $content = '' ): string {
+    return (string) $content;
+} );
 
 // ── Block comment stripping ───────────────────────────────────────────────────
 

@@ -42,6 +42,9 @@ function autolingo_settings_enqueue( string $hook ): void {
     // Provider key row toggle.
     wp_add_inline_script( 'autolingo-settings', '(function(){var sel=document.getElementById("autolingo_provider");function toggle(){document.querySelectorAll(".autolingo-key-row").forEach(function(r){r.style.display="none";});var row=document.getElementById("autolingo-key-"+sel.value);if(row)row.style.display="";}sel.addEventListener("change",toggle);toggle();})();' );
 
+    // Async enable/disable toggle.
+    wp_add_inline_script( 'autolingo-settings', '(function(){var cb=document.getElementById("autolingo_async_enabled");var wrap=document.getElementById("autolingo-async-threshold-wrap");if(cb&&wrap){cb.addEventListener("change",function(){wrap.style.display=cb.checked?"":"none";});}})();' );
+
     // Glossary sync button.
     wp_add_inline_script(
         'autolingo-settings',
@@ -143,6 +146,8 @@ function autolingo_register_settings(): void {
     register_setting( 'autolingo_settings_group', 'autolingo_formality',            [ 'sanitize_callback' => 'sanitize_text_field' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_auto_translate',       [ 'sanitize_callback' => 'sanitize_text_field' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_alert_threshold',      [ 'sanitize_callback' => 'absint' ] );
+    register_setting( 'autolingo_settings_group', 'autolingo_async_enabled',        [ 'sanitize_callback' => 'sanitize_text_field' ] );
+    register_setting( 'autolingo_settings_group', 'autolingo_async_threshold',      [ 'sanitize_callback' => 'absint' ] );
     add_settings_section( 'autolingo_section_langs',    '🌍 ' . __( 'Languages', 'autolingo-polylang-translate' ),  '__return_false', 'autolingo-polylang-translate' );
     add_settings_section( 'autolingo_section_behavior', '⚙️ ' . __( 'Behavior', 'autolingo-polylang-translate' ),   '__return_false', 'autolingo-polylang-translate' );
 
@@ -159,6 +164,7 @@ function autolingo_register_settings(): void {
     add_settings_field( 'autolingo_target_langs',    __( 'Target Languages', 'autolingo-polylang-translate' ),       'autolingo_field_target_langs',    'autolingo-polylang-translate', 'autolingo_section_langs' );
     add_settings_field( 'autolingo_post_types',      __( 'Content Types', 'autolingo-polylang-translate' ),          'autolingo_field_post_types',      'autolingo-polylang-translate', 'autolingo_section_behavior' );
     add_settings_field( 'autolingo_auto_translate',  __( 'Auto-translate', 'autolingo-polylang-translate' ),         'autolingo_field_auto_translate',  'autolingo-polylang-translate', 'autolingo_section_behavior' );
+    add_settings_field( 'autolingo_async_threshold', __( 'Background translation', 'autolingo-polylang-translate' ),  'autolingo_field_async_threshold', 'autolingo-polylang-translate', 'autolingo_section_behavior' );
     register_setting( 'autolingo_settings_group', 'autolingo_glossary_terms', [ 'sanitize_callback' => 'sanitize_textarea_field' ] );
     add_settings_section( 'autolingo_section_glossary', '📖 ' . __( 'DeepL Glossary', 'autolingo-polylang-translate' ), '__return_false', 'autolingo-polylang-translate' );
     add_settings_field( 'autolingo_glossary_terms', __( 'Glossary Terms', 'autolingo-polylang-translate' ), 'autolingo_field_glossary', 'autolingo-polylang-translate', 'autolingo_section_glossary' );
@@ -277,6 +283,63 @@ function autolingo_field_formality(): void {
     }
     echo '</select>';
     echo '<p class="description">' . esc_html__( 'DeepL only. Applies to: DE, FR, IT, ES, NL, PL, PT, RU, JA. Ignored for other languages.', 'autolingo-polylang-translate' ) . '</p>';
+}
+
+function autolingo_field_async_threshold(): void {
+    $enabled = autolingo_async_enabled();
+    $val     = autolingo_async_threshold();
+
+    // Enable / disable toggle.
+    echo '<label><input type="checkbox" id="autolingo_async_enabled" name="autolingo_async_enabled" value="1" '
+        . checked( $enabled, true, false ) . '> '
+        . esc_html__( 'Translate long posts in the background via WP-Cron', 'autolingo-polylang-translate' )
+        . '</label>';
+
+    // Threshold (hidden when async is off).
+    echo '<div id="autolingo-async-threshold-wrap" style="margin-top:10px;' . ( $enabled ? '' : 'display:none;' ) . '">';
+    echo '<input type="number" name="autolingo_async_threshold" id="autolingo_async_threshold" value="' . esc_attr( (string) $val ) . '" class="small-text" min="0" step="500"> '
+        . esc_html__( 'characters', 'autolingo-polylang-translate' );
+    echo '<p class="description">'
+        . esc_html__( 'Posts whose content is longer than this are queued in WP-Cron instead of blocking the editor save.', 'autolingo-polylang-translate' )
+        . '</p>';
+    echo '</div>';
+
+    // WP-Cron environment status.
+    echo '<div style="margin-top:10px;">';
+    if ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) {
+        echo '<p class="description" style="color:#d63638;font-weight:600;">'
+            . esc_html__( '⚠ DISABLE_WP_CRON is set — background translation is disabled and all posts will be translated synchronously. If a server-side cron job calls wp-cron.php, remove this constant to allow async translation.', 'autolingo-polylang-translate' )
+            . '</p>';
+    } else {
+        echo '<p class="description" style="color:#00a32a;">✓ '
+            . esc_html__( 'WP-Cron is active. Note: spawn_cron() requires loopback HTTP requests to be allowed by your host. If they are blocked, jobs will run on the next visitor page load instead of immediately.', 'autolingo-polylang-translate' )
+            . '</p>';
+    }
+
+    // Pending async jobs.
+    $pending = autolingo_count_pending_async_jobs();
+    if ( $pending > 0 ) {
+        echo '<p class="description">⏳ '
+            . esc_html( sprintf(
+                /* translators: %d: number of pending translation jobs */
+                _n( '%d translation job pending in the queue.', '%d translation jobs pending in the queue.', $pending, 'autolingo-polylang-translate' ),
+                $pending
+            ) )
+            . '</p>';
+    }
+    echo '</div>';
+}
+
+function autolingo_count_pending_async_jobs(): int {
+    $crons = _get_cron_array();
+    if ( ! is_array( $crons ) ) return 0;
+    $count = 0;
+    foreach ( $crons as $events ) {
+        if ( isset( $events['autolingo_async_translate'] ) ) {
+            $count += count( $events['autolingo_async_translate'] );
+        }
+    }
+    return $count;
 }
 
 function autolingo_field_alert_threshold(): void {

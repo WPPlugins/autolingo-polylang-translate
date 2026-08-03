@@ -86,6 +86,22 @@ function autolingo_auto_translate_enabled(): bool {
 }
 
 /**
+ * La traduction asynchrone (WP-Cron) est-elle activée ?
+ */
+function autolingo_async_enabled(): bool {
+    return (bool) autolingo_option( 'async_enabled', true );
+}
+
+/**
+ * Seuil (en caractères de post_content) à partir duquel la traduction
+ * est déclenchée en arrière-plan via WP-Cron.
+ * 0 = toujours synchrone.
+ */
+function autolingo_async_threshold(): int {
+    return (int) autolingo_option( 'async_threshold', 5000 );
+}
+
+/**
  * Un module de traduction est-il activé ?
  * Modules connus : 'seo', 'acf', 'woocommerce', 'page_builders'.
  */

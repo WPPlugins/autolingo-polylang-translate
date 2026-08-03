@@ -6,6 +6,15 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
+ * Fingerprint of the translatable basic fields (title, content, excerpt).
+ * Stored as post meta after each successful translation so subsequent saves
+ * with identical content skip the API entirely.
+ */
+function autolingo_source_content_hash( WP_Post $post ): string {
+    return md5( $post->post_title . "\x00" . $post->post_content . "\x00" . $post->post_excerpt );
+}
+
+/**
  * Traduit un post vers toutes les langues cibles configurées.
  * Crée la traduction si elle n'existe pas, la met à jour sinon.
  *
@@ -62,12 +71,17 @@ function autolingo_translate_post( int $post_id ): bool {
  */
 function autolingo_create_translation( WP_Post $source_post, string $target_lang, string $lang_slug ) {
 
-    // ── Traduire le contenu via DeepL ─────────────────────
-    $translated_title   = autolingo_call_deepl( $source_post->post_title,   $target_lang );
-    $translated_content = autolingo_call_deepl( $source_post->post_content, $target_lang );
-    $translated_excerpt = $source_post->post_excerpt
-        ? autolingo_call_deepl( $source_post->post_excerpt, $target_lang )
-        : '';
+    // ── Traduire le contenu via une seule requête batch ───
+    $batch_input = [ $source_post->post_title, $source_post->post_content ];
+    if ( $source_post->post_excerpt ) {
+        $batch_input[] = $source_post->post_excerpt;
+    }
+
+    $batch = autolingo_call_deepl_batch( $batch_input, $target_lang );
+
+    $translated_title   = $batch !== false ? ( $batch[0] ?? false ) : false;
+    $translated_content = $batch !== false ? ( $batch[1] ?? false ) : false;
+    $translated_excerpt = ( $batch !== false && $source_post->post_excerpt ) ? ( $batch[2] ?? $source_post->post_excerpt ) : '';
 
     if ( $translated_title === false || $translated_content === false ) {
         autolingo_log_error(
@@ -77,11 +91,6 @@ function autolingo_create_translation( WP_Post $source_post, string $target_lang
             $target_lang
         );
         return false;
-    }
-
-    // Fallback: keep source excerpt if API failed rather than creating the post with an empty excerpt.
-    if ( $translated_excerpt === false ) {
-        $translated_excerpt = $source_post->post_excerpt;
     }
 
     $translated_content = autolingo_replace_internal_urls( $translated_content, $lang_slug );
@@ -145,6 +154,8 @@ function autolingo_create_translation( WP_Post $source_post, string $target_lang
     if ( function_exists( 'autolingo_run_premium_modules' ) ) {
         autolingo_run_premium_modules( $source_post, $new_post_id, $target_lang, $lang_slug );
     }
+
+    update_post_meta( $source_post->ID, '_autolingo_hash_' . $lang_slug, autolingo_source_content_hash( $source_post ) );
 
     autolingo_log_success(
         "Post traduit vers {$target_lang} (nouveau post #{$new_post_id}).",
@@ -218,63 +229,82 @@ function autolingo_polylang_create_post( WP_Post $source_post, string $lang_slug
  */
 function autolingo_update_translation( WP_Post $source_post, int $translated_id, string $target_lang, string $lang_slug ): bool {
 
-    $translated_title   = autolingo_call_deepl( $source_post->post_title,   $target_lang );
-    $translated_content = autolingo_call_deepl( $source_post->post_content, $target_lang );
-    $translated_excerpt = $source_post->post_excerpt
-        ? autolingo_call_deepl( $source_post->post_excerpt, $target_lang )
-        : '';
+    $hash_key     = '_autolingo_hash_' . $lang_slug;
+    $current_hash = autolingo_source_content_hash( $source_post );
+    $content_changed = get_post_meta( $source_post->ID, $hash_key, true ) !== $current_hash;
 
-    if ( $translated_title === false || $translated_content === false ) {
-        autolingo_log_error(
-            "Erreur DeepL lors de la mise à jour vers {$target_lang}.",
-            [ 'translated_id' => $translated_id ],
+    if ( $content_changed ) {
+        $batch_input = [ $source_post->post_title, $source_post->post_content ];
+        if ( $source_post->post_excerpt ) {
+            $batch_input[] = $source_post->post_excerpt;
+        }
+
+        $batch = autolingo_call_deepl_batch( $batch_input, $target_lang );
+
+        $translated_title   = $batch !== false ? ( $batch[0] ?? false ) : false;
+        $translated_content = $batch !== false ? ( $batch[1] ?? false ) : false;
+        $translated_excerpt = ( $batch !== false && $source_post->post_excerpt ) ? ( $batch[2] ?? $source_post->post_excerpt ) : '';
+
+        if ( $translated_title === false || $translated_content === false ) {
+            autolingo_log_error(
+                "Erreur DeepL lors de la mise à jour vers {$target_lang}.",
+                [ 'translated_id' => $translated_id ],
+                $source_post->ID,
+                $target_lang
+            );
+            return false;
+        }
+
+        $translated_content = autolingo_replace_internal_urls( $translated_content, $lang_slug );
+        $translated_excerpt = autolingo_replace_internal_urls( $translated_excerpt, $lang_slug );
+
+        remove_action( 'save_post', 'autolingo_on_save_post', 20 );
+
+        // S'assurer que la langue est correctement assignée (correction si manquante)
+        $current_lang = pll_get_post_language( $translated_id );
+        if ( $current_lang !== $lang_slug ) {
+            pll_set_post_language( $translated_id, $lang_slug );
+        }
+
+        wp_update_post( [
+            'ID'           => $translated_id,
+            'post_title'   => $translated_title,
+            'post_content' => $translated_content,
+            'post_excerpt' => $translated_excerpt,
+            'post_status'  => 'publish',
+        ] );
+
+        // Réaffirmer la langue après wp_update_post (Polylang peut la réinitialiser)
+        pll_set_post_language( $translated_id, $lang_slug );
+
+        add_action( 'save_post', 'autolingo_on_save_post', 20, 3 );
+
+        update_post_meta( $source_post->ID, $hash_key, $current_hash );
+
+        autolingo_log_success(
+            "Traduction mise à jour vers {$target_lang} (post #{$translated_id}).",
+            [ 'source_id' => $source_post->ID, 'target_id' => $translated_id ],
             $source_post->ID,
             $target_lang
         );
-        return false;
+    } else {
+        autolingo_log_info(
+            "Traduction {$target_lang} ignorée : contenu principal inchangé depuis la dernière traduction.",
+            [ 'source_id' => $source_post->ID, 'target_id' => $translated_id ],
+            $source_post->ID,
+            $target_lang
+        );
     }
 
-    // Fallback: keep source excerpt if API failed rather than wiping the translated post's excerpt.
-    if ( $translated_excerpt === false ) {
-        $translated_excerpt = $source_post->post_excerpt;
-    }
-
-    $translated_content = autolingo_replace_internal_urls( $translated_content, $lang_slug );
-    $translated_excerpt = autolingo_replace_internal_urls( $translated_excerpt, $lang_slug );
-
-    remove_action( 'save_post', 'autolingo_on_save_post', 20 );
-
-    // S'assurer que la langue est correctement assignée (correction si manquante)
-    $current_lang = pll_get_post_language( $translated_id );
-    if ( $current_lang !== $lang_slug ) {
-        pll_set_post_language( $translated_id, $lang_slug );
-    }
-
-    wp_update_post( [
-        'ID'           => $translated_id,
-        'post_title'   => $translated_title,
-        'post_content' => $translated_content,
-        'post_excerpt' => $translated_excerpt,
-        'post_status'  => 'publish',
-    ] );
-
-    // Réaffirmer la langue après wp_update_post (Polylang peut la réinitialiser)
-    pll_set_post_language( $translated_id, $lang_slug );
-
-    add_action( 'save_post', 'autolingo_on_save_post', 20, 3 );
-
+    // Always sync terms and run premium modules — taxonomy assignments and
+    // Elementor / ACF / WooCommerce data can change independently of the
+    // basic content fields and must not be skipped.
     autolingo_sync_terms( $source_post->ID, $translated_id, $lang_slug );
 
     if ( function_exists( 'autolingo_run_premium_modules' ) ) {
         autolingo_run_premium_modules( $source_post, $translated_id, $target_lang, $lang_slug );
     }
 
-    autolingo_log_success(
-        "Traduction mise à jour vers {$target_lang} (post #{$translated_id}).",
-        [ 'source_id' => $source_post->ID, 'target_id' => $translated_id ],
-        $source_post->ID,
-        $target_lang
-    );
     return true;
 }
 
