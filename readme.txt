@@ -1,44 +1,54 @@
-=== AutoLingo — Translation for Polylang ===
+=== AutoLingo — Automatic Translation for Polylang ===
 Contributors: delsuza
 Tags: polylang, translation, multilingual, automatic-translation, woocommerce
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.1.23
+Stable tag: 1.1.24
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Automatic translation via DeepL, OpenAI or Google Translate, natively integrated with Polylang. Supports page builders, SEO plugins and WooCommerce.
+Automatic translation for Polylang — auto-translate posts & pages with DeepL, OpenAI or Google Translate. WooCommerce & SEO in Pro.
 
 == Description ==
 
 <a href="https://wphealthkit.com/directory/autolingo-polylang-translate"><img src="https://wphealthkit.com/api/badge/autolingo-polylang-translate" alt="Autolingo Polylang Translate security audit by WP HealthKit" /></a>
 
-AutoLingo connects your Polylang-powered site to DeepL, Google Translate, or OpenAI and automates the entire translation workflow — from a single post to your full content library.
+AutoLingo is the automatic translation plugin for Polylang. It auto-translates your posts and pages using DeepL, OpenAI (ChatGPT) or Google Translate — created and synced natively with Polylang. AutoLingo Pro adds WooCommerce products, SEO metadata (Yoast, RankMath), ACF fields and page builder support (Elementor, Beaver Builder, Bricks).
 
-= Features =
+Whether you need Polylang automatic translation for a single post or your entire content library, AutoLingo does it on publish, in bulk, or via WP-CLI, with AI translation quality from DeepL, OpenAI or Google.
+
+= Features (Free) =
 
 * Translate Gutenberg content (title, blocks, excerpt) on publish or manually
 * Manual translate button in the post editor and post list
 * Bulk translation via WP-CLI (`translate-missing`, `translate-all`)
+* Nav menu translation via Polylang
 * DeepL Free and Pro plan auto-detection (key suffix `:fx`)
 * Credit balance check before each translation
 * Admin alert + dashboard widget when credit runs low
 * Translated category and tag sync via Polylang
 * Post meta copy on creation (theme settings, page templates, layout options)
+* Shortcode-based builders (Divi, WPBakery, Flatsome) — shortcodes preserved verbatim
+
+= Features (Pro) =
+
+[AutoLingo Pro](https://auto-lingo.com) adds:
+
 * Page builder support: Elementor, Beaver Builder, Bricks Builder
 * SEO meta translation: Yoast SEO, RankMath, SEOPress, The SEO Framework
 * ACF field translation: text, textarea, wysiwyg, link, repeater, flexible content
 * WooCommerce: custom product attributes and purchase note
 
-= Page builder support =
+= Page builder support (Pro) =
 
 * **Elementor** — `_elementor_data` (JSON), all common widget types
 * **Beaver Builder** — `_fl_builder_data` (serialized PHP), global nodes skipped
 * **Bricks Builder** — `_bricks_page_content_2` (JSON), nested items (accordion, tabs)
-* **Divi / WPBakery / Flatsome** — shortcodes preserved verbatim
 
-= SEO plugin support =
+Shortcode-based builders (Divi, WPBakery, Flatsome) are supported on the free plan — their shortcodes are preserved verbatim during translation.
+
+= SEO plugin support (Pro) =
 
 * Yoast SEO — title, meta description, focus keyword
 * RankMath — title, description, focus keyword
@@ -46,11 +56,11 @@ AutoLingo connects your Polylang-powered site to DeepL, Google Translate, or Ope
 * The SEO Framework — title, description
 * SEO template variables (`%%title%%`, `%sep%`, `%sitename%`…) are preserved automatically
 
-= ACF =
+= ACF (Pro) =
 
 Translates `text`, `textarea`, `wysiwyg`, and `link` (title only) fields, including `repeater` and `flexible_content` layouts.
 
-= WooCommerce =
+= WooCommerce (Pro) =
 
 Translates custom product attributes (name + pipe-separated values) and the purchase note. Price, stock, and SKU are never modified.
 
@@ -162,7 +172,16 @@ No. Shortcodes (`[contact-form-7 …]`, `[vc_row]`, Divi modules, etc.) are repl
 
 The plugin retries automatically up to 3 times with exponential back-off (2 s, 4 s, 8 s). If all retries fail the error is logged and the translation is skipped for that request.
 
+= Is this real automatic translation for Polylang? =
+
+Yes. AutoLingo adds full Polylang automatic translation: your source posts are translated into every Polylang language automatically on publish, in bulk, or via WP-CLI, using DeepL, OpenAI or Google Translate.
+
 == Changelog ==
+
+= 1.1.24 =
+* Rename plugin to "AutoLingo — Automatic Translation for Polylang" for clarity
+* Rewrite readme copy (title, description, FAQ) to target "Polylang automatic translation"
+* Split Features into Free / Pro sections — page builders, SEO, ACF and WooCommerce are clearly marked as Pro
 
 = 1.1.23 =
 * Fix HTML tags (<input>, <style>, <script>) being stripped from wp:html blocks when async (WP-Cron) translation runs without a logged-in user — WordPress KSES sanitization is now bypassed for translated post saves
