@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.1.27
+Stable tag: 1.1.28
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -147,7 +147,7 @@ This plugin optionally connects to one of three external translation APIs depend
 == Screenshots ==
 
 1. Settings page — choose your translation provider (DeepL, OpenAI, Google), API key, source and target languages, and which modules to enable.
-2. Post list — one-click translate action link next to each post, with a loading overlay while translation runs.
+2. Post list — one-click translate action link next to each source-language post.
 3. Dashboard widget — translation coverage per language, estimated time and money saved vs. a translation agency, and remaining API credit at a glance.
 
 == Frequently Asked Questions ==
@@ -177,6 +177,9 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, OpenAI or Google Translate.
 
 == Changelog ==
+
+= 1.1.28 =
+* Complete the WP.org asset set — plugin icon and banner were never inside the folder the release pipeline actually syncs to SVN, so the listing showed a placeholder icon and no banner on every release; also adds the 2 missing screenshots (settings page, post list)
 
 = 1.1.27 =
 * Add estimated time and money saved (vs. a translation agency) to the dashboard widget
