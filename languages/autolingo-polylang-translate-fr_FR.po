@@ -83,6 +83,24 @@ msgstr "Connexion DeepL OK — %1$s caractères restants sur %2$s."
 msgid "Unable to reach the DeepL API. Please check your API key."
 msgstr "Impossible de contacter l'API DeepL. Vérifiez votre clé API."
 
+msgid "Estimated Savings"
+msgstr "Économies estimées"
+
+msgid "Time saved"
+msgstr "Temps économisé"
+
+msgid "~%s h"
+msgstr "~%s h"
+
+msgid "vs. a translation agency"
+msgstr "vs une agence de traduction"
+
+msgid "~$%s"
+msgstr "~%s $"
+
+msgid "Based on %1$d translations, assuming ~%2$d words/post. Adjustable via filters."
+msgstr "Basé sur %1$d traductions, en supposant ~%2$d mots/article. Ajustable via des filtres."
+
 msgid "DeepL Credit"
 msgstr "Crédit DeepL"
 

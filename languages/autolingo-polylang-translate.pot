@@ -332,6 +332,30 @@ msgid "Unable to reach the DeepL API. Please check your API key."
 msgstr ""
 
 #: admin/settings.php:193
+#: admin/dashboard-widget.php:80
+msgid "Estimated Savings"
+msgstr ""
+
+#: admin/dashboard-widget.php:84
+msgid "Time saved"
+msgstr ""
+
+#: admin/dashboard-widget.php:87
+msgid "~%s h"
+msgstr ""
+
+#: admin/dashboard-widget.php:90
+msgid "vs. a translation agency"
+msgstr ""
+
+#: admin/dashboard-widget.php:93
+msgid "~$%s"
+msgstr ""
+
+#: admin/dashboard-widget.php:101
+msgid "Based on %1$d translations, assuming ~%2$d words/post. Adjustable via filters."
+msgstr ""
+
 msgid "DeepL Credit"
 msgstr ""
 

@@ -62,6 +62,49 @@ function autolingo_dashboard_widget_html(): void {
         echo '</p>';
     }
 
+    // ── ROI & economies ────────────────────────────────────
+    // Estimate only — no per-translation character count is logged, so this is
+    // derived from the number of successful translations × configurable
+    // assumptions (filterable so a site owner can correct them for their content).
+    $success_count = autolingo_log_get( [ 'level' => 'success', 'limit' => 1 ] )['total'] ?? 0;
+
+    if ( $success_count > 0 ) {
+        $words_per_post   = (int) apply_filters( 'autolingo_roi_words_per_post', 500 );
+        $minutes_per_post = (int) apply_filters( 'autolingo_roi_minutes_per_post', 15 );
+        $rate_per_word    = (float) apply_filters( 'autolingo_roi_rate_per_word', 0.10 );
+
+        $hours_saved = round( ( $success_count * $minutes_per_post ) / 60, 1 );
+        $money_saved = round( $success_count * $words_per_post * $rate_per_word );
+
+        echo '<p style="font-weight:600;font-size:12px;text-transform:uppercase;color:#1d2327;letter-spacing:.5px;margin:0 0 8px">';
+        echo esc_html__( 'Estimated Savings', 'autolingo-polylang-translate' );
+        echo '</p>';
+
+        echo '<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:6px">';
+        echo '<tr><td style="color:#666">⏱️ ' . esc_html__( 'Time saved', 'autolingo-polylang-translate' ) . '</td><td style="text-align:right;font-weight:600">'
+            . sprintf(
+                /* translators: %s: number of hours, formatted */
+                esc_html__( '~%s h', 'autolingo-polylang-translate' ),
+                number_format( $hours_saved, 1, ',', "\u{202F}" )
+            ) . '</td></tr>';
+        echo '<tr><td style="color:#666">💰 ' . esc_html__( 'vs. a translation agency', 'autolingo-polylang-translate' ) . '</td><td style="text-align:right;font-weight:600;color:#00a32a">'
+            . sprintf(
+                /* translators: %s: amount saved, formatted */
+                esc_html__( '~$%s', 'autolingo-polylang-translate' ),
+                number_format( $money_saved, 0, ',', "\u{202F}" )
+            ) . '</td></tr>';
+        echo '</table>';
+
+        echo '<p style="color:#888;font-size:11px;margin:0 0 16px">';
+        echo sprintf(
+            /* translators: 1: number of translations, 2: assumed words per post */
+            esc_html__( 'Based on %1$d translations, assuming ~%2$d words/post. Adjustable via filters.', 'autolingo-polylang-translate' ),
+            (int) $success_count,
+            (int) $words_per_post
+        );
+        echo '</p>';
+    }
+
     // ── Provider credit ───────────────────────────────────
     $provider = autolingo_get_provider();
     $settings_url = admin_url( 'options-general.php?page=autolingo-polylang-translate' );
