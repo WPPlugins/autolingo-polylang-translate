@@ -87,6 +87,32 @@ class AutoLingo_Polylang_Adapter implements AutoLingo_Multilingual_Adapter {
         return (int) ( function_exists( 'pll_get_term' ) ? ( pll_get_term( $term_id, $lang_slug ) ?: 0 ) : 0 );
     }
 
+    public function set_term_language( int $term_id, string $taxonomy, string $lang_slug ): void {
+        $pll_term = PLL()->model->term ?? null;
+        if ( ! $pll_term ) return;
+
+        $language = PLL()->model->get_language( $lang_slug );
+        if ( ! $language ) return;
+
+        $pll_term->set_language( $term_id, $language );
+    }
+
+    public function save_term_translations(
+        int    $source_term_id,
+        int    $translated_term_id,
+        string $taxonomy,
+        string $translated_lang_slug,
+        string $source_lang_slug
+    ): void {
+        $pll_term = PLL()->model->term ?? null;
+        if ( ! $pll_term ) return;
+
+        $group = $pll_term->get_translations( $source_term_id );
+        $group[ $translated_lang_slug ] = $translated_term_id;
+        $group[ $source_lang_slug ]     = $source_term_id;
+        $pll_term->save_translations( $translated_term_id, $group );
+    }
+
     public function get_home_url( string $lang_slug ): string {
         return function_exists( 'pll_home_url' ) ? (string) pll_home_url( $lang_slug ) : home_url();
     }

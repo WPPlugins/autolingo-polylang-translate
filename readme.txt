@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.1.29
+Stable tag: 1.1.30
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,7 +27,7 @@ Whether you need Polylang or WPML automatic translation for a single post or you
 * DeepL Free and Pro plan auto-detection (key suffix `:fx`)
 * Credit balance check before each translation
 * Admin alert + dashboard widget when credit runs low
-* Translated category and tag sync via Polylang
+* Category and tag translation — term names (and descriptions) are genuinely translated via your chosen provider, not just linked to an existing Polylang/WPML translation
 * Image alt text translation — when a translated media item exists, its alt text is translated too, not just copied
 * Post meta copy on creation (theme settings, page templates, layout options)
 * Shortcode-based builders (Divi, WPBakery, Flatsome) — shortcodes preserved verbatim
@@ -70,7 +70,7 @@ Translates custom product attributes (name + pipe-separated values) and the purc
 * Exponential back-off retry on HTTP 429 (rate limit): 2 s → 4 s → 8 s, up to 3 retries
 * Dual lock (static + transient) prevents duplicate translations on Gutenberg REST saves
 * Translation log viewer in the admin (DB-backed, 30-day retention)
-* Integration test suite — 39 tests covering all modules
+* Integration test suite — 41 tests covering all modules
 
 == External Services ==
 
@@ -178,6 +178,9 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, OpenAI or Google Translate.
 
 == Changelog ==
+
+= 1.1.30 =
+* Translate category and tag names when no translation exists yet — when a source term has no linked translation on Polylang/WPML, its name (and description) is now genuinely translated via your provider and created as a real linked term, instead of tagging the translated post with the untranslated source term
 
 = 1.1.29 =
 * Translate image alt text (`_wp_attachment_image_alt`) — when the media library item itself has a translated counterpart, its alt text is now genuinely translated instead of left in the source language

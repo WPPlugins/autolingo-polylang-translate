@@ -331,6 +331,8 @@ function autolingo_update_translation( WP_Post $source_post, int $translated_id,
  */
 function autolingo_sync_terms( int $source_id, int $target_id, string $lang_slug ): void {
     $ml = autolingo_multilingual();
+    $target_lang       = strtoupper( $lang_slug );
+    $source_lang_slug  = $ml ? $ml->get_post_language( $source_id ) : '';
 
     foreach ( get_post_taxonomies( $source_id ) as $taxonomy ) {
         // Ignorer les taxonomies internes des plugins multilingues
@@ -343,7 +345,11 @@ function autolingo_sync_terms( int $source_id, int $target_id, string $lang_slug
 
         $target_terms = [];
         foreach ( $source_terms as $term_id ) {
-            $translated = $ml ? $ml->get_translated_term( (int) $term_id, $lang_slug, $taxonomy ) : 0;
+            $term_id    = (int) $term_id;
+            $translated = $ml ? $ml->get_translated_term( $term_id, $lang_slug, $taxonomy ) : 0;
+            if ( ! $translated && $ml ) {
+                $translated = autolingo_translate_term( $term_id, $taxonomy, $target_lang, $lang_slug, $source_lang_slug );
+            }
             $target_terms[] = $translated ?: $term_id;
         }
 

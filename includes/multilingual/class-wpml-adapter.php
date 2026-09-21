@@ -112,6 +112,34 @@ class AutoLingo_WPML_Adapter implements AutoLingo_Multilingual_Adapter {
         return (int) apply_filters( 'wpml_object_id', $term_id, $taxonomy, false, $lang_slug );
     }
 
+    public function set_term_language( int $term_id, string $taxonomy, string $lang_slug ): void {
+        do_action( 'wpml_set_element_language_details', [
+            'element_id'           => $term_id,
+            'element_type'         => 'tax_' . $taxonomy,
+            'trid'                 => false,
+            'language_code'        => $lang_slug,
+            'source_language_code' => null,
+        ] );
+    }
+
+    public function save_term_translations(
+        int    $source_term_id,
+        int    $translated_term_id,
+        string $taxonomy,
+        string $translated_lang_slug,
+        string $source_lang_slug
+    ): void {
+        $source_trid = apply_filters( 'wpml_element_trid', null, $source_term_id, 'tax_' . $taxonomy );
+
+        do_action( 'wpml_set_element_language_details', [
+            'element_id'           => $translated_term_id,
+            'element_type'         => 'tax_' . $taxonomy,
+            'trid'                 => $source_trid ?: false,
+            'language_code'        => $translated_lang_slug,
+            'source_language_code' => $source_lang_slug,
+        ] );
+    }
+
     public function get_home_url( string $lang_slug ): string {
         // wpml_home_url always returns the current language URL.
         // Use wpml_permalink to get a language-specific URL.

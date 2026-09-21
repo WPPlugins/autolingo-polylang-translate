@@ -63,6 +63,21 @@ interface AutoLingo_Multilingual_Adapter {
     /** Translated term ID in $lang_slug, or 0 if not found. */
     public function get_translated_term( int $term_id, string $lang_slug, string $taxonomy = 'category' ): int;
 
+    /** Assign a language to a taxonomy term. */
+    public function set_term_language( int $term_id, string $taxonomy, string $lang_slug ): void;
+
+    /**
+     * Link $source_term_id and $translated_term_id as translations of each other.
+     * $source_lang_slug is the language slug of $source_term_id.
+     */
+    public function save_term_translations(
+        int    $source_term_id,
+        int    $translated_term_id,
+        string $taxonomy,
+        string $translated_lang_slug,
+        string $source_lang_slug
+    ): void;
+
     /** Home URL for $lang_slug (e.g. 'https://example.com/en/'). */
     public function get_home_url( string $lang_slug ): string;
 
