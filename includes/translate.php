@@ -183,6 +183,7 @@ function autolingo_create_translation( WP_Post $source_post, string $target_lang
 
     // ── Synchroniser termes + extensions ──────────────────
     autolingo_sync_terms( $source_post->ID, $new_post_id, $lang_slug );
+    autolingo_translate_image_alt_text( $source_post, $new_post_id, $target_lang, $lang_slug );
 
     if ( function_exists( 'autolingo_run_premium_modules' ) ) {
         autolingo_run_premium_modules( $source_post, $new_post_id, $target_lang, $lang_slug );
@@ -231,6 +232,7 @@ function autolingo_update_translation( WP_Post $source_post, int $translated_id,
                     $target_lang
                 );
                 autolingo_sync_terms( $source_post->ID, $translated_id, $lang_slug );
+                autolingo_translate_image_alt_text( $source_post, $translated_id, $target_lang, $lang_slug );
                 if ( function_exists( 'autolingo_run_premium_modules' ) ) {
                     autolingo_run_premium_modules( $source_post, $translated_id, $target_lang, $lang_slug );
                 }
@@ -310,6 +312,7 @@ function autolingo_update_translation( WP_Post $source_post, int $translated_id,
     // Elementor / ACF / WooCommerce data can change independently of the
     // basic content fields and must not be skipped.
     autolingo_sync_terms( $source_post->ID, $translated_id, $lang_slug );
+    autolingo_translate_image_alt_text( $source_post, $translated_id, $target_lang, $lang_slug );
 
     if ( function_exists( 'autolingo_run_premium_modules' ) ) {
         autolingo_run_premium_modules( $source_post, $translated_id, $target_lang, $lang_slug );
