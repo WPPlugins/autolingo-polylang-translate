@@ -18,7 +18,8 @@ function autolingo_on_save_post( int $post_id, WP_Post $post, bool $update ): vo
     if ( wp_is_post_autosave( $post_id ) )                         return;
     if ( ! in_array( $post->post_type, autolingo_post_types(), true ) )  return;
     if ( $post->post_status !== 'publish' )                        return;
-    if ( pll_get_post_language( $post_id ) !== autolingo_source_lang() ) return;
+    $ml = autolingo_multilingual();
+    if ( ! $ml || $ml->get_post_language( $post_id ) !== autolingo_source_lang() ) return;
 
     // Elementor saves _elementor_data in a separate request after save_post.
     // Let elementor/document/after_save handle those posts instead.
@@ -58,7 +59,8 @@ function autolingo_on_elementor_document_save( $document, array $data ): void {
     if ( wp_is_post_revision( $post_id ) )                         return;
     if ( ! in_array( $post->post_type, autolingo_post_types(), true ) )  return;
     if ( $post->post_status !== 'publish' )                        return;
-    if ( pll_get_post_language( $post_id ) !== autolingo_source_lang() ) return;
+    $ml = autolingo_multilingual();
+    if ( ! $ml || $ml->get_post_language( $post_id ) !== autolingo_source_lang() ) return;
 
     static $in_progress = [];
     if ( isset( $in_progress[ $post_id ] ) ) return;
@@ -111,7 +113,8 @@ add_filter( 'page_row_actions', 'autolingo_add_row_action', 10, 2 );
 
 function autolingo_add_row_action( array $actions, WP_Post $post ): array {
     if ( ! in_array( $post->post_type, autolingo_post_types(), true ) ) return $actions;
-    if ( pll_get_post_language( $post->ID ) !== autolingo_source_lang() ) return $actions;
+    $ml = autolingo_multilingual();
+    if ( ! $ml || $ml->get_post_language( $post->ID ) !== autolingo_source_lang() ) return $actions;
 
     $langs = implode( '/', array_map( 'strtoupper', autolingo_target_langs() ) );
     $url   = wp_nonce_url(
@@ -140,8 +143,9 @@ function autolingo_handle_manual_translate(): void {
     check_admin_referer( 'autolingo_translate_' . $post_id );
     if ( ! current_user_can( 'edit_post', $post_id ) ) wp_die( esc_html__( 'Permission denied.', 'autolingo-polylang-translate' ) );
 
-    if ( ! function_exists( 'pll_get_post_language' ) ) {
-        wp_die( esc_html__( 'Polylang not loaded.', 'autolingo-polylang-translate' ) );
+    $ml = autolingo_multilingual();
+    if ( ! $ml ) {
+        wp_die( esc_html__( 'No multilingual plugin detected (Polylang or WPML required).', 'autolingo-polylang-translate' ) );
     }
 
     $result = autolingo_translate_post( $post_id );
@@ -152,7 +156,7 @@ function autolingo_handle_manual_translate(): void {
         $redirect = admin_url( 'edit.php' );
     }
 
-    $lang = pll_get_post_language( $post_id );
+    $lang = $ml->get_post_language( $post_id );
     if ( $lang ) {
         $redirect = add_query_arg( 'lang', $lang, $redirect );
     }
@@ -182,13 +186,15 @@ function autolingo_on_seo_meta_updated( $meta_id, $post_id, $meta_key ): void {
     if ( ! autolingo_auto_translate_enabled() ) return;
     if ( ! autolingo_module_enabled( 'seo' ) ) return;
     if ( ! autolingo_is_premium() ) return;
-    if ( ! function_exists( 'pll_get_post_language' ) ) return;
+
+    $ml = autolingo_multilingual();
+    if ( ! $ml ) return;
 
     $post = get_post( $post_id );
     if ( ! $post || $post->post_status !== 'publish' ) return;
-    if ( pll_get_post_language( $post_id ) !== autolingo_source_lang() ) return;
+    if ( $ml->get_post_language( $post_id ) !== autolingo_source_lang() ) return;
 
-    $translations = pll_get_post_translations( $post_id );
+    $translations = $ml->get_post_translations( $post_id );
     foreach ( autolingo_target_langs() as $lang_slug ) {
         if ( empty( $translations[ $lang_slug ] ) ) continue;
         if ( function_exists( 'autolingo_seo_translate' ) ) {

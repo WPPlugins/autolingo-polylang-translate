@@ -110,6 +110,8 @@ function autolingo_copy_meta_excluded_keys(): array {
 function autolingo_copy_meta_excluded_prefixes(): array {
     return apply_filters( 'autolingo_copy_meta_excluded_prefixes', [
         '_pll_',          // Polylang internal
+        '_icl_',          // WPML internal
+        '_wpml_',         // WPML internal
         '_oembed_',       // oEmbed cache
     ] );
 }

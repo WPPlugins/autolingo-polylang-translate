@@ -55,8 +55,8 @@ function autolingo_translate_post( int $post_id ): bool {
     $post = get_post( $post_id );
     if ( ! $post ) return false;
 
-    if ( ! function_exists( 'pll_get_post_translations' ) ) {
-        autolingo_log_error( 'Traduction annulée : Polylang non chargé.', [], $post_id );
+    if ( ! autolingo_multilingual() ) {
+        autolingo_log_error( 'Traduction annulée : aucun plugin multilingue détecté (Polylang ou WPML requis).', [], $post_id );
         return false;
     }
 
@@ -67,9 +67,11 @@ function autolingo_translate_post( int $post_id ): bool {
 
     $success = true;
 
+    $ml = autolingo_multilingual();
+
     foreach ( autolingo_target_langs() as $lang_slug ) {
         $target_lang  = strtoupper( $lang_slug );
-        $translations = pll_get_post_translations( $post_id );
+        $translations = $ml->get_post_translations( $post_id );
 
         if ( ! empty( $translations[ $lang_slug ] ) ) {
             // Traduction existante → mise à jour
@@ -137,12 +139,12 @@ function autolingo_create_translation( WP_Post $source_post, string $target_lang
     // qui déclencherait le hook save_post de Polylang et réinitialiserait la langue.
     remove_action( 'save_post', 'autolingo_on_save_post', 20 );
 
-    $new_post_id = autolingo_polylang_create_post( $source_post, $lang_slug, $translated_data );
+    $ml = autolingo_multilingual();
+
+    $new_post_id = $ml->create_translated_post( $source_post, $lang_slug, $translated_data );
 
     if ( ! $new_post_id ) {
-        // Fallback : création manuelle si le modèle Polylang n'est pas accessible.
-        // On crée directement avec le contenu traduit et le statut final pour éviter
-        // tout wp_update_post() supplémentaire qui écraserait la langue assignée.
+        // Fallback générique : création manuelle + liaison via l'adaptateur.
         $new_post_id = autolingo_save_post( [
             'post_title'   => $translated_title,
             'post_content' => $translated_content,
@@ -163,12 +165,13 @@ function autolingo_create_translation( WP_Post $source_post, string $target_lang
             return false;
         }
 
-        // Fallback : assigner langue + lier manuellement
-        pll_set_post_language( $new_post_id, $lang_slug );
-        $translations = pll_get_post_translations( $source_post->ID );
-        $translations[ $lang_slug ]                                 = $new_post_id;
-        $translations[ pll_get_post_language( $source_post->ID ) ] = $source_post->ID;
-        pll_save_post_translations( $translations );
+        $ml->set_post_language( $new_post_id, $lang_slug );
+        $ml->save_post_translations(
+            $source_post->ID,
+            $new_post_id,
+            $lang_slug,
+            $ml->get_post_language( $source_post->ID )
+        );
     }
 
     add_action( 'save_post', 'autolingo_on_save_post', 20, 3 );
@@ -186,6 +189,9 @@ function autolingo_create_translation( WP_Post $source_post, string $target_lang
     }
 
     update_post_meta( $source_post->ID, '_autolingo_hash_' . $lang_slug, autolingo_source_content_hash( $source_post ) );
+    update_post_meta( $source_post->ID, '_autolingo_target_hash_' . $lang_slug,
+        md5( $translated_title . "\x00" . $translated_content . "\x00" . $translated_excerpt )
+    );
 
     autolingo_log_success(
         "Post traduit vers {$target_lang} (nouveau post #{$new_post_id}).",
@@ -194,58 +200,6 @@ function autolingo_create_translation( WP_Post $source_post, string $target_lang
         $target_lang
     );
     return $new_post_id;
-}
-
-/**
- * Crée un post via l'API interne de Polylang 3.8.4.
- * Utilise les méthodes : insert, set_language, save_translations
- *
- * @param  WP_Post $source_post    Post source.
- * @param  string  $lang_slug      Code langue minuscules (ex: 'en').
- * @param  array   $translated_data Contenu traduit ['title', 'content', 'excerpt'].
- * @return int|false               ID du nouveau post ou false.
- */
-function autolingo_polylang_create_post( WP_Post $source_post, string $lang_slug, array $translated_data = [] ) {
-
-    $pll_model_post = PLL()->model->post ?? null;
-    if ( ! $pll_model_post ) return false;
-
-    // Créer le post directement avec le contenu traduit et le bon statut.
-    // Ne pas créer en draft puis mettre à jour : le second wp_update_post()
-    // déclencherait le hook save_post de Polylang qui réinitialiserait la langue.
-    $postarr = [
-        'post_author'    => $source_post->post_author,
-        'post_status'    => 'publish',
-        'post_type'      => $source_post->post_type,
-        'post_title'     => $translated_data['title']   ?? $source_post->post_title,
-        'post_content'   => $translated_data['content'] ?? $source_post->post_content,
-        'post_excerpt'   => $translated_data['excerpt'] ?? $source_post->post_excerpt,
-        'comment_status' => $source_post->comment_status,
-        'ping_status'    => $source_post->ping_status,
-        'menu_order'     => $source_post->menu_order,
-        'post_parent'    => $source_post->post_parent,
-    ];
-
-    $new_id = autolingo_save_post( $postarr );
-    if ( is_wp_error( $new_id ) || ! $new_id ) return false;
-
-    // Récupérer l'objet langue Polylang
-    $language = PLL()->model->get_language( $lang_slug );
-    if ( ! $language ) {
-        wp_delete_post( $new_id, true );
-        return false;
-    }
-
-    // Assigner la langue via la méthode native set_language
-    $pll_model_post->set_language( $new_id, $language );
-
-    // Lier source et traduction via save_translations
-    $translations = $pll_model_post->get_translations( $source_post->ID );
-    $translations[ $lang_slug ]                                 = $new_id;
-    $translations[ pll_get_post_language( $source_post->ID ) ] = $source_post->ID;
-    $pll_model_post->save_translations( $new_id, $translations );
-
-    return $new_id;
 }
 
 /**
@@ -259,11 +213,31 @@ function autolingo_polylang_create_post( WP_Post $source_post, string $lang_slug
  */
 function autolingo_update_translation( WP_Post $source_post, int $translated_id, string $target_lang, string $lang_slug ): bool {
 
-    $hash_key     = '_autolingo_hash_' . $lang_slug;
-    $current_hash = autolingo_source_content_hash( $source_post );
+    $hash_key        = '_autolingo_hash_' . $lang_slug;
+    $target_hash_key = '_autolingo_target_hash_' . $lang_slug;
+    $current_hash    = autolingo_source_content_hash( $source_post );
     $content_changed = get_post_meta( $source_post->ID, $hash_key, true ) !== $current_hash;
 
     if ( $content_changed ) {
+        // Skip overwriting content that was manually edited on the translated post.
+        $stored_target_hash = get_post_meta( $source_post->ID, $target_hash_key, true );
+        if ( $stored_target_hash ) {
+            $translated_post = get_post( $translated_id );
+            if ( $translated_post && autolingo_source_content_hash( $translated_post ) !== $stored_target_hash ) {
+                autolingo_log_info(
+                    "Traduction {$target_lang} ignorée : le post traduit (#{$translated_id}) a été modifié manuellement depuis la dernière traduction automatique.",
+                    [ 'source_id' => $source_post->ID, 'target_id' => $translated_id ],
+                    $source_post->ID,
+                    $target_lang
+                );
+                autolingo_sync_terms( $source_post->ID, $translated_id, $lang_slug );
+                if ( function_exists( 'autolingo_run_premium_modules' ) ) {
+                    autolingo_run_premium_modules( $source_post, $translated_id, $target_lang, $lang_slug );
+                }
+                return true;
+            }
+        }
+
         $batch_input = [ $source_post->post_title, $source_post->post_content ];
         if ( $source_post->post_excerpt ) {
             $batch_input[] = $source_post->post_excerpt;
@@ -290,10 +264,11 @@ function autolingo_update_translation( WP_Post $source_post, int $translated_id,
 
         remove_action( 'save_post', 'autolingo_on_save_post', 20 );
 
+        $ml = autolingo_multilingual();
+
         // S'assurer que la langue est correctement assignée (correction si manquante)
-        $current_lang = pll_get_post_language( $translated_id );
-        if ( $current_lang !== $lang_slug ) {
-            pll_set_post_language( $translated_id, $lang_slug );
+        if ( $ml && $ml->get_post_language( $translated_id ) !== $lang_slug ) {
+            $ml->set_post_language( $translated_id, $lang_slug );
         }
 
         autolingo_save_post( [
@@ -304,12 +279,17 @@ function autolingo_update_translation( WP_Post $source_post, int $translated_id,
             'post_status'  => 'publish',
         ], true );
 
-        // Réaffirmer la langue après wp_update_post (Polylang peut la réinitialiser)
-        pll_set_post_language( $translated_id, $lang_slug );
+        // Réaffirmer la langue après la sauvegarde (certains plugins peuvent la réinitialiser)
+        if ( $ml ) {
+            $ml->set_post_language( $translated_id, $lang_slug );
+        }
 
         add_action( 'save_post', 'autolingo_on_save_post', 20, 3 );
 
         update_post_meta( $source_post->ID, $hash_key, $current_hash );
+        update_post_meta( $source_post->ID, $target_hash_key,
+            md5( $translated_title . "\x00" . $translated_content . "\x00" . $translated_excerpt )
+        );
 
         autolingo_log_success(
             "Traduction mise à jour vers {$target_lang} (post #{$translated_id}).",
@@ -347,8 +327,10 @@ function autolingo_update_translation( WP_Post $source_post, int $translated_id,
  * @param  string $lang_slug  Code langue cible minuscules.
  */
 function autolingo_sync_terms( int $source_id, int $target_id, string $lang_slug ): void {
+    $ml = autolingo_multilingual();
+
     foreach ( get_post_taxonomies( $source_id ) as $taxonomy ) {
-        // Ignorer les taxonomies internes de Polylang
+        // Ignorer les taxonomies internes des plugins multilingues
         if ( str_starts_with( $taxonomy, 'language' ) || str_starts_with( $taxonomy, 'post_translations' ) ) {
             continue;
         }
@@ -358,8 +340,8 @@ function autolingo_sync_terms( int $source_id, int $target_id, string $lang_slug
 
         $target_terms = [];
         foreach ( $source_terms as $term_id ) {
-            $translated_term = pll_get_term( $term_id, $lang_slug );
-            $target_terms[]  = $translated_term ?: $term_id;
+            $translated = $ml ? $ml->get_translated_term( (int) $term_id, $lang_slug, $taxonomy ) : 0;
+            $target_terms[] = $translated ?: $term_id;
         }
 
         wp_set_post_terms( $target_id, $target_terms, $taxonomy );

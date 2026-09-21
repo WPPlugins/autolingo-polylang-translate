@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name:       AutoLingo — Automatic Translation for Polylang
+ * Plugin Name:       AutoLingo — Translation for Polylang & WPML
  * Plugin URI:        https://auto-lingo.com
- * Description:       Automatic translation via DeepL, OpenAI or Google Translate, natively integrated with Polylang. Supports Elementor, Beaver Builder, Bricks, WooCommerce, ACF, and all major SEO plugins.
- * Version:           1.1.24
+ * Description:       Automatic translation via DeepL, OpenAI or Google Translate. Works with Polylang and WPML. Supports Elementor, Beaver Builder, Bricks, WooCommerce, ACF, and all major SEO plugins.
+ * Version:           1.1.25
  * Requires at least: 6.0
  * Requires PHP:      8.0
  * Author:            AutoLingo
@@ -18,15 +18,19 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // ── Constantes ────────────────────────────────────────────
-define( 'AUTOLINGO_VERSION',     '1.1.24' );
+define( 'AUTOLINGO_VERSION',     '1.1.25' );
 define( 'AUTOLINGO_PLUGIN_DIR',  plugin_dir_path( __FILE__ ) );
 define( 'AUTOLINGO_PLUGIN_URL',  plugin_dir_url( __FILE__ ) );
 define( 'AUTOLINGO_PLUGIN_FILE', __FILE__ );
 
 // ── Chargement des modules ─────────────────────────────────
-// Ordre important : logger → licensing → helpers → providers → reste
+// Ordre important : logger → licensing → multilingual → helpers → providers → reste
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/logger.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/licensing.php';
+require_once AUTOLINGO_PLUGIN_DIR . 'includes/multilingual/interface-adapter.php';
+require_once AUTOLINGO_PLUGIN_DIR . 'includes/multilingual/class-polylang-adapter.php';
+require_once AUTOLINGO_PLUGIN_DIR . 'includes/multilingual/class-wpml-adapter.php';
+require_once AUTOLINGO_PLUGIN_DIR . 'includes/multilingual/functions.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/helpers.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/providers/interface-provider.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/providers/class-deepl.php';

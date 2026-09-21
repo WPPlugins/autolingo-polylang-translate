@@ -6,8 +6,8 @@
  * "{Original Name} [LANG]" per configured target language.
  *
  * Menu items are handled as follows:
- *  - post_type items → re-pointed to the translated post via pll_get_post()
- *  - taxonomy items  → re-pointed to the translated term via pll_get_term()
+ *  - post_type items → re-pointed to the translated post via the multilingual adapter
+ *  - taxonomy items  → re-pointed to the translated term via the multilingual adapter
  *  - custom URL items → URL kept as-is
  *  - Labels          → translated via the active provider
  * Parent/child relationships and menu_order are preserved exactly.
@@ -102,13 +102,15 @@ function autolingo_translate_menu_to_lang( WP_Term $source_menu, string $lang_sl
         // ── Re-point internal links to the translated object ─────────────────
         $object_id = (int) $item->object_id;
 
-        if ( $item->type === 'post_type' && $object_id && function_exists( 'pll_get_post' ) ) {
-            $translated_id = pll_get_post( $object_id, $lang_slug );
+        $ml = autolingo_multilingual();
+        if ( $ml && $item->type === 'post_type' && $object_id ) {
+            $translated_id = $ml->get_translated_post( $object_id, $lang_slug );
             if ( $translated_id ) {
                 $object_id = $translated_id;
             }
-        } elseif ( $item->type === 'taxonomy' && $object_id && function_exists( 'pll_get_term' ) ) {
-            $translated_id = pll_get_term( $object_id, $lang_slug );
+        } elseif ( $ml && $item->type === 'taxonomy' && $object_id ) {
+            $taxonomy      = is_string( $item->object ) ? $item->object : 'category';
+            $translated_id = $ml->get_translated_term( $object_id, $lang_slug, $taxonomy );
             if ( $translated_id ) {
                 $object_id = $translated_id;
             }

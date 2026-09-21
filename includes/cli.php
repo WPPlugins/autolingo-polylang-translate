@@ -15,13 +15,7 @@ if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) return;
 // ── Helpers CLI ────────────────────────────────────────────
 
 function autolingo_cli_get_all_source_posts(): array {
-    return get_posts( [
-        'post_type'      => autolingo_post_types(),
-        'post_status'    => 'publish',
-        'lang'           => autolingo_source_lang(),
-        'posts_per_page' => -1,
-        'fields'         => 'ids',
-    ] );
+    return autolingo_get_all_source_posts(); // delegates to the multilingual adapter
 }
 
 // ── wp pdat audit ──────────────────────────────────────────

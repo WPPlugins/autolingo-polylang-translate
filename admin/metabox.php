@@ -21,7 +21,8 @@ function autolingo_add_meta_box(): void {
 }
 
 function autolingo_meta_box_html( WP_Post $post ): void {
-	$lang = pll_get_post_language( $post->ID );
+	$ml   = autolingo_multilingual();
+	$lang = $ml ? $ml->get_post_language( $post->ID ) : '';
 
 	if ( $lang !== autolingo_source_lang() ) {
 		echo '<p style="color:#666;font-size:12px;">'

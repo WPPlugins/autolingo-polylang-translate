@@ -121,10 +121,11 @@ function autolingo_provider_slug(): string {
  * Ex: [ 'en' => true, 'de' => false ]
  */
 function autolingo_translation_status( int $post_id ): array {
-    $translations = pll_get_post_translations( $post_id );
-    $status       = [];
+    $ml     = autolingo_multilingual();
+    $group  = $ml ? $ml->get_post_translations( $post_id ) : [];
+    $status = [];
     foreach ( autolingo_target_langs() as $lang ) {
-        $status[ $lang ] = ! empty( $translations[ $lang ] );
+        $status[ $lang ] = ! empty( $group[ $lang ] );
     }
     return $status;
 }
@@ -133,13 +134,9 @@ function autolingo_translation_status( int $post_id ): array {
  * Retourne tous les posts publiés dans la langue source.
  */
 function autolingo_get_all_source_posts(): array {
-    return get_posts( [
-        'post_type'      => autolingo_post_types(),
-        'post_status'    => 'publish',
-        'lang'           => autolingo_source_lang(),
-        'posts_per_page' => -1,
-        'fields'         => 'ids',
-    ] );
+    $ml = autolingo_multilingual();
+    if ( ! $ml ) return [];
+    return $ml->get_source_post_ids( autolingo_post_types(), autolingo_source_lang() );
 }
 
 /**
@@ -151,15 +148,16 @@ function autolingo_get_translation_progress(): array {
     $cached = get_transient( 'autolingo_translation_progress' );
     if ( $cached !== false ) return $cached;
 
+    $ml           = autolingo_multilingual();
     $source_posts = autolingo_get_all_source_posts();
     $total        = count( $source_posts );
     $langs        = autolingo_target_langs();
     $done         = array_fill_keys( $langs, 0 );
 
     foreach ( $source_posts as $post_id ) {
-        $translations = pll_get_post_translations( $post_id );
+        $group = $ml ? $ml->get_post_translations( $post_id ) : [];
         foreach ( $langs as $lang ) {
-            if ( ! empty( $translations[ $lang ] ) ) {
+            if ( ! empty( $group[ $lang ] ) ) {
                 $done[ $lang ]++;
             }
         }
@@ -198,11 +196,11 @@ function autolingo_invalidate_progress_cache(): void {
  * @return string                   Content with updated internal links.
  */
 function autolingo_replace_internal_urls( string $content, string $target_lang_slug ): string {
-    if ( ! function_exists( 'pll_home_url' ) || ! function_exists( 'pll_get_post' ) ) return $content;
-    if ( empty( $content ) ) return $content;
+    $ml = autolingo_multilingual();
+    if ( ! $ml || empty( $content ) ) return $content;
 
-    $source_home  = untrailingslashit( pll_home_url( autolingo_source_lang() ) );
-    $target_home  = untrailingslashit( pll_home_url( $target_lang_slug ) );
+    $source_home = untrailingslashit( $ml->get_home_url( autolingo_source_lang() ) );
+    $target_home = untrailingslashit( $ml->get_home_url( $target_lang_slug ) );
 
     if ( empty( $source_home ) ) return $content;
 
@@ -215,7 +213,7 @@ function autolingo_replace_internal_urls( string $content, string $target_lang_s
             $post_id = url_to_postid( $url );
 
             if ( $post_id ) {
-                $translated_id = pll_get_post( $post_id, $target_lang_slug );
+                $translated_id = $ml->get_translated_post( $post_id, $target_lang_slug );
                 if ( $translated_id ) {
                     return get_permalink( $translated_id ) ?: $url;
                 }
