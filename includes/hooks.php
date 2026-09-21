@@ -242,3 +242,46 @@ function autolingo_admin_notices(): void {
             . '</p></div>';
     }
 }
+
+// ── 7. Invite à laisser un avis WP.org ─────────────────────
+// Le classement de recherche WP.org dépend davantage de la note moyenne que
+// du nombre d'installations actives — voir roadmap "Collecte active d'avis".
+
+add_action( 'admin_notices', 'autolingo_review_notice' );
+
+function autolingo_review_notice(): void {
+    if ( ! current_user_can( 'manage_options' ) )      return;
+    if ( get_option( 'autolingo_review_notice_dismissed' ) ) return;
+
+    $threshold = (int) apply_filters( 'autolingo_review_notice_threshold', 20 );
+    $count     = autolingo_log_get( [ 'level' => 'success', 'limit' => 1 ] )['total'] ?? 0;
+    if ( $count < $threshold ) return;
+
+    $dismiss_url = wp_nonce_url(
+        admin_url( 'admin-post.php?action=autolingo_dismiss_review_notice' ),
+        'autolingo_dismiss_review_notice'
+    );
+
+    echo '<div class="notice notice-info is-dismissible"><p>🌍 <strong>AutoLingo</strong> — ';
+    printf(
+        /* translators: %d: number of posts translated so far */
+        esc_html__( 'AutoLingo has translated %d posts for you so far. If it&#8217;s saving you time, a quick review helps other WordPress users find it.', 'autolingo-polylang-translate' ),
+        (int) $count
+    );
+    echo ' <a href="https://wordpress.org/support/plugin/autolingo-polylang-translate/reviews/#new-post" target="_blank" rel="noopener noreferrer" class="button button-primary" style="margin-left:8px;vertical-align:baseline;">'
+        . esc_html__( 'Leave a review', 'autolingo-polylang-translate' ) . '</a>'
+        . ' <a href="' . esc_url( $dismiss_url ) . '" style="margin-left:8px;">'
+        . esc_html__( 'No thanks', 'autolingo-polylang-translate' ) . '</a>';
+    echo '</p></div>';
+}
+
+add_action( 'admin_post_autolingo_dismiss_review_notice', 'autolingo_dismiss_review_notice' );
+
+function autolingo_dismiss_review_notice(): void {
+    check_admin_referer( 'autolingo_dismiss_review_notice' );
+    if ( current_user_can( 'manage_options' ) ) {
+        update_option( 'autolingo_review_notice_dismissed', 1 );
+    }
+    wp_safe_redirect( wp_get_referer() ?: admin_url() );
+    exit;
+}

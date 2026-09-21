@@ -1,10 +1,10 @@
 === AutoLingo — Automatic Translation for Polylang & WPML ===
 Contributors: delsuza
-Tags: polylang, wpml, translation, multilingual, automatic-translation, woocommerce
+Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.1.25
+Stable tag: 1.1.26
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -177,6 +177,11 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, OpenAI or Google Translate.
 
 == Changelog ==
+
+= 1.1.26 =
+* Fix "Tested up to" being stuck at 7.0 — WP.org excludes plugins with an outdated value from search results entirely
+* Fix plugin name mismatch between readme.txt and the plugin file header
+* Add a dismissible admin notice inviting a WP.org review after 20 successful translations
 
 = 1.1.25 =
 * Add WPML support via adapter pattern — all translation logic now works with Polylang or WPML, whichever is active

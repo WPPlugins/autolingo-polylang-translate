@@ -437,6 +437,18 @@ msgstr ""
 msgid "Activate your licence"
 msgstr ""
 
+#: includes/hooks.php:268
+msgid "AutoLingo has translated %d posts for you so far. If it&#8217;s saving you time, a quick review helps other WordPress users find it."
+msgstr ""
+
+#: includes/hooks.php:272
+msgid "Leave a review"
+msgstr ""
+
+#: includes/hooks.php:274
+msgid "No thanks"
+msgstr ""
+
 #: includes/logger.php:213
 #: includes/logger.php:263
 msgid "Translation Log — AutoLingo"

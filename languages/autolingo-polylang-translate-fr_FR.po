@@ -212,6 +212,15 @@ msgstr "Polylang non chargé."
 msgid "Activate your licence"
 msgstr "Activer votre licence"
 
+msgid "AutoLingo has translated %d posts for you so far. If it&#8217;s saving you time, a quick review helps other WordPress users find it."
+msgstr "AutoLingo a traduit %d articles pour vous jusqu’ici. Si ça vous fait gagner du temps, un avis rapide aide d’autres utilisateurs WordPress à trouver le plugin."
+
+msgid "Leave a review"
+msgstr "Laisser un avis"
+
+msgid "No thanks"
+msgstr "Non merci"
+
 msgid "Arabic"
 msgstr "Arabe"
 
