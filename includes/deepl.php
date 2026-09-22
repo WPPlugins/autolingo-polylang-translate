@@ -3,7 +3,9 @@
  * Provider factory + universal translation wrapper.
  *
  * All code calls autolingo_call_deepl() (kept for backward compat) or autolingo_get_provider() directly.
- * Shortcode and SEO-variable protection is applied here for every provider.
+ * Shortcode and SEO-variable protection is applied here for every provider,
+ * followed by a Translation Memory lookup (see includes/tm.php) so repeated
+ * segments are never sent to the API twice for the same language pair.
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -16,8 +18,9 @@ function autolingo_get_provider(): AUTOLINGO_Provider {
     if ( $instance !== null ) return $instance;
 
     switch ( autolingo_provider_slug() ) {
-        case 'openai':  $instance = new AUTOLINGO_Provider_OpenAI();  break;
-        case 'google':  $instance = new AUTOLINGO_Provider_Google();  break;
+        case 'openai':   $instance = new AUTOLINGO_Provider_OpenAI();   break;
+        case 'google':   $instance = new AUTOLINGO_Provider_Google();   break;
+        case 'deepseek': $instance = new AUTOLINGO_Provider_DeepSeek(); break;
         default:        $instance = new AUTOLINGO_Provider_DeepL();   break;
     }
 
@@ -54,7 +57,19 @@ function autolingo_call_deepl( string $text, string $target_lang ): string|false
     $prepared     = autolingo_protect_shortcodes( $prepared, $placeholders );
     $prepared     = autolingo_protect_seo_vars( $prepared );
 
-    $result = autolingo_get_provider()->translate( $prepared, $target_lang );
+    $provider      = autolingo_get_provider();
+    $api_translate = static function ( array $batch ) use ( $provider, $target_lang ): array|false {
+        $out = [];
+        foreach ( $batch as $t ) {
+            $r = $provider->translate( $t, $target_lang );
+            if ( $r === false ) return false;
+            $out[] = $r;
+        }
+        return $out;
+    };
+
+    $results = autolingo_tm_translate_batch( [ $prepared ], autolingo_source_lang(), $target_lang, $api_translate );
+    $result  = $results !== false ? ( $results[0] ?? false ) : false;
 
     if ( $result === false ) return false;
 
@@ -127,14 +142,20 @@ function autolingo_call_deepl_batch( array $texts, string $target_lang ): array|
         $placeholder_maps[]   = $ph;
     }
 
-    if ( method_exists( $provider, 'translate_batch' ) ) {
-        $results = $provider->translate_batch( $prepared, $target_lang );
-    } else {
-        $results = [];
-        foreach ( $prepared as $t ) {
-            $results[] = $provider->translate( $t, $target_lang );
+    $api_translate = static function ( array $batch ) use ( $provider, $target_lang ): array|false {
+        if ( method_exists( $provider, 'translate_batch' ) ) {
+            return $provider->translate_batch( $batch, $target_lang );
         }
-    }
+        $out = [];
+        foreach ( $batch as $t ) {
+            $r = $provider->translate( $t, $target_lang );
+            if ( $r === false ) return false;
+            $out[] = $r;
+        }
+        return $out;
+    };
+
+    $results = autolingo_tm_translate_batch( $prepared, autolingo_source_lang(), $target_lang, $api_translate );
 
     if ( $results === false ) return false;
 

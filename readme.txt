@@ -8,15 +8,15 @@ Stable tag: 1.1.30
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Automatic translation for Polylang & WPML — auto-translate posts & pages with DeepL, OpenAI or Google Translate. WooCommerce & SEO in Pro.
+Automatic translation for Polylang & WPML — auto-translate posts & pages with DeepL, OpenAI, DeepSeek or Google Translate. WooCommerce & SEO in Pro.
 
 == Description ==
 
 <a href="https://wphealthkit.com/directory/autolingo-polylang-translate"><img src="https://wphealthkit.com/api/badge/autolingo-polylang-translate" alt="Autolingo Polylang Translate security audit by WP HealthKit" /></a>
 
-AutoLingo is the automatic translation plugin for Polylang and WPML. It auto-translates your posts and pages using DeepL, OpenAI (ChatGPT) or Google Translate — created and synced natively with your multilingual plugin. AutoLingo Pro adds WooCommerce products, SEO metadata (Yoast, RankMath), ACF fields and page builder support (Elementor, Beaver Builder, Bricks).
+AutoLingo is the automatic translation plugin for Polylang and WPML. It auto-translates your posts and pages using DeepL, OpenAI (ChatGPT), DeepSeek or Google Translate — created and synced natively with your multilingual plugin. AutoLingo Pro adds WooCommerce products, SEO metadata (Yoast, RankMath), ACF fields and page builder support (Elementor, Beaver Builder, Bricks).
 
-Whether you need Polylang or WPML automatic translation for a single post or your entire content library, AutoLingo does it on publish, in bulk, or via WP-CLI, with AI translation quality from DeepL, OpenAI or Google.
+Whether you need Polylang or WPML automatic translation for a single post or your entire content library, AutoLingo does it on publish, in bulk, or via WP-CLI, with AI translation quality from DeepL, OpenAI, DeepSeek or Google.
 
 = Features (Free) =
 
@@ -74,7 +74,7 @@ Translates custom product attributes (name + pipe-separated values) and the purc
 
 == External Services ==
 
-This plugin optionally connects to one of three external translation APIs depending on which provider you choose in Settings → AutoLingo. No data is ever sent without an explicit translation action and a valid API key that you supply yourself.
+This plugin optionally connects to one of four external translation APIs depending on which provider you choose in Settings → AutoLingo. No data is ever sent without an explicit translation action and a valid API key that you supply yourself.
 
 = DeepL =
 
@@ -101,6 +101,19 @@ This plugin optionally connects to one of three external translation APIs depend
 
 * Terms of Service: https://openai.com/policies/terms-of-use
 * Privacy Policy: https://openai.com/policies/privacy-policy
+
+= DeepSeek =
+
+**What it is:** DeepSeek provides a GPT-compatible language model API. This plugin uses the `deepseek-chat` model to translate your post content when DeepSeek is selected as the provider.
+
+**What data is sent:** The text content of your posts is sent to DeepSeek's servers. No visitor data is transmitted.
+
+**When it is sent:** Only when a translation is triggered manually or on publish.
+
+**Service endpoint:** api.deepseek.com
+
+* Terms of Service: https://chat.deepseek.com/downloads/DeepSeek%20Terms%20of%20Use.html
+* Privacy Policy: https://cdn.deepseek.com/policies/en-US/deepseek-privacy-policy.html
 
 = Google Cloud Translation =
 
@@ -147,7 +160,7 @@ This plugin optionally connects to one of three external translation APIs depend
 
 == Screenshots ==
 
-1. Settings page — choose your translation provider (DeepL, OpenAI, Google), API key, source and target languages, and which modules to enable.
+1. Settings page — choose your translation provider (DeepL, OpenAI, DeepSeek, Google), API key, source and target languages, and which modules to enable.
 2. Post list — one-click translate action link next to each source-language post.
 3. Dashboard widget — translation coverage per language, estimated time and money saved vs. a translation agency, and remaining API credit at a glance.
 
@@ -167,7 +180,7 @@ It works with both Polylang (free) and Polylang Pro.
 
 = Are shortcodes translated? =
 
-No. Shortcodes (`[contact-form-7 …]`, `[vc_row]`, Divi modules, etc.) are replaced by neutral placeholders before sending to the translation API and restored verbatim in the output. This protection applies to all three providers (DeepL, Google Translate, OpenAI). SEO template variables (`%%title%%`, `%sep%`) are also preserved automatically.
+No. Shortcodes (`[contact-form-7 …]`, `[vc_row]`, Divi modules, etc.) are replaced by neutral placeholders before sending to the translation API and restored verbatim in the output. This protection applies to all four providers (DeepL, Google Translate, OpenAI, DeepSeek). SEO template variables (`%%title%%`, `%sep%`) are also preserved automatically.
 
 = What happens if the DeepL rate limit is hit? =
 
@@ -175,7 +188,7 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 
 = Does it work with Polylang and WPML? =
 
-Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, OpenAI or Google Translate.
+Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
 

@@ -413,3 +413,21 @@ msgstr "Suivant"
 
 msgid "Upgrade to a premium licence to enable these modules."
 msgstr "Passez à une licence Premium pour activer ces modules."
+
+msgid "Translation Memory"
+msgstr "Mémoire de traduction"
+
+msgid "Cached Segments"
+msgstr "Segments en cache"
+
+msgid "%1$s segment(s) cached — an estimated %2$s characters have not needed a second API call."
+msgstr "%1$s segment(s) en cache — environ %2$s caractères n'ont pas eu besoin d'un second appel API."
+
+msgid "Paragraphs repeated across multiple posts or products (e.g. boilerplate terms) are translated once per language pair and reused everywhere else."
+msgstr "Les paragraphes répétés sur plusieurs articles ou produits (ex. conditions générales) ne sont traduits qu'une fois par paire de langues, puis réutilisés partout ailleurs."
+
+msgid "Clear all cached translation segments? Nothing manually translated is affected — only cached API results."
+msgstr "Vider tous les segments de traduction en cache ? Aucun contenu traduit manuellement n'est affecté — seuls les résultats API mis en cache le sont."
+
+msgid "Clear translation memory"
+msgstr "Vider la mémoire de traduction"

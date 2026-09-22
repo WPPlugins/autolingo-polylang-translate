@@ -26,6 +26,7 @@ define( 'AUTOLINGO_PLUGIN_FILE', __FILE__ );
 // ── Chargement des modules ─────────────────────────────────
 // Ordre important : logger → licensing → multilingual → helpers → providers → reste
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/logger.php';
+require_once AUTOLINGO_PLUGIN_DIR . 'includes/tm.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/licensing.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/multilingual/interface-adapter.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/multilingual/class-polylang-adapter.php';
@@ -36,6 +37,7 @@ require_once AUTOLINGO_PLUGIN_DIR . 'includes/providers/interface-provider.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/providers/class-deepl.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/providers/class-openai.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/providers/class-google.php';
+require_once AUTOLINGO_PLUGIN_DIR . 'includes/providers/class-deepseek.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/deepl.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/meta-copy.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/media.php';
@@ -73,10 +75,12 @@ register_activation_hook( __FILE__, 'autolingo_activate' );
 function autolingo_activate() {
     autolingo_log_install();
     autolingo_log_schedule_cron();
+    autolingo_tm_install();
     add_option( 'autolingo_provider',        'deepl' );
     add_option( 'autolingo_api_key',         '' );
     add_option( 'autolingo_openai_api_key',  '' );
     add_option( 'autolingo_google_api_key',  '' );
+    add_option( 'autolingo_deepseek_api_key', '' );
     add_option( 'autolingo_source_lang',     'fr' );
     add_option( 'autolingo_target_langs',    [ 'en' ] );
     $default_types = [ 'post', 'page' ];
@@ -109,13 +113,16 @@ function autolingo_uninstall() {
 
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- uninstall cleanup, table name is always {prefix}autolingo_logs.
     $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}autolingo_logs" );
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- uninstall cleanup, table name is always {prefix}autolingo_tm.
+    $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}autolingo_tm" );
 
     foreach ( [
-        'autolingo_provider', 'autolingo_api_key', 'autolingo_openai_api_key', 'autolingo_google_api_key',
+        'autolingo_provider', 'autolingo_api_key', 'autolingo_openai_api_key', 'autolingo_google_api_key', 'autolingo_deepseek_api_key',
         'autolingo_source_lang', 'autolingo_target_langs', 'autolingo_post_types', 'autolingo_auto_translate',
         'autolingo_alert_threshold', 'autolingo_module_seo', 'autolingo_module_acf',
         'autolingo_module_woocommerce', 'autolingo_module_page_builders',
         'autolingo_log_db_version', 'autolingo_low_credit_alert', 'autolingo_banner_dismissed',
+        'autolingo_tm_db_version',
     ] as $option ) {
         delete_option( $option );
     }

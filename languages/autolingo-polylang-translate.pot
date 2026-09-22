@@ -589,3 +589,29 @@ msgstr ""
 #: includes/logger.php:392
 msgid "Next"
 msgstr ""
+
+#: admin/settings.php
+msgid "Translation Memory"
+msgstr ""
+
+#: admin/settings.php
+msgid "Cached Segments"
+msgstr ""
+
+#. translators: 1: number of cached segments, 2: characters saved
+#: admin/settings.php
+#, php-format
+msgid "%1$s segment(s) cached — an estimated %2$s characters have not needed a second API call."
+msgstr ""
+
+#: admin/settings.php
+msgid "Paragraphs repeated across multiple posts or products (e.g. boilerplate terms) are translated once per language pair and reused everywhere else."
+msgstr ""
+
+#: admin/settings.php
+msgid "Clear all cached translation segments? Nothing manually translated is affected — only cached API results."
+msgstr ""
+
+#: admin/settings.php
+msgid "Clear translation memory"
+msgstr ""

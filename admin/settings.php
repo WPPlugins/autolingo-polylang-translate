@@ -140,6 +140,7 @@ function autolingo_register_settings(): void {
     register_setting( 'autolingo_settings_group', 'autolingo_api_key',         [ 'sanitize_callback' => 'sanitize_text_field' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_openai_api_key',  [ 'sanitize_callback' => 'sanitize_text_field' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_google_api_key',  [ 'sanitize_callback' => 'sanitize_text_field' ] );
+    register_setting( 'autolingo_settings_group', 'autolingo_deepseek_api_key', [ 'sanitize_callback' => 'sanitize_text_field' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_source_lang',     [ 'sanitize_callback' => 'sanitize_text_field' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_target_langs',    [ 'sanitize_callback' => 'autolingo_sanitize_array' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_post_types',      [ 'sanitize_callback' => 'autolingo_sanitize_array' ] );
@@ -168,6 +169,8 @@ function autolingo_register_settings(): void {
     register_setting( 'autolingo_settings_group', 'autolingo_glossary_terms', [ 'sanitize_callback' => 'sanitize_textarea_field' ] );
     add_settings_section( 'autolingo_section_glossary', '📖 ' . __( 'DeepL Glossary', 'autolingo-polylang-translate' ), '__return_false', 'autolingo-polylang-translate' );
     add_settings_field( 'autolingo_glossary_terms', __( 'Glossary Terms', 'autolingo-polylang-translate' ), 'autolingo_field_glossary', 'autolingo-polylang-translate', 'autolingo_section_glossary' );
+    add_settings_section( 'autolingo_section_tm', '♻️ ' . __( 'Translation Memory', 'autolingo-polylang-translate' ), '__return_false', 'autolingo-polylang-translate' );
+    add_settings_field( 'autolingo_tm', __( 'Cached Segments', 'autolingo-polylang-translate' ), 'autolingo_field_tm', 'autolingo-polylang-translate', 'autolingo_section_tm' );
     add_settings_field( 'autolingo_formality',       __( 'DeepL Formality', 'autolingo-polylang-translate' ),        'autolingo_field_formality',       'autolingo-polylang-translate', 'autolingo_section_behavior' );
     add_settings_field( 'autolingo_alert_threshold', __( 'Credit Alert Threshold', 'autolingo-polylang-translate' ), 'autolingo_field_alert_threshold', 'autolingo-polylang-translate', 'autolingo_section_behavior' );
 }
@@ -423,6 +426,7 @@ function autolingo_settings_page_html(): void {
     $deepl_key  = trim( get_option( 'autolingo_api_key',        '' ) );
     $openai_key = trim( get_option( 'autolingo_openai_api_key', '' ) );
     $google_key = trim( get_option( 'autolingo_google_api_key', '' ) );
+    $deepseek_key = trim( get_option( 'autolingo_deepseek_api_key', '' ) );
     ?>
     <div class="wrap">
         <h1>🌍 <?php esc_html_e( 'AutoLingo — Translation for Polylang', 'autolingo-polylang-translate' ); ?></h1>
@@ -489,6 +493,7 @@ function autolingo_settings_page_html(): void {
                             <option value="deepl"  <?php selected( $provider_slug, 'deepl' ); ?>>DeepL</option>
                             <option value="openai" <?php selected( $provider_slug, 'openai' ); ?>>OpenAI (GPT-4o)</option>
                             <option value="google" <?php selected( $provider_slug, 'google' ); ?>>Google Translate</option>
+                            <option value="deepseek" <?php selected( $provider_slug, 'deepseek' ); ?>>DeepSeek</option>
                         </select>
                     </td>
                 </tr>
@@ -531,6 +536,16 @@ function autolingo_settings_page_html(): void {
                         <p class="description">
                             <?php esc_html_e( 'Cloud Translation API v2 (Basic). Enable it in your Google Cloud project.', 'autolingo-polylang-translate' ); ?>
                             <a href="https://console.cloud.google.com/apis/library/translate.googleapis.com" target="_blank"><?php esc_html_e( 'Enable API →', 'autolingo-polylang-translate' ); ?></a>
+                        </p>
+                    </td>
+                </tr>
+                <tr class="autolingo-key-row" id="autolingo-key-deepseek">
+                    <th scope="row"><?php esc_html_e( 'DeepSeek API Key', 'autolingo-polylang-translate' ); ?></th>
+                    <td>
+                        <input type="password" name="autolingo_deepseek_api_key" value="<?php echo esc_attr( $deepseek_key ); ?>" class="regular-text" autocomplete="off">
+                        <p class="description">
+                            <?php esc_html_e( 'Uses deepseek-chat. Billed per token on your DeepSeek account.', 'autolingo-polylang-translate' ); ?>
+                            <a href="https://platform.deepseek.com/api_keys" target="_blank"><?php esc_html_e( 'Get a key →', 'autolingo-polylang-translate' ); ?></a>
                         </p>
                     </td>
                 </tr>
@@ -597,6 +612,30 @@ function autolingo_field_glossary(): void {
         echo wp_kses_post( implode( ', ', array_map( fn($k) => '<code>' . esc_html( $k ) . '</code>', array_keys( $ids ) ) ) ) . '</p>';
     }
     // JS is enqueued via autolingo_enqueue_settings_assets() with wp_add_inline_script().
+}
+
+function autolingo_field_tm(): void {
+    $stats = autolingo_tm_stats();
+    echo '<p>' . sprintf(
+        /* translators: 1: number of cached segments, 2: characters saved */
+        esc_html__( '%1$s segment(s) cached — an estimated %2$s characters have not needed a second API call.', 'autolingo-polylang-translate' ),
+        esc_html( number_format_i18n( $stats['segments'] ) ),
+        esc_html( number_format_i18n( $stats['chars_saved'] ) )
+    ) . '</p>';
+    echo '<p class="description">' . esc_html__( 'Paragraphs repeated across multiple posts or products (e.g. boilerplate terms) are translated once per language pair and reused everywhere else.', 'autolingo-polylang-translate' ) . '</p>';
+
+    $clear_url = wp_nonce_url( admin_url( 'admin-post.php?action=autolingo_clear_tm' ), 'autolingo_clear_tm' );
+    echo '<p><a href="' . esc_url( $clear_url ) . '" class="button" onclick="return confirm(\'' . esc_js( __( 'Clear all cached translation segments? Nothing manually translated is affected — only cached API results.', 'autolingo-polylang-translate' ) ) . '\')">' . esc_html__( 'Clear translation memory', 'autolingo-polylang-translate' ) . '</a></p>';
+}
+
+add_action( 'admin_post_autolingo_clear_tm', 'autolingo_handle_clear_tm' );
+function autolingo_handle_clear_tm(): void {
+    check_admin_referer( 'autolingo_clear_tm' );
+    if ( current_user_can( 'manage_options' ) ) {
+        autolingo_tm_clear();
+    }
+    wp_safe_redirect( wp_get_referer() ?: admin_url( 'options-general.php?page=autolingo-polylang-translate' ) );
+    exit;
 }
 
 add_action( 'wp_ajax_autolingo_sync_glossary', 'autolingo_handle_sync_glossary' );

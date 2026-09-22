@@ -110,7 +110,7 @@ function autolingo_module_enabled( string $module ): bool {
 }
 
 /**
- * Retourne le slug du provider actif (ex: 'deepl', 'openai', 'google').
+ * Retourne le slug du provider actif (ex: 'deepl', 'openai', 'google', 'deepseek').
  */
 function autolingo_provider_slug(): string {
     return autolingo_option( 'provider', 'deepl' );
