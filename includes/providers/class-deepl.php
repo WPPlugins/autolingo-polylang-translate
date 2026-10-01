@@ -18,6 +18,11 @@ class AUTOLINGO_Provider_DeepL implements AUTOLINGO_Provider {
     public function get_slug(): string { return 'deepl'; }
     public function get_name(): string { return 'DeepL'; }
 
+    /** Whether the last call failed because the quota or balance is used up. */
+    private bool $quota_exceeded = false;
+
+    public function quota_exceeded(): bool { return $this->quota_exceeded; }
+
     public function api_key(): string {
         return trim( get_option( 'autolingo_api_key', '' ) );
     }
@@ -28,6 +33,7 @@ class AUTOLINGO_Provider_DeepL implements AUTOLINGO_Provider {
     }
 
     public function translate( string $text, string $target_lang ): string|false {
+        $this->quota_exceeded = false;
         if ( empty( trim( $text ) ) ) return $text;
 
         $api_key = $this->api_key();
@@ -75,6 +81,7 @@ class AUTOLINGO_Provider_DeepL implements AUTOLINGO_Provider {
         }
 
         if ( $code !== 200 ) {
+            $this->quota_exceeded = ( $code === 456 ); // character quota of the plan used up
             autolingo_log_error(
                 "DeepL returned HTTP {$code}.",
                 [ 'lang' => $target_lang, 'response' => mb_substr( wp_remote_retrieve_body( $response ), 0, 300 ) ]
@@ -103,6 +110,7 @@ class AUTOLINGO_Provider_DeepL implements AUTOLINGO_Provider {
      * @return string[]|false
      */
     public function translate_batch( array $texts, string $target_lang ): array|false {
+        $this->quota_exceeded = false;
         if ( empty( $texts ) ) return [];
 
         $api_key = $this->api_key();
@@ -146,6 +154,7 @@ class AUTOLINGO_Provider_DeepL implements AUTOLINGO_Provider {
         }
 
         if ( $code !== 200 ) {
+            $this->quota_exceeded = ( $code === 456 );
             autolingo_log_error( "DeepL batch HTTP {$code}.", [ 'lang' => $target_lang, 'response' => mb_substr( wp_remote_retrieve_body( $response ), 0, 300 ) ] );
             return false;
         }

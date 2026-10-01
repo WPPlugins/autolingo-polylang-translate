@@ -10,11 +10,17 @@ class AUTOLINGO_Provider_OpenAI implements AUTOLINGO_Provider {
     public function get_slug(): string { return 'openai'; }
     public function get_name(): string { return 'OpenAI (GPT-4o)'; }
 
+    /** Whether the last call failed because the quota or balance is used up. */
+    private bool $quota_exceeded = false;
+
+    public function quota_exceeded(): bool { return $this->quota_exceeded; }
+
     public function api_key(): string {
         return trim( get_option( 'autolingo_openai_api_key', '' ) );
     }
 
     public function translate( string $text, string $target_lang ): string|false {
+        $this->quota_exceeded = false;
         if ( empty( trim( $text ) ) ) return $text;
 
         $api_key = $this->api_key();
@@ -55,6 +61,9 @@ class AUTOLINGO_Provider_OpenAI implements AUTOLINGO_Provider {
 
         $code = wp_remote_retrieve_response_code( $response );
         if ( $code !== 200 ) {
+            // Balance used up: OpenAI 429 "insufficient_quota" (other 429s are rate limits), DeepSeek 402.
+            $error_code           = json_decode( wp_remote_retrieve_body( $response ), true )['error']['code'] ?? '';
+            $this->quota_exceeded = $code === 402 || ( $code === 429 && $error_code === 'insufficient_quota' );
             autolingo_log_error(
                 "OpenAI returned HTTP {$code}.",
                 [ 'response' => mb_substr( wp_remote_retrieve_body( $response ), 0, 300 ) ]

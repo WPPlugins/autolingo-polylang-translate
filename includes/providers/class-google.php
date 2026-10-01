@@ -10,11 +10,17 @@ class AUTOLINGO_Provider_Google implements AUTOLINGO_Provider {
     public function get_slug(): string { return 'google'; }
     public function get_name(): string { return 'Google Translate'; }
 
+    /** Whether the last call failed because the quota or balance is used up. */
+    private bool $quota_exceeded = false;
+
+    public function quota_exceeded(): bool { return $this->quota_exceeded; }
+
     public function api_key(): string {
         return trim( get_option( 'autolingo_google_api_key', '' ) );
     }
 
     public function translate( string $text, string $target_lang ): string|false {
+        $this->quota_exceeded = false;
         if ( empty( trim( $text ) ) ) return $text;
 
         $api_key = $this->api_key();
@@ -44,6 +50,9 @@ class AUTOLINGO_Provider_Google implements AUTOLINGO_Provider {
 
         $code = wp_remote_retrieve_response_code( $response );
         if ( $code !== 200 ) {
+            // Daily / per-project character limits: 403 "Daily Limit Exceeded", "quotaExceeded", or 429.
+            $this->quota_exceeded = $code === 429
+                || ( $code === 403 && preg_match( '/limit exceeded|quota/i', wp_remote_retrieve_body( $response ) ) );
             autolingo_log_error(
                 "Google Translate returned HTTP {$code}.",
                 [ 'response' => mb_substr( wp_remote_retrieve_body( $response ), 0, 300 ) ]

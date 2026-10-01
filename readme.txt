@@ -4,19 +4,21 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.1.30
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Automatic translation for Polylang & WPML — auto-translate posts & pages with DeepL, OpenAI, DeepSeek or Google Translate. WooCommerce & SEO in Pro.
+Auto-translate posts & pages for Polylang & WPML with DeepL, Google, Microsoft, OpenAI or DeepSeek. Free up to 3M characters a month.
 
 == Description ==
 
 <a href="https://wphealthkit.com/directory/autolingo-polylang-translate"><img src="https://wphealthkit.com/api/badge/autolingo-polylang-translate" alt="Autolingo Polylang Translate security audit by WP HealthKit" /></a>
 
-AutoLingo is the automatic translation plugin for Polylang and WPML. It auto-translates your posts and pages using DeepL, OpenAI (ChatGPT), DeepSeek or Google Translate — created and synced natively with your multilingual plugin. AutoLingo Pro adds WooCommerce products, SEO metadata (Yoast, RankMath), ACF fields and page builder support (Elementor, Beaver Builder, Bricks).
+AutoLingo is the automatic translation plugin for Polylang and WPML. It auto-translates your posts and pages using DeepL, Google Translate, Microsoft Translator, OpenAI (ChatGPT) or DeepSeek — created and synced natively with your multilingual plugin. AutoLingo Pro adds WooCommerce products, SEO metadata (Yoast, RankMath), ACF fields and page builder support (Elementor, Beaver Builder, Bricks).
 
-Whether you need Polylang or WPML automatic translation for a single post or your entire content library, AutoLingo does it on publish, in bulk, or via WP-CLI, with AI translation quality from DeepL, OpenAI, DeepSeek or Google.
+Whether you need Polylang or WPML automatic translation for a single post or your entire content library, AutoLingo does it on publish, in bulk, or via WP-CLI, with AI translation quality from DeepL, Google, Microsoft, OpenAI or DeepSeek.
+
+**Free up to 3,000,000 characters a month with your free DeepL, Google and Microsoft accounts. No AutoLingo translation subscription.** When one provider's free quota runs out, AutoLingo automatically switches to the next one that has a key.
 
 = Features (Free) =
 
@@ -24,7 +26,8 @@ Whether you need Polylang or WPML automatic translation for a single post or you
 * Manual translate button in the post editor and post list
 * Bulk translation via WP-CLI (`translate-missing`, `translate-all`)
 * Nav menu translation via Polylang
-* DeepL Free and Pro plan auto-detection (key suffix `:fx`)
+* Five providers: DeepL (Free and Pro, auto-detected from the `:fx` key suffix), Google Translate, Microsoft Translator, OpenAI and DeepSeek
+* Automatic fallback: when the selected provider runs out of quota, the next one that has a key translates — free DeepL, Google and Microsoft accounts add up to about 3,000,000 characters a month
 * Credit balance check before each translation
 * Admin alert + dashboard widget when credit runs low
 * Category and tag translation — term names (and descriptions) are genuinely translated via your chosen provider, not just linked to an existing Polylang/WPML translation
@@ -115,6 +118,19 @@ This plugin optionally connects to one of four external translation APIs dependi
 * Terms of Service: https://chat.deepseek.com/downloads/DeepSeek%20Terms%20of%20Use.html
 * Privacy Policy: https://cdn.deepseek.com/policies/en-US/deepseek-privacy-policy.html
 
+= Microsoft Translator =
+
+**What it is:** Microsoft Translator (Azure AI Translator, Text API v3) provides machine translation. This plugin uses it to translate post content when Microsoft Translator is selected as the provider, or when it takes over because the selected provider's quota is used up.
+
+**What data is sent:** The text content of your posts is sent to Microsoft's servers. No visitor data is transmitted.
+
+**When it is sent:** Only when a translation is triggered manually or on publish, and only if you entered a Microsoft Translator key.
+
+**Service endpoint:** api.cognitive.microsofttranslator.com
+
+* Terms of Service: https://www.microsoft.com/licensing/terms/productoffering/MicrosoftAzure/MCA
+* Privacy Policy: https://privacy.microsoft.com/privacystatement
+
 = Google Cloud Translation =
 
 **What it is:** Google Cloud Translation API provides machine translation. This plugin uses it to translate post content when Google Translate is selected as the provider.
@@ -160,7 +176,7 @@ This plugin optionally connects to one of four external translation APIs dependi
 
 == Screenshots ==
 
-1. Settings page — choose your translation provider (DeepL, OpenAI, DeepSeek, Google), API key, source and target languages, and which modules to enable.
+1. Settings page — choose your translation provider (DeepL, Google, Microsoft, OpenAI, DeepSeek), API keys, source and target languages, and which modules to enable.
 2. Post list — one-click translate action link next to each source-language post.
 3. Dashboard widget — translation coverage per language, estimated time and money saved vs. a translation agency, and remaining API credit at a glance.
 
@@ -169,6 +185,10 @@ This plugin optionally connects to one of four external translation APIs dependi
 = Which DeepL plan do I need? =
 
 Both plans work. The Free plan gives 500,000 characters/month at no cost — the key ends with `:fx`. The Pro plan is billed per character with no monthly cap.
+
+= Is it free to use? =
+
+The free plugin is free. Translation itself is billed by the provider you choose, on your own account — and DeepL, Google and Microsoft each have a free monthly quota. Enter several keys and AutoLingo uses them one after the other: when one quota runs out, the next provider translates. That is about 3,000,000 free characters a month, with no AutoLingo translation subscription.
 
 = Does it work with Polylang free or only Polylang Pro? =
 
@@ -180,7 +200,7 @@ It works with both Polylang (free) and Polylang Pro.
 
 = Are shortcodes translated? =
 
-No. Shortcodes (`[contact-form-7 …]`, `[vc_row]`, Divi modules, etc.) are replaced by neutral placeholders before sending to the translation API and restored verbatim in the output. This protection applies to all four providers (DeepL, Google Translate, OpenAI, DeepSeek). SEO template variables (`%%title%%`, `%sep%`) are also preserved automatically.
+No. Shortcodes (`[contact-form-7 …]`, `[vc_row]`, Divi modules, etc.) are replaced by neutral placeholders before sending to the translation API and restored verbatim in the output. This protection applies to all five providers (DeepL, Google Translate, Microsoft Translator, OpenAI, DeepSeek). SEO template variables (`%%title%%`, `%sep%`) are also preserved automatically.
 
 = What happens if the DeepL rate limit is hit? =
 
@@ -188,9 +208,14 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 
 = Does it work with Polylang and WPML? =
 
-Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, OpenAI, DeepSeek or Google Translate.
+Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.2.0 =
+* Microsoft Translator as a fifth provider (free tier: 2,000,000 characters a month)
+* Automatic fallback: when the selected provider runs out of quota (DeepL 456, Microsoft free quota, Google daily limit, OpenAI / DeepSeek balance), AutoLingo translates with the next provider that has a key — DeepL, Microsoft, Google, then OpenAI and DeepSeek. Free DeepL, Google and Microsoft accounts add up to about 3,000,000 characters a month. A provider out of quota is skipped for an hour; any other error is still reported. Can be switched off in the settings.
+* The settings page shows every API key field while the fallback is on
 
 = 1.1.30 =
 * Translate category and tag names when no translation exists yet — when a source term has no linked translation on Polylang/WPML, its name (and description) is now genuinely translated via your provider and created as a real linked term, instead of tagging the translated post with the untranslated source term

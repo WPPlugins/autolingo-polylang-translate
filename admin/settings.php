@@ -40,7 +40,7 @@ function autolingo_settings_enqueue( string $hook ): void {
     wp_enqueue_script( 'autolingo-settings' );
 
     // Provider key row toggle.
-    wp_add_inline_script( 'autolingo-settings', '(function(){var sel=document.getElementById("autolingo_provider");function toggle(){document.querySelectorAll(".autolingo-key-row").forEach(function(r){r.style.display="none";});var row=document.getElementById("autolingo-key-"+sel.value);if(row)row.style.display="";}sel.addEventListener("change",toggle);toggle();})();' );
+    wp_add_inline_script( 'autolingo-settings', '(function(){var sel=document.getElementById("autolingo_provider"),fb=document.getElementById("autolingo_fallback");function toggle(){var all=fb&&fb.checked;document.querySelectorAll(".autolingo-key-row").forEach(function(r){r.style.display=all?"":"none";});var row=document.getElementById("autolingo-key-"+sel.value);if(row)row.style.display="";}sel.addEventListener("change",toggle);if(fb)fb.addEventListener("change",toggle);toggle();})();' );
 
     // Async enable/disable toggle.
     wp_add_inline_script( 'autolingo-settings', '(function(){var cb=document.getElementById("autolingo_async_enabled");var wrap=document.getElementById("autolingo-async-threshold-wrap");if(cb&&wrap){cb.addEventListener("change",function(){wrap.style.display=cb.checked?"":"none";});}})();' );
@@ -141,6 +141,9 @@ function autolingo_register_settings(): void {
     register_setting( 'autolingo_settings_group', 'autolingo_openai_api_key',  [ 'sanitize_callback' => 'sanitize_text_field' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_google_api_key',  [ 'sanitize_callback' => 'sanitize_text_field' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_deepseek_api_key', [ 'sanitize_callback' => 'sanitize_text_field' ] );
+    register_setting( 'autolingo_settings_group', 'autolingo_microsoft_api_key', [ 'sanitize_callback' => 'sanitize_text_field' ] );
+    register_setting( 'autolingo_settings_group', 'autolingo_microsoft_region', [ 'sanitize_callback' => 'sanitize_text_field' ] );
+    register_setting( 'autolingo_settings_group', 'autolingo_fallback',         [ 'sanitize_callback' => 'absint', 'default' => 1 ] );
     register_setting( 'autolingo_settings_group', 'autolingo_source_lang',     [ 'sanitize_callback' => 'sanitize_text_field' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_target_langs',    [ 'sanitize_callback' => 'autolingo_sanitize_array' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_post_types',      [ 'sanitize_callback' => 'autolingo_sanitize_array' ] );
@@ -427,6 +430,8 @@ function autolingo_settings_page_html(): void {
     $openai_key = trim( get_option( 'autolingo_openai_api_key', '' ) );
     $google_key = trim( get_option( 'autolingo_google_api_key', '' ) );
     $deepseek_key = trim( get_option( 'autolingo_deepseek_api_key', '' ) );
+    $microsoft_key    = trim( get_option( 'autolingo_microsoft_api_key', '' ) );
+    $microsoft_region = trim( get_option( 'autolingo_microsoft_region', '' ) );
     ?>
     <div class="wrap">
         <h1>🌍 <?php esc_html_e( 'AutoLingo — Translation for Polylang', 'autolingo-polylang-translate' ); ?></h1>
@@ -494,6 +499,7 @@ function autolingo_settings_page_html(): void {
                             <option value="openai" <?php selected( $provider_slug, 'openai' ); ?>>OpenAI (GPT-4o)</option>
                             <option value="google" <?php selected( $provider_slug, 'google' ); ?>>Google Translate</option>
                             <option value="deepseek" <?php selected( $provider_slug, 'deepseek' ); ?>>DeepSeek</option>
+                            <option value="microsoft" <?php selected( $provider_slug, 'microsoft' ); ?>>Microsoft Translator</option>
                         </select>
                     </td>
                 </tr>
@@ -547,6 +553,32 @@ function autolingo_settings_page_html(): void {
                             <?php esc_html_e( 'Uses deepseek-chat. Billed per token on your DeepSeek account.', 'autolingo-polylang-translate' ); ?>
                             <a href="https://platform.deepseek.com/api_keys" target="_blank"><?php esc_html_e( 'Get a key →', 'autolingo-polylang-translate' ); ?></a>
                         </p>
+                    </td>
+                </tr>
+                <tr class="autolingo-key-row" id="autolingo-key-microsoft">
+                    <th scope="row"><?php esc_html_e( 'Microsoft Translator Key', 'autolingo-polylang-translate' ); ?></th>
+                    <td>
+                        <input type="password" name="autolingo_microsoft_api_key" value="<?php echo esc_attr( $microsoft_key ); ?>" class="regular-text" autocomplete="off">
+                        <p class="description">
+                            <?php esc_html_e( 'Azure AI Translator resource key. The free tier (F0) includes 2,000,000 characters a month.', 'autolingo-polylang-translate' ); ?>
+                            <a href="https://portal.azure.com/#create/Microsoft.CognitiveServicesTextTranslation" target="_blank"><?php esc_html_e( 'Get a key →', 'autolingo-polylang-translate' ); ?></a>
+                        </p>
+                        <p>
+                            <label><?php esc_html_e( 'Region', 'autolingo-polylang-translate' ); ?>
+                            <input type="text" name="autolingo_microsoft_region" value="<?php echo esc_attr( $microsoft_region ); ?>" class="regular-text" style="width:12em" placeholder="westeurope"></label>
+                        </p>
+                        <p class="description"><?php esc_html_e( 'The region of your Azure resource. Leave empty for a global resource.', 'autolingo-polylang-translate' ); ?></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><?php esc_html_e( 'When a quota runs out', 'autolingo-polylang-translate' ); ?></th>
+                    <td>
+                        <label>
+                            <input type="hidden" name="autolingo_fallback" value="0">
+                            <input type="checkbox" name="autolingo_fallback" id="autolingo_fallback" value="1" <?php checked( autolingo_fallback_enabled() ); ?>>
+                            <?php esc_html_e( 'Use the other providers that have a key', 'autolingo-polylang-translate' ); ?>
+                        </label>
+                        <p class="description"><?php esc_html_e( 'When the selected provider has used up its quota, translate with the next one that has a key: DeepL, Microsoft, Google, then OpenAI and DeepSeek. With free DeepL, Microsoft and Google accounts, that is about 3,000,000 free characters a month.', 'autolingo-polylang-translate' ); ?></p>
                     </td>
                 </tr>
             </table>

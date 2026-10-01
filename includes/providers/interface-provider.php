@@ -33,4 +33,12 @@ interface AUTOLINGO_Provider {
 
     /** Flushes the cached usage data. */
     public function invalidate_usage_cache(): void;
+
+    /**
+     * True when the last translate()/translate_batch() call failed because the account's
+     * quota or balance is used up (DeepL 456, Microsoft 403001, Google daily limit,
+     * OpenAI insufficient_quota, DeepSeek 402): autolingo_translate_with_fallback() then
+     * moves on to the next provider that has a key.
+     */
+    public function quota_exceeded(): bool;
 }

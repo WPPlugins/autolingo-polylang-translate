@@ -431,3 +431,31 @@ msgstr "Vider tous les segments de traduction en cache ? Aucun contenu traduit m
 
 msgid "Clear translation memory"
 msgstr "Vider la mémoire de traduction"
+
+#: admin/settings.php
+msgid "Microsoft Translator Key"
+msgstr "Clé Microsoft Translator"
+
+#: admin/settings.php
+msgid "Azure AI Translator resource key. The free tier (F0) includes 2,000,000 characters a month."
+msgstr "Clé de la ressource Azure AI Translator. L’offre gratuite (F0) inclut 2 000 000 de caractères par mois."
+
+#: admin/settings.php
+msgid "Region"
+msgstr "Région"
+
+#: admin/settings.php
+msgid "The region of your Azure resource. Leave empty for a global resource."
+msgstr "La région de votre ressource Azure. Laissez vide pour une ressource globale."
+
+#: admin/settings.php
+msgid "When a quota runs out"
+msgstr "Quand un quota est épuisé"
+
+#: admin/settings.php
+msgid "Use the other providers that have a key"
+msgstr "Utiliser les autres fournisseurs qui ont une clé"
+
+#: admin/settings.php
+msgid "When the selected provider has used up its quota, translate with the next one that has a key: DeepL, Microsoft, Google, then OpenAI and DeepSeek. With free DeepL, Microsoft and Google accounts, that is about 3,000,000 free characters a month."
+msgstr "Quand le fournisseur choisi a épuisé son quota, traduire avec le suivant qui a une clé : DeepL, Microsoft, Google, puis OpenAI et DeepSeek. Avec des comptes gratuits DeepL, Microsoft et Google, cela fait environ 3 000 000 de caractères gratuits par mois."

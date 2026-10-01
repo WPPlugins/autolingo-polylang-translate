@@ -17,14 +17,114 @@ function autolingo_get_provider(): AUTOLINGO_Provider {
     static $instance = null;
     if ( $instance !== null ) return $instance;
 
-    switch ( autolingo_provider_slug() ) {
-        case 'openai':   $instance = new AUTOLINGO_Provider_OpenAI();   break;
-        case 'google':   $instance = new AUTOLINGO_Provider_Google();   break;
-        case 'deepseek': $instance = new AUTOLINGO_Provider_DeepSeek(); break;
-        default:        $instance = new AUTOLINGO_Provider_DeepL();   break;
-    }
+    $instance = autolingo_make_provider( autolingo_provider_slug() );
 
     return $instance;
+}
+
+function autolingo_make_provider( string $slug ): AUTOLINGO_Provider {
+    switch ( $slug ) {
+        case 'openai':    return new AUTOLINGO_Provider_OpenAI();
+        case 'google':    return new AUTOLINGO_Provider_Google();
+        case 'deepseek':  return new AUTOLINGO_Provider_DeepSeek();
+        case 'microsoft': return new AUTOLINGO_Provider_Microsoft();
+        default:          return new AUTOLINGO_Provider_DeepL();
+    }
+}
+
+// ── Fallback when a quota runs out ────────────────────────────────────────────
+
+/** Fallback order after the selected provider: free tiers first (DeepL, Microsoft, Google), then paid ones. */
+const AUTOLINGO_FALLBACK_ORDER = [ 'deepl', 'microsoft', 'google', 'openai', 'deepseek' ];
+
+/** On unless switched off in the settings. */
+function autolingo_fallback_enabled(): bool {
+    return (bool) get_option( 'autolingo_fallback', '1' );
+}
+
+/**
+ * The providers translations go through: the selected one, followed — when fallback is
+ * on — by every other provider that has a key, used when the previous one runs out of quota.
+ *
+ * @return AUTOLINGO_Provider[]
+ */
+function autolingo_provider_chain(): array {
+    $selected = autolingo_get_provider();
+    if ( ! autolingo_fallback_enabled() ) return [ $selected ];
+
+    $chain = [ $selected ];
+    foreach ( AUTOLINGO_FALLBACK_ORDER as $slug ) {
+        if ( $slug === $selected->get_slug() ) continue;
+        $provider = autolingo_make_provider( $slug );
+        if ( method_exists( $provider, 'api_key' ) && $provider->api_key() !== '' ) {
+            $chain[] = $provider;
+        }
+    }
+    return $chain;
+}
+
+/**
+ * Translate $batch with the first provider of the chain that is not out of quota. When a
+ * provider fails because its quota or balance is used up, it is skipped for an hour and
+ * the next one translates the same texts — so free DeepL, Microsoft and Google accounts
+ * add up (about 3,000,000 characters a month). Any other failure stops here (no silent switch).
+ *
+ * @param  string[] $batch Prepared texts.
+ * @return string[]|false
+ */
+function autolingo_translate_with_fallback( array $batch, string $target_lang ): array|false {
+    $chain     = autolingo_provider_chain();
+    $exhausted = array_filter(
+        (array) get_transient( 'autolingo_quota_exhausted' ),
+        fn( $time ) => time() - (int) $time < HOUR_IN_SECONDS
+    );
+    $skipped   = [];
+
+    foreach ( $chain as $i => $provider ) {
+        $name = $provider->get_name();
+        // Skip a provider known to be out of quota — unless it is the last one left.
+        if ( isset( $exhausted[ $provider->get_slug() ] ) && $i < count( $chain ) - 1 ) {
+            $skipped[] = $name;
+            continue;
+        }
+
+        $result = autolingo_provider_translate( $provider, $batch, $target_lang );
+        if ( $result !== false ) {
+            if ( $skipped ) {
+                autolingo_log_info(
+                    sprintf( 'Translated with %s (%s quota used up).', $name, implode( ', ', $skipped ) ),
+                    [], null, $target_lang
+                );
+            }
+            if ( isset( $exhausted[ $provider->get_slug() ] ) ) {
+                unset( $exhausted[ $provider->get_slug() ] );
+                set_transient( 'autolingo_quota_exhausted', $exhausted, HOUR_IN_SECONDS );
+            }
+            return $result;
+        }
+        if ( ! $provider->quota_exceeded() ) {
+            return false; // a real error, already logged by the provider
+        }
+        $exhausted[ $provider->get_slug() ] = time();
+        set_transient( 'autolingo_quota_exhausted', $exhausted, HOUR_IN_SECONDS );
+        $skipped[] = $name;
+    }
+
+    return false;
+}
+
+/** One provider: its batch method when it has one, else text by text. */
+function autolingo_provider_translate( AUTOLINGO_Provider $provider, array $batch, string $target_lang ): array|false {
+    if ( method_exists( $provider, 'translate_batch' ) ) {
+        return $provider->translate_batch( $batch, $target_lang );
+    }
+    $out = [];
+    foreach ( $batch as $t ) {
+        $r = $provider->translate( $t, $target_lang );
+        if ( $r === false ) return false;
+        $out[] = $r;
+    }
+    return $out;
 }
 
 // ── Universal wrapper ─────────────────────────────────────────────────────────
@@ -57,15 +157,8 @@ function autolingo_call_deepl( string $text, string $target_lang ): string|false
     $prepared     = autolingo_protect_shortcodes( $prepared, $placeholders );
     $prepared     = autolingo_protect_seo_vars( $prepared );
 
-    $provider      = autolingo_get_provider();
-    $api_translate = static function ( array $batch ) use ( $provider, $target_lang ): array|false {
-        $out = [];
-        foreach ( $batch as $t ) {
-            $r = $provider->translate( $t, $target_lang );
-            if ( $r === false ) return false;
-            $out[] = $r;
-        }
-        return $out;
+    $api_translate = static function ( array $batch ) use ( $target_lang ): array|false {
+        return autolingo_translate_with_fallback( $batch, $target_lang );
     };
 
     $results = autolingo_tm_translate_batch( [ $prepared ], autolingo_source_lang(), $target_lang, $api_translate );
@@ -116,8 +209,6 @@ function autolingo_call_deepl( string $text, string $target_lang ): string|false
 function autolingo_call_deepl_batch( array $texts, string $target_lang ): array|false {
     if ( empty( $texts ) ) return [];
 
-    $provider = autolingo_get_provider();
-
     $notranslate_maps = [];
     $opaque_maps      = [];
     $block_maps       = [];
@@ -142,17 +233,8 @@ function autolingo_call_deepl_batch( array $texts, string $target_lang ): array|
         $placeholder_maps[]   = $ph;
     }
 
-    $api_translate = static function ( array $batch ) use ( $provider, $target_lang ): array|false {
-        if ( method_exists( $provider, 'translate_batch' ) ) {
-            return $provider->translate_batch( $batch, $target_lang );
-        }
-        $out = [];
-        foreach ( $batch as $t ) {
-            $r = $provider->translate( $t, $target_lang );
-            if ( $r === false ) return false;
-            $out[] = $r;
-        }
-        return $out;
+    $api_translate = static function ( array $batch ) use ( $target_lang ): array|false {
+        return autolingo_translate_with_fallback( $batch, $target_lang );
     };
 
     $results = autolingo_tm_translate_batch( $prepared, autolingo_source_lang(), $target_lang, $api_translate );
@@ -317,8 +399,12 @@ function autolingo_get_usage(): array|false {
     return autolingo_get_provider()->get_usage();
 }
 
+/**
+ * False when the selected provider's credit is exhausted and no other provider can take
+ * over (fallback off, or no other key).
+ */
 function autolingo_check_usage(): bool {
-    return autolingo_get_provider()->check_usage();
+    return autolingo_get_provider()->check_usage() || count( autolingo_provider_chain() ) > 1;
 }
 
 function autolingo_invalidate_usage_cache(): void {
