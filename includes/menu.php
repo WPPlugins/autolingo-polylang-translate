@@ -95,7 +95,9 @@ function autolingo_translate_menu_to_lang( WP_Term $source_menu, string $lang_sl
         // ── Translate the custom label ───────────────────────────────────────
         $label = trim( $item->post_title );
         if ( $label !== '' ) {
-            $translated = autolingo_call_deepl( $label, $target_lang );
+            $previous_context = autolingo_translation_context( 'Label of a navigation menu item on a website (a short link text).' );
+            $translated       = autolingo_call_deepl( $label, $target_lang );
+            autolingo_translation_context( $previous_context );
             $label = $translated !== false ? $translated : $item->post_title;
         }
 

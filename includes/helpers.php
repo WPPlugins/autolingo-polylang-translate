@@ -72,6 +72,36 @@ function autolingo_post_types(): array {
 }
 
 /**
+ * What the texts being translated are, sent with each provider call (DeepL "context",
+ * OpenAI / DeepSeek system prompt): short texts are ambiguous on their own. Never
+ * translated. Google and Microsoft have no such parameter.
+ *
+ * @param  string|null $set New context, or null to read it.
+ * @return string           The context before this call (to restore it afterwards).
+ */
+function autolingo_translation_context( ?string $set = null ): string {
+    static $context = '';
+    $previous = $context;
+    if ( $set !== null ) $context = $set;
+    return $previous;
+}
+
+/** Context for a post, from its type. */
+function autolingo_post_context( WP_Post $post ): string {
+    switch ( $post->post_type ) {
+        case 'post':
+            return 'Blog post of a website: title, content, excerpt, image captions and SEO fields.';
+        case 'page':
+            return 'Page of a website: title, content, excerpt, image captions and SEO fields.';
+        case 'product':
+            return 'Product page of an online store: product name, descriptions, attributes, image captions and SEO fields.';
+    }
+    $type  = get_post_type_object( $post->post_type );
+    $label = $type ? $type->labels->singular_name : $post->post_type;
+    return 'Content of a website (' . $label . '): title, content, excerpt, image captions and SEO fields.';
+}
+
+/**
  * Retourne le seuil d'alerte crédit (en caractères).
  */
 function autolingo_alert_threshold(): int {

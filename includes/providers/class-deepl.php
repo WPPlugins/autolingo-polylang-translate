@@ -58,6 +58,7 @@ class AUTOLINGO_Provider_DeepL implements AUTOLINGO_Provider {
                 'tag_handling' => 'html',
                 'formality'    => autolingo_deepl_formality( $target_lang ),
                 'glossary_id'  => $this->get_glossary_id( autolingo_source_lang(), $target_lang ),
+                'context'      => autolingo_translation_context() ?: null,
             ], fn( $v ) => $v !== null ) ),
         ];
 
@@ -131,6 +132,7 @@ class AUTOLINGO_Provider_DeepL implements AUTOLINGO_Provider {
                 'tag_handling' => 'html',
                 'formality'    => autolingo_deepl_formality( $target_lang ),
                 'glossary_id'  => $this->get_glossary_id( autolingo_source_lang(), $target_lang ),
+                'context'      => autolingo_translation_context() ?: null,
             ], fn( $v ) => $v !== null ) ),
         ];
 

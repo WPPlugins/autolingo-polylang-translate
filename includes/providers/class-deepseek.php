@@ -47,7 +47,8 @@ class AUTOLINGO_Provider_DeepSeek implements AUTOLINGO_Provider {
                             "You are a professional translator. Translate the following HTML/WordPress content to {$lang_name}. " .
                             'Rules: preserve all HTML tags and attributes exactly; do not translate text inside square brackets ' .
                             '(WordPress shortcodes like [gallery id="1"]); preserve WordPress block comments (<!-- wp:... -->); ' .
-                            'return only the translated content, no explanations or extra text.',
+                            'return only the translated content, no explanations or extra text.' .
+                            ( autolingo_translation_context() !== '' ? ' Context, for your understanding only (do not translate it or add it): ' . autolingo_translation_context() : '' ),
                     ],
                     [ 'role' => 'user', 'content' => $text ],
                 ],

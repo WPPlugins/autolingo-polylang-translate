@@ -79,7 +79,9 @@ function autolingo_translate_image_alt_text( WP_Post $source_post, int $target_i
     $attachment_ids = array_keys( $jobs );
     $texts          = array_column( $jobs, 'source_alt' );
 
-    $translated = autolingo_call_deepl_batch( $texts, $target_lang );
+    $previous_context = autolingo_translation_context( 'Alternative text (alt) of images on a website, describing each image.' );
+    $translated       = autolingo_call_deepl_batch( $texts, $target_lang );
+    autolingo_translation_context( $previous_context );
     if ( $translated === false ) {
         autolingo_log_error(
             "Erreur lors de la traduction du texte alternatif des images vers {$target_lang}.",

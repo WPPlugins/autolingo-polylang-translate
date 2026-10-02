@@ -69,19 +69,24 @@ function autolingo_translate_post( int $post_id ): bool {
 
     $ml = autolingo_multilingual();
 
-    foreach ( autolingo_target_langs() as $lang_slug ) {
-        $target_lang  = strtoupper( $lang_slug );
-        $translations = $ml->get_post_translations( $post_id );
+    $previous_context = autolingo_translation_context( autolingo_post_context( $post ) );
+    try {
+        foreach ( autolingo_target_langs() as $lang_slug ) {
+            $target_lang  = strtoupper( $lang_slug );
+            $translations = $ml->get_post_translations( $post_id );
 
-        if ( ! empty( $translations[ $lang_slug ] ) ) {
-            // Traduction existante → mise à jour
-            $ok = autolingo_update_translation( $post, $translations[ $lang_slug ], $target_lang, $lang_slug );
-        } else {
-            // Nouvelle traduction
-            $ok = (bool) autolingo_create_translation( $post, $target_lang, $lang_slug );
+            if ( ! empty( $translations[ $lang_slug ] ) ) {
+                // Traduction existante → mise à jour
+                $ok = autolingo_update_translation( $post, $translations[ $lang_slug ], $target_lang, $lang_slug );
+            } else {
+                // Nouvelle traduction
+                $ok = (bool) autolingo_create_translation( $post, $target_lang, $lang_slug );
+            }
+
+            if ( ! $ok ) $success = false;
         }
-
-        if ( ! $ok ) $success = false;
+    } finally {
+        autolingo_translation_context( $previous_context );
     }
 
     if ( $success ) {

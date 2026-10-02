@@ -42,7 +42,9 @@ function autolingo_translate_term( int $source_term_id, string $taxonomy, string
     $batch_input = [ $term->name ];
     if ( $term->description ) $batch_input[] = $term->description;
 
-    $batch = autolingo_call_deepl_batch( $batch_input, $target_lang );
+    $previous_context = autolingo_translation_context( 'Name and description of a ' . $taxonomy . ' term (category or tag) on a website.' );
+    $batch            = autolingo_call_deepl_batch( $batch_input, $target_lang );
+    autolingo_translation_context( $previous_context );
 
     $translated_name = $batch !== false ? ( $batch[0] ?? false ) : false;
     $translated_desc = ( $batch !== false && $term->description ) ? ( $batch[1] ?? '' ) : '';

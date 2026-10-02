@@ -136,62 +136,8 @@ function autolingo_provider_translate( AUTOLINGO_Provider $provider, array $batc
 function autolingo_call_deepl( string $text, string $target_lang ): string|false {
     if ( empty( trim( $text ) ) ) return $text;
 
-    // Protect [notranslate]...[/notranslate] spans — inner content preserved verbatim.
-    $notranslate = [];
-    $text        = autolingo_protect_notranslate( $text, $notranslate );
-
-    // Protect entire blocks whose inner content must never be sent to the API
-    // (custom HTML, embeds, code…). Must run before strip_block_comments so the
-    // opaque block's opening/closing comments are included in the placeholder.
-    $opaque   = [];
-    $prepared = autolingo_protect_opaque_blocks( $text, $opaque );
-
-    // Strip Gutenberg block comments before sending to the API.
-    // Block comments can contain huge JSON attributes (e.g. UAGB info-box with full
-    // media library objects) that push content over the provider's request size limit.
-    // They are never translated anyway — only the rendered HTML between tags matters.
-    $block_comments = [];
-    $prepared       = autolingo_strip_block_comments( $prepared, $block_comments );
-
-    $placeholders = [];
-    $prepared     = autolingo_protect_shortcodes( $prepared, $placeholders );
-    $prepared     = autolingo_protect_seo_vars( $prepared );
-
-    $api_translate = static function ( array $batch ) use ( $target_lang ): array|false {
-        return autolingo_translate_with_fallback( $batch, $target_lang );
-    };
-
-    $results = autolingo_tm_translate_batch( [ $prepared ], autolingo_source_lang(), $target_lang, $api_translate );
-    $result  = $results !== false ? ( $results[0] ?? false ) : false;
-
-    if ( $result === false ) return false;
-
-    // Restore shortcodes
-    if ( ! empty( $placeholders ) ) {
-        $result = str_replace( array_keys( $placeholders ), array_values( $placeholders ), $result );
-    }
-
-    // Restore Gutenberg block comments
-    if ( ! empty( $block_comments ) ) {
-        $result = str_replace( array_keys( $block_comments ), array_values( $block_comments ), $result );
-    }
-
-    // Restore opaque blocks
-    if ( ! empty( $opaque ) ) {
-        $result = str_replace( array_keys( $opaque ), array_values( $opaque ), $result );
-    }
-
-    // Restore [notranslate] inner content
-    if ( ! empty( $notranslate ) ) {
-        $result = str_replace( array_keys( $notranslate ), array_values( $notranslate ), $result );
-    }
-
-    // Strip any residual translate="no" spans added by DeepL
-    if ( str_contains( $result, 'translate="no"' ) ) {
-        $result = preg_replace( '/<span translate="no">(.*?)<\/span>/s', '$1', $result );
-    }
-
-    return $result;
+    $results = autolingo_call_deepl_batch( [ $text ], $target_lang );
+    return $results === false ? false : ( $results[0] ?? false );
 }
 
 /**
@@ -213,6 +159,7 @@ function autolingo_call_deepl_batch( array $texts, string $target_lang ): array|
     $opaque_maps      = [];
     $block_maps       = [];
     $placeholder_maps = [];
+    $attribute_maps   = [];
     $prepared         = [];
 
     foreach ( $texts as $text ) {
@@ -225,8 +172,11 @@ function autolingo_call_deepl_batch( array $texts, string $target_lang ): array|
         $ph     = [];
         $t      = autolingo_protect_shortcodes( $t, $ph );
         $t      = autolingo_protect_seo_vars( $t );
+        $attrs  = [];
+        $t      = autolingo_extract_html_attributes( $t, $attrs );
 
         $prepared[]           = $t;
+        $attribute_maps[]     = $attrs;
         $notranslate_maps[]   = $nt;
         $opaque_maps[]        = $opaque;
         $block_maps[]         = $blocks;
@@ -237,9 +187,26 @@ function autolingo_call_deepl_batch( array $texts, string $target_lang ): array|
         return autolingo_translate_with_fallback( $batch, $target_lang );
     };
 
-    $results = autolingo_tm_translate_batch( $prepared, autolingo_source_lang(), $target_lang, $api_translate );
+    // alt/title values travel as extra texts of the same call, after the texts themselves.
+    $segments = array_merge( [], ...array_map( 'array_values', $attribute_maps ) );
+    $results  = autolingo_tm_translate_batch( array_merge( $prepared, $segments ), autolingo_source_lang(), $target_lang, $api_translate );
 
     if ( $results === false ) return false;
+
+    $all_results = $results;
+    $offset      = count( $prepared );
+    $results     = array_slice( $results, 0, $offset );
+    foreach ( $attribute_maps as $i => $attrs ) {
+        if ( empty( $attrs ) ) continue;
+        $values = [];
+        foreach ( array_keys( $attrs ) as $token ) {
+            $values[ $token ] = is_string( $all_results[ $offset ] ?? null ) ? $all_results[ $offset ] : $attrs[ $token ];
+            $offset++;
+        }
+        if ( is_string( $results[ $i ] ?? null ) ) {
+            $results[ $i ] = autolingo_restore_html_attributes( $results[ $i ], $values );
+        }
+    }
 
     foreach ( $results as $i => &$result ) {
         if ( ! is_string( $result ) ) continue;
@@ -262,6 +229,38 @@ function autolingo_call_deepl_batch( array $texts, string $target_lang ): array|
     unset( $result );
 
     return $results;
+}
+
+// ── Image alt text and titles inside HTML ────────────────────────────────────
+
+/**
+ * Providers translate the text between tags, not attribute values: swap each alt/title
+ * value for a token and return the values (decoded) in $segments, to translate them as
+ * extra texts. Values already tokenized or blank are skipped.
+ */
+function autolingo_extract_html_attributes( string $html, array &$segments ): string {
+    if ( stripos( $html, 'alt' ) === false && stripos( $html, 'title' ) === false ) return $html;
+    $pattern = '/(<[a-z][a-z0-9]*\b[^>]*?\s(?:alt|title)\s*=\s*)(["\'])(?!__ALATTR\d+__\2|\s*\2)(.*?)\2/is';
+    // A tag can carry both alt and title: repeat until no untokenized value is left.
+    do {
+        $before = $html;
+        $html   = (string) preg_replace_callback( $pattern, static function ( array $m ) use ( &$segments ): string {
+            $token              = '__ALATTR' . count( $segments ) . '__';
+            $segments[ $token ] = html_entity_decode( $m[3], ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+            return $m[1] . $m[2] . $token . $m[2];
+        }, $html );
+    } while ( $html !== $before );
+    return $html;
+}
+
+/** Put the translated alt/title values back, escaped for an attribute. */
+function autolingo_restore_html_attributes( string $html, array $translated ): string {
+    $replace = [];
+    foreach ( $translated as $token => $text ) {
+        $plain             = html_entity_decode( (string) $text, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+        $replace[ $token ] = esc_attr( $plain );
+    }
+    return $replace ? strtr( $html, $replace ) : $html;
 }
 
 // ── No-translate shortcode ────────────────────────────────────────────────────

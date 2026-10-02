@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.2.0
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,8 @@ Whether you need Polylang or WPML automatic translation for a single post or you
 * Admin alert + dashboard widget when credit runs low
 * Category and tag translation — term names (and descriptions) are genuinely translated via your chosen provider, not just linked to an existing Polylang/WPML translation
 * Image alt text translation — when a translated media item exists, its alt text is translated too, not just copied
+* Image alt and title text inside your content (Gutenberg images, HTML) translated in the same call as the rest
+* Context-aware: the provider is told what it translates (blog post, page, product, category, menu item) for better short texts
 * Post meta copy on creation (theme settings, page templates, layout options)
 * Shortcode-based builders (Divi, WPBakery, Flatsome) — shortcodes preserved verbatim
 
@@ -211,6 +213,10 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.3.0 =
+* Image alt and title text inside your content (Gutenberg images, HTML) is translated, in the same call as the rest
+* Better translations of short texts: the provider is told what it translates (blog post, page, product, category, menu item, image alt text) — DeepL context, OpenAI / DeepSeek instructions
 
 = 1.2.0 =
 * Microsoft Translator as a fifth provider (free tier: 2,000,000 characters a month)
