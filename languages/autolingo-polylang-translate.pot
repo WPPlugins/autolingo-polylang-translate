@@ -643,3 +643,59 @@ msgstr ""
 #: admin/settings.php
 msgid "When the selected provider has used up its quota, translate with the next one that has a key: DeepL, Microsoft, Google, then OpenAI and DeepSeek. With free DeepL, Microsoft and Google accounts, that is about 3,000,000 free characters a month."
 msgstr ""
+
+msgid "AutoLingo AI works with an activated AutoLingo Premium licence."
+msgstr ""
+
+msgid "AutoLingo AI: your Premium licence is not valid or has expired."
+msgstr ""
+
+msgid "AutoLingo AI: your licence already uses the AI on 3 other sites."
+msgstr ""
+
+msgid "AutoLingo AI: this month's characters are used up. Buy a pack in Settings → AutoLingo, or wait until next month."
+msgstr ""
+
+msgid "AutoLingo AI is busy for now. Try again in a minute."
+msgstr ""
+
+#, php-format
+msgid "AutoLingo AI returned HTTP %d."
+msgstr ""
+
+msgid "The payment page could not be opened. Try again in a minute."
+msgstr ""
+
+msgid "Sorry, you are not allowed to do that."
+msgstr ""
+
+msgid "AutoLingo AI"
+msgstr ""
+
+#, php-format
+msgid "Included with Premium, no API key: %s characters a month."
+msgstr ""
+
+#, php-format
+msgid "This month: %1$s of %2$s used."
+msgstr ""
+
+#, php-format
+msgid "Bought characters left: %s."
+msgstr ""
+
+#, php-format
+msgid "Buy %1$s characters (%2$s)"
+msgstr ""
+
+msgid "One payment, through Stripe. Bought characters never expire: they are used once the month's are."
+msgstr ""
+
+msgid "AutoLingo AI (included, no key)"
+msgstr ""
+
+msgid "AutoLingo AI — this month"
+msgstr ""
+
+msgid "Included with Premium · monthly"
+msgstr ""

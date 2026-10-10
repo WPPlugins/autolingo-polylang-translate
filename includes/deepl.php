@@ -18,6 +18,12 @@ function autolingo_get_provider(): AUTOLINGO_Provider {
     if ( $instance !== null ) return $instance;
 
     $instance = autolingo_make_provider( autolingo_provider_slug() );
+    // Premium: a provider without a key gives way to AutoLingo AI, which needs none.
+    if ( class_exists( 'AUTOLINGO_Provider_AI' ) && ! ( $instance instanceof AUTOLINGO_Provider_AI )
+        && method_exists( $instance, 'api_key' ) && $instance->api_key() === '' ) {
+        $ai = new AUTOLINGO_Provider_AI();
+        if ( $ai->api_key() !== '' ) $instance = $ai;
+    }
 
     return $instance;
 }
@@ -28,6 +34,7 @@ function autolingo_make_provider( string $slug ): AUTOLINGO_Provider {
         case 'google':    return new AUTOLINGO_Provider_Google();
         case 'deepseek':  return new AUTOLINGO_Provider_DeepSeek();
         case 'microsoft': return new AUTOLINGO_Provider_Microsoft();
+        case 'autolingo': return class_exists( 'AUTOLINGO_Provider_AI' ) ? new AUTOLINGO_Provider_AI() : new AUTOLINGO_Provider_DeepL();
         default:          return new AUTOLINGO_Provider_DeepL();
     }
 }
@@ -53,7 +60,9 @@ function autolingo_provider_chain(): array {
     if ( ! autolingo_fallback_enabled() ) return [ $selected ];
 
     $chain = [ $selected ];
-    foreach ( AUTOLINGO_FALLBACK_ORDER as $slug ) {
+    // Premium: AutoLingo AI, included, comes last.
+    $order = class_exists( 'AUTOLINGO_Provider_AI' ) ? [ ...AUTOLINGO_FALLBACK_ORDER, 'autolingo' ] : AUTOLINGO_FALLBACK_ORDER;
+    foreach ( $order as $slug ) {
         if ( $slug === $selected->get_slug() ) continue;
         $provider = autolingo_make_provider( $slug );
         if ( method_exists( $provider, 'api_key' ) && $provider->api_key() !== '' ) {

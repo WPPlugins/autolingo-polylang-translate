@@ -459,3 +459,59 @@ msgstr "Utiliser les autres fournisseurs qui ont une clé"
 #: admin/settings.php
 msgid "When the selected provider has used up its quota, translate with the next one that has a key: DeepL, Microsoft, Google, then OpenAI and DeepSeek. With free DeepL, Microsoft and Google accounts, that is about 3,000,000 free characters a month."
 msgstr "Quand le fournisseur choisi a épuisé son quota, traduire avec le suivant qui a une clé : DeepL, Microsoft, Google, puis OpenAI et DeepSeek. Avec des comptes gratuits DeepL, Microsoft et Google, cela fait environ 3 000 000 de caractères gratuits par mois."
+
+msgid "AutoLingo AI works with an activated AutoLingo Premium licence."
+msgstr "L'IA AutoLingo fonctionne avec une licence AutoLingo Premium activée."
+
+msgid "AutoLingo AI: your Premium licence is not valid or has expired."
+msgstr "IA AutoLingo : votre licence Premium n'est pas valide ou a expiré."
+
+msgid "AutoLingo AI: your licence already uses the AI on 3 other sites."
+msgstr "IA AutoLingo : votre licence utilise déjà l'IA sur 3 autres sites."
+
+msgid "AutoLingo AI: this month's characters are used up. Buy a pack in Settings → AutoLingo, or wait until next month."
+msgstr "IA AutoLingo : les caractères de ce mois sont épuisés. Achetez un pack dans Réglages → AutoLingo, ou attendez le mois prochain."
+
+msgid "AutoLingo AI is busy for now. Try again in a minute."
+msgstr "L'IA AutoLingo est occupée pour le moment. Réessayez dans une minute."
+
+#, php-format
+msgid "AutoLingo AI returned HTTP %d."
+msgstr "L'IA AutoLingo a répondu HTTP %d."
+
+msgid "The payment page could not be opened. Try again in a minute."
+msgstr "La page de paiement n'a pas pu s'ouvrir. Réessayez dans une minute."
+
+msgid "Sorry, you are not allowed to do that."
+msgstr "Désolé, vous n'avez pas l'autorisation de faire cela."
+
+msgid "AutoLingo AI"
+msgstr "IA AutoLingo"
+
+#, php-format
+msgid "Included with Premium, no API key: %s characters a month."
+msgstr "Incluse avec Premium, sans clé d'API : %s caractères par mois."
+
+#, php-format
+msgid "This month: %1$s of %2$s used."
+msgstr "Ce mois-ci : %1$s utilisés sur %2$s."
+
+#, php-format
+msgid "Bought characters left: %s."
+msgstr "Caractères achetés restants : %s."
+
+#, php-format
+msgid "Buy %1$s characters (%2$s)"
+msgstr "Acheter %1$s caractères (%2$s)"
+
+msgid "One payment, through Stripe. Bought characters never expire: they are used once the month's are."
+msgstr "Un seul paiement, par Stripe. Les caractères achetés n'expirent jamais : ils servent une fois ceux du mois épuisés."
+
+msgid "AutoLingo AI (included, no key)"
+msgstr "IA AutoLingo (incluse, sans clé)"
+
+msgid "AutoLingo AI — this month"
+msgstr "IA AutoLingo — ce mois-ci"
+
+msgid "Included with Premium · monthly"
+msgstr "Incluse avec Premium · mensuel"

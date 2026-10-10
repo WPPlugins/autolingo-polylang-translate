@@ -396,7 +396,8 @@ function autolingo_settings_page_html(): void {
     if ( ! current_user_can( 'manage_options' ) ) return;
 
     $provider     = autolingo_get_provider();
-    $provider_slug = autolingo_provider_slug();
+    // The provider in use: AutoLingo AI on Premium when the saved one has no key.
+    $provider_slug = $provider->get_slug();
 
     // Test connection
     $test_result = '';
@@ -465,13 +466,16 @@ function autolingo_settings_page_html(): void {
 
         <?php if ( $usage ) : ?>
         <div style="background:#fff;border:1px solid #c3c4c7;border-radius:4px;padding:12px 16px;margin-bottom:20px;max-width:500px;">
-            <strong><?php esc_html_e( 'DeepL Credit', 'autolingo-polylang-translate' ); ?></strong>
+            <?php $is_ai = $provider->get_slug() === 'autolingo'; ?>
+            <strong><?php echo $is_ai ? esc_html__( 'AutoLingo AI — this month', 'autolingo-polylang-translate' ) : esc_html__( 'DeepL Credit', 'autolingo-polylang-translate' ); ?></strong>
             <?php
             $pct   = round( ( $usage['count'] / max( $usage['limit'], 1 ) ) * 100, 1 );
             $color = $usage['remaining'] < autolingo_alert_threshold() ? '#d63638' : '#00a32a';
-            $plan  = str_ends_with( $deepl_key, ':fx' )
-                ? esc_html__( 'Free plan · one-time credit', 'autolingo-polylang-translate' )
-                : esc_html__( 'Pro plan · monthly', 'autolingo-polylang-translate' );
+            $plan  = $is_ai
+                ? esc_html__( 'Included with Premium · monthly', 'autolingo-polylang-translate' )
+                : ( str_ends_with( $deepl_key, ':fx' )
+                    ? esc_html__( 'Free plan · one-time credit', 'autolingo-polylang-translate' )
+                    : esc_html__( 'Pro plan · monthly', 'autolingo-polylang-translate' ) );
             ?>
             <span style="float:right;color:#666;font-size:12px"><?php echo esc_html( $plan ); ?></span>
             <div style="background:#e0e0e0;border-radius:4px;height:10px;margin:10px 0;">
@@ -500,6 +504,9 @@ function autolingo_settings_page_html(): void {
                             <option value="google" <?php selected( $provider_slug, 'google' ); ?>>Google Translate</option>
                             <option value="deepseek" <?php selected( $provider_slug, 'deepseek' ); ?>>DeepSeek</option>
                             <option value="microsoft" <?php selected( $provider_slug, 'microsoft' ); ?>>Microsoft Translator</option>
+                            <?php if ( function_exists( 'autolingo_ai_settings_row' ) ) : ?>
+                                <option value="autolingo" <?php selected( $provider_slug, 'autolingo' ); ?>><?php esc_html_e( 'AutoLingo AI (included, no key)', 'autolingo-polylang-translate' ); ?></option>
+                            <?php endif; ?>
                         </select>
                     </td>
                 </tr>
@@ -570,6 +577,7 @@ function autolingo_settings_page_html(): void {
                         <p class="description"><?php esc_html_e( 'The region of your Azure resource. Leave empty for a global resource.', 'autolingo-polylang-translate' ); ?></p>
                     </td>
                 </tr>
+                <?php if ( function_exists( 'autolingo_ai_settings_row' ) ) autolingo_ai_settings_row(); ?>
                 <tr>
                     <th scope="row"><?php esc_html_e( 'When a quota runs out', 'autolingo-polylang-translate' ); ?></th>
                     <td>
