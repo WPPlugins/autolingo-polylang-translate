@@ -205,6 +205,31 @@ function autolingo_call_deepl_batch( array $texts, string $target_lang ): array|
     $all_results = $results;
     $offset      = count( $prepared );
     $results     = array_slice( $results, 0, $offset );
+
+    // An AI provider sometimes hands the comment placeholders back altered ("<!--PDT3--" without
+    // its ">", "<!--PDT3--->") or drops one, and the exact restore below then misses them: the post
+    // loses its block structure. Normalize them; if one is still missing or doubled, translate the
+    // text again piece by piece between its placeholders, so that none of them goes to the provider.
+    $tm_translate = static function ( array $batch ) use ( $target_lang, $api_translate ): array|false {
+        return autolingo_tm_translate_batch( $batch, autolingo_source_lang(), $target_lang, $api_translate );
+    };
+    foreach ( $results as $i => &$res ) {
+        if ( ! is_string( $res ) ) continue;
+        $keys = array_values( array_filter(
+            array_merge( array_keys( $notranslate_maps[ $i ] ), array_keys( $opaque_maps[ $i ] ), array_keys( $block_maps[ $i ] ) ),
+            static fn( string $key ): bool => str_contains( $prepared[ $i ], $key )
+        ) );
+        if ( ! $keys ) continue;
+
+        $res = autolingo_normalize_placeholders( $res );
+        if ( autolingo_placeholders_intact( $res, $keys ) ) continue;
+
+        autolingo_log( 'warning', 'Placeholders lost by the translation provider: text translated again piece by piece.', [], null, $target_lang );
+        $piecewise = autolingo_translate_between_placeholders( $prepared[ $i ], $tm_translate );
+        if ( $piecewise === false ) return false;
+        $res = $piecewise;
+    }
+    unset( $res );
     foreach ( $attribute_maps as $i => $attrs ) {
         if ( empty( $attrs ) ) continue;
         $values = [];
@@ -378,6 +403,56 @@ function autolingo_strip_block_comments( string $content, array &$comments ): st
         },
         $content
     );
+}
+
+/**
+ * Comment placeholders that travel through the provider: [notranslate] passages (ALNO),
+ * opaque blocks (ALOP) and Gutenberg block comments (PDT), in the forms an AI model may
+ * hand them back — "<!--PDT3--" without its ">", "<!--PDT3--->", spaces inside.
+ */
+const AUTOLINGO_PLACEHOLDER_PATTERN = '/<!--\s*(ALNO|ALOP|PDT)(\d+)\s*-*>?/';
+
+/** Rewrites every placeholder, altered or not, to its exact form. */
+function autolingo_normalize_placeholders( string $text ): string {
+    return preg_replace( AUTOLINGO_PLACEHOLDER_PATTERN, '<!--$1$2-->', $text ) ?? $text;
+}
+
+/**
+ * True when each placeholder of $keys is in $text exactly once, and no other one is.
+ *
+ * @param string[] $keys Placeholders present in the text sent for translation.
+ */
+function autolingo_placeholders_intact( string $text, array $keys ): bool {
+    foreach ( $keys as $key ) {
+        if ( substr_count( $text, $key ) !== 1 ) return false;
+    }
+    return preg_match_all( AUTOLINGO_PLACEHOLDER_PATTERN, $text ) === count( $keys );
+}
+
+/**
+ * Translates only the pieces of $text between its placeholders, which stay where they are.
+ * Pieces without visible text (wrapper tags, whitespace) are not sent.
+ *
+ * @param callable $translate function(string[] $batch): string[]|false
+ * @return string|false The text with its pieces translated, or false if the translation failed.
+ */
+function autolingo_translate_between_placeholders( string $text, callable $translate ): string|false {
+    $parts = preg_split( '/(<!--(?:ALNO|ALOP|PDT)\d+-->)/', $text, -1, PREG_SPLIT_DELIM_CAPTURE );
+    $send  = [];
+    foreach ( $parts as $k => $part ) {
+        if ( $k % 2 === 1 ) continue; // a placeholder
+        if ( trim( html_entity_decode( strip_tags( $part ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ) === '' ) continue;
+        $send[ $k ] = $part;
+    }
+    if ( ! $send ) return $text;
+
+    $translated = $translate( array_values( $send ) );
+    if ( $translated === false ) return false;
+    foreach ( array_keys( $send ) as $n => $k ) {
+        if ( ! is_string( $translated[ $n ] ?? null ) ) return false;
+        $parts[ $k ] = $translated[ $n ];
+    }
+    return implode( '', $parts );
 }
 
 // ── Shortcode / SEO helpers (shared by all providers) ────────────────────────
