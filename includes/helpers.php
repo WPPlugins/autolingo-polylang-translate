@@ -238,7 +238,7 @@ function autolingo_replace_internal_urls( string $content, string $target_lang_s
 
     return preg_replace_callback(
         '/(?<=href=["\']|src=["\'])(' . $escaped . '[^"\']*)/i',
-        function ( array $m ) use ( $source_home, $target_home, $target_lang_slug ): string {
+        function ( array $m ) use ( $ml, $source_home, $target_home, $target_lang_slug ): string {
             $url     = $m[1];
             $post_id = url_to_postid( $url );
 
