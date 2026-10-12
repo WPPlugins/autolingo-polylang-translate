@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.4.2
+Stable tag: 1.4.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -213,6 +213,10 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.4.3 =
+* Fix: with AutoLingo AI, a translated title or alt text could keep the Markdown code fence the AI wrapped it in ("```html … ```"). The fence is now removed, also from the translations already in the translation memory
+* Fix: when a translation fails, the log now gives the real cause (for example the AutoLingo AI characters of the month used up) instead of "DeepL error", whichever provider failed; WP-CLI shows it too
 
 = 1.4.2 =
 * Fix: with AutoLingo AI, some translated posts lost their block structure (the block markers came back altered from the AI and were not put back). They are now recovered, or the text is translated again piece by piece

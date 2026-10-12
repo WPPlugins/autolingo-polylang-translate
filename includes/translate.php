@@ -97,6 +97,20 @@ function autolingo_translate_post( int $post_id ): bool {
 }
 
 /**
+ * Message d'échec d'une traduction : la cause réelle quand un fournisseur l'a signalée (quota
+ * épuisé, erreur de connexion…), et non plus « Erreur DeepL » quel que soit le fournisseur.
+ *
+ * @param string $action      'traduction' ou 'mise à jour'.
+ * @param string $target_lang Code langue majuscules.
+ */
+function autolingo_translation_failure_message( string $action, string $target_lang ): string {
+    $cause = autolingo_last_error();
+    return $cause !== ''
+        ? "Échec de la {$action} vers {$target_lang} : {$cause}"
+        : "Échec de la {$action} vers {$target_lang} : le service de traduction n'a renvoyé aucun texte.";
+}
+
+/**
  * Crée un nouveau post traduit en utilisant le mécanisme natif de Polylang.
  * Reproduit exactement ce que fait le lien :
  *   post-new.php?post_type=page&from_post=64&new_lang=en
@@ -109,6 +123,7 @@ function autolingo_translate_post( int $post_id ): bool {
 function autolingo_create_translation( WP_Post $source_post, string $target_lang, string $lang_slug ) {
 
     // ── Traduire le contenu via une seule requête batch ───
+    autolingo_last_error( '' );
     $batch_input = [ $source_post->post_title, $source_post->post_content ];
     if ( $source_post->post_excerpt ) {
         $batch_input[] = $source_post->post_excerpt;
@@ -122,7 +137,7 @@ function autolingo_create_translation( WP_Post $source_post, string $target_lang
 
     if ( $translated_title === false || $translated_content === false ) {
         autolingo_log_error(
-            "Erreur DeepL lors de la traduction vers {$target_lang}.",
+            autolingo_translation_failure_message( 'traduction', $target_lang ),
             [ 'source_post_id' => $source_post->ID ],
             $source_post->ID,
             $target_lang
@@ -245,6 +260,7 @@ function autolingo_update_translation( WP_Post $source_post, int $translated_id,
             }
         }
 
+        autolingo_last_error( '' );
         $batch_input = [ $source_post->post_title, $source_post->post_content ];
         if ( $source_post->post_excerpt ) {
             $batch_input[] = $source_post->post_excerpt;
@@ -258,7 +274,7 @@ function autolingo_update_translation( WP_Post $source_post, int $translated_id,
 
         if ( $translated_title === false || $translated_content === false ) {
             autolingo_log_error(
-                "Erreur DeepL lors de la mise à jour vers {$target_lang}.",
+                autolingo_translation_failure_message( 'mise à jour', $target_lang ),
                 [ 'translated_id' => $translated_id ],
                 $source_post->ID,
                 $target_lang

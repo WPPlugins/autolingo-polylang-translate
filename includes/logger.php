@@ -67,6 +67,10 @@ function autolingo_log_uninstall(): void {
 function autolingo_log( string $level, string $message, array $context = [], ?int $post_id = null, ?string $lang = null ): void {
     global $wpdb;
 
+    if ( $level === 'error' ) {
+        autolingo_last_error( $message );
+    }
+
     $post_title = null;
     if ( $post_id ) {
         $post       = get_post( $post_id );
@@ -90,6 +94,19 @@ function autolingo_log( string $level, string $message, array $context = [], ?in
     if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
         error_log( "[PDT/{$level}] {$message}" ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- gated on WP_DEBUG_LOG.
     }
+}
+
+/**
+ * The last error logged during this request (a provider's quota or connection message, for
+ * instance), so that the caller can say why a translation failed. Pass a string to set it,
+ * '' to reset it before a new translation.
+ */
+function autolingo_last_error( ?string $set = null ): string {
+    static $last = '';
+    if ( $set !== null ) {
+        $last = $set;
+    }
+    return $last;
 }
 
 // Raccourcis

@@ -192,8 +192,14 @@ function autolingo_call_deepl_batch( array $texts, string $target_lang ): array|
         $placeholder_maps[]   = $ph;
     }
 
+    // Fences are removed before the translation memory stores the answers.
     $api_translate = static function ( array $batch ) use ( $target_lang ): array|false {
-        return autolingo_translate_with_fallback( $batch, $target_lang );
+        $out = autolingo_translate_with_fallback( $batch, $target_lang );
+        if ( ! is_array( $out ) ) return $out;
+        foreach ( $out as $k => $text ) {
+            if ( is_string( $text ) ) $out[ $k ] = autolingo_strip_code_fence( $text, (string) ( $batch[ $k ] ?? '' ) );
+        }
+        return $out;
     };
 
     // alt/title values travel as extra texts of the same call, after the texts themselves.
@@ -201,6 +207,12 @@ function autolingo_call_deepl_batch( array $texts, string $target_lang ): array|
     $results  = autolingo_tm_translate_batch( array_merge( $prepared, $segments ), autolingo_source_lang(), $target_lang, $api_translate );
 
     if ( $results === false ) return false;
+
+    // …and once more on what the memory hands back, for answers it stored before this fix.
+    $sources = array_merge( $prepared, $segments );
+    foreach ( $results as $k => $text ) {
+        if ( is_string( $text ) ) $results[ $k ] = autolingo_strip_code_fence( $text, (string) ( $sources[ $k ] ?? '' ) );
+    }
 
     $all_results = $results;
     $offset      = count( $prepared );
@@ -403,6 +415,22 @@ function autolingo_strip_block_comments( string $content, array &$comments ): st
         },
         $content
     );
+}
+
+/**
+ * An AI provider sometimes wraps its answer in a Markdown code fence ("```html … ```"), which then
+ * ends up in the post title, the content or an alt text. Removes a fence that wraps the whole
+ * answer, unless the source text was itself fenced.
+ */
+function autolingo_strip_code_fence( string $translated, string $source = '' ): string {
+    if ( str_starts_with( ltrim( $source ), '```' ) ) {
+        return $translated;
+    }
+    // A language tag ("```html") is only one when a line break follows it.
+    if ( preg_match( '/^\s*```(?:[\w+#.-]*[ \t]*\R)?(.*?)\R?[ \t]*```\s*$/su', $translated, $m ) ) {
+        return $m[1];
+    }
+    return $translated;
 }
 
 /**

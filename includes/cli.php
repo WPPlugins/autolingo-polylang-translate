@@ -119,7 +119,8 @@ WP_CLI::add_command( 'pdat translate-missing', function( array $args, array $ass
 
             if ( ! $new_id ) {
                 $success = false;
-                WP_CLI::warning( "  #{$post_id} \"{$title}\" → {$target_lang} : échec." );
+                $cause = autolingo_last_error();
+                WP_CLI::warning( "  #{$post_id} \"{$title}\" → {$target_lang} : échec" . ( $cause !== '' ? " ({$cause})" : '.' ) );
             } else {
                 WP_CLI::line( WP_CLI::colorize( "  %G✓%n #{$post_id} \"{$title}\" → {$target_lang} (nouveau #{$new_id})" ) );
             }
