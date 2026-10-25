@@ -699,3 +699,15 @@ msgstr ""
 
 msgid "Included with Premium · monthly"
 msgstr ""
+
+#: admin/settings.php
+msgid "AutoLingo — Translation for Polylang & WPML"
+msgstr ""
+
+#: admin/settings.php
+msgid "%d menu(s) translated successfully. WPML links each one to its source menu."
+msgstr ""
+
+#: admin/settings.php
+msgid "WPML links each translated menu to its source menu: it is shown in its own language automatically."
+msgstr ""

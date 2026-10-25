@@ -128,4 +128,14 @@ class AutoLingo_Polylang_Adapter implements AutoLingo_Multilingual_Adapter {
             'fields'         => 'ids',
         ] );
     }
+
+    // ── Menus ─────────────────────────────────────────────────────────────────
+
+    public function link_menu_translation( int $source_menu_id, int $menu_id, string $lang_slug, string $source_lang_slug ): void {
+        // Polylang assigns menus to languages through its menu locations settings.
+    }
+
+    public function switch_language( string $lang_slug ): string {
+        return ''; // Polylang does not remap IDs to a "current language" when saving.
+    }
 }

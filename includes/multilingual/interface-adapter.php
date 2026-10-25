@@ -89,4 +89,21 @@ interface AutoLingo_Multilingual_Adapter {
      * @param string[] $post_types
      */
     public function get_source_post_ids( array $post_types, string $source_lang ): array;
+
+    // ── Menus ─────────────────────────────────────────────────────────────────
+
+    /**
+     * Declare $menu_id (a nav_menu term) as the $lang_slug translation of
+     * $source_menu_id. Call it before adding items: WPML only attaches items to a
+     * menu of their own language. No-op where menus are assigned per language in
+     * the plugin's own settings (Polylang menu locations).
+     */
+    public function link_menu_translation( int $source_menu_id, int $menu_id, string $lang_slug, string $source_lang_slug ): void;
+
+    /**
+     * Make $lang_slug the plugin's current language and return the previous one, to
+     * pass back afterwards. WPML maps term IDs (menus, categories) to the current
+     * language, so content must be created in its own language. '' = no-op.
+     */
+    public function switch_language( string $lang_slug ): string;
 }

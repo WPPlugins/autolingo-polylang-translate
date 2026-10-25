@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.4.3
+Stable tag: 1.4.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,7 +25,7 @@ Whether you need Polylang or WPML automatic translation for a single post or you
 * Translate Gutenberg content (title, blocks, excerpt) on publish or manually
 * Manual translate button in the post editor and post list
 * Bulk translation via WP-CLI (`translate-missing`, `translate-all`)
-* Nav menu translation via Polylang
+* Nav menu translation (Polylang and WPML)
 * Five providers: DeepL (Free and Pro, auto-detected from the `:fx` key suffix), Google Translate, Microsoft Translator, OpenAI and DeepSeek
 * Automatic fallback: when the selected provider runs out of quota, the next one that has a key translates — free DeepL, Google and Microsoft accounts add up to about 3,000,000 characters a month
 * Credit balance check before each translation
@@ -213,6 +213,14 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.4.4 =
+* Fix (WPML): with English set up as "en-us" (WPML 5's default), nothing was translated — WPML language codes now match AutoLingo's
+* Fix (WPML): editing a source post detached its translation, so the next save created a duplicate
+* Fix (WPML): posts created and published in one go (REST API, WP-CLI, imports) were not translated
+* Fix (WPML): translated categories and tags could be filed under the wrong language on sites where term IDs and term taxonomy IDs differ
+* Fix (WPML): translated menus are now French menus linked to their source, with their items (they used to be English and empty)
+* Tested on a real WPML 5.2 site
 
 = 1.4.3 =
 * Fix: with AutoLingo AI, a translated title or alt text could keep the Markdown code fence the AI wrapped it in ("```html … ```"). The fence is now removed, also from the translations already in the translation memory

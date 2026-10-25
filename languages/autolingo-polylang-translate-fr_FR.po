@@ -515,3 +515,15 @@ msgstr "IA AutoLingo — ce mois-ci"
 
 msgid "Included with Premium · monthly"
 msgstr "Incluse avec Premium · mensuel"
+
+#: admin/settings.php
+msgid "AutoLingo — Translation for Polylang & WPML"
+msgstr "AutoLingo — Traduction pour Polylang et WPML"
+
+#: admin/settings.php
+msgid "%d menu(s) translated successfully. WPML links each one to its source menu."
+msgstr "%d menu(s) traduit(s). WPML relie chacun à son menu source."
+
+#: admin/settings.php
+msgid "WPML links each translated menu to its source menu: it is shown in its own language automatically."
+msgstr "WPML relie chaque menu traduit à son menu source : il s'affiche automatiquement dans sa langue."

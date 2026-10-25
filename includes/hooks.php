@@ -11,15 +11,45 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 add_action( 'autolingo_async_translate', 'autolingo_translate_post' );
 
 add_action( 'save_post', 'autolingo_on_save_post', 20, 3 );
+add_action( 'save_post', 'autolingo_on_save_post_late', 101, 3 );
 
-function autolingo_on_save_post( int $post_id, WP_Post $post, bool $update ): void {
+/**
+ * Posts whose language was not assigned yet when autolingo_on_save_post ran.
+ * WPML assigns a new post's language in save_post at priority 100, so a post created
+ * and published in one request (REST API, WP-CLI, importers) has none at priority 20.
+ */
+function autolingo_pending_language( ?int $post_id = null, bool $remove = false ): bool {
+    static $pending = [];
+    if ( $post_id === null ) return false;
+    if ( $remove ) {
+        $was = isset( $pending[ $post_id ] );
+        unset( $pending[ $post_id ] );
+        return $was;
+    }
+    $pending[ $post_id ] = true;
+    return true;
+}
+
+function autolingo_on_save_post_late( int $post_id, WP_Post $post, bool $update ): void {
+    if ( autolingo_pending_language( $post_id, true ) ) {
+        autolingo_on_save_post( $post_id, get_post( $post_id ) ?: $post, $update, true );
+    }
+}
+
+function autolingo_on_save_post( int $post_id, WP_Post $post, bool $update, bool $late = false ): void {
     if ( ! autolingo_auto_translate_enabled() )                          return;
     if ( wp_is_post_revision( $post_id ) )                         return;
     if ( wp_is_post_autosave( $post_id ) )                         return;
     if ( ! in_array( $post->post_type, autolingo_post_types(), true ) )  return;
     if ( $post->post_status !== 'publish' )                        return;
     $ml = autolingo_multilingual();
-    if ( ! $ml || $ml->get_post_language( $post_id ) !== autolingo_source_lang() ) return;
+    if ( ! $ml ) return;
+    $post_lang = $ml->get_post_language( $post_id );
+    if ( $post_lang === '' && ! $late ) {
+        autolingo_pending_language( $post_id ); // language not assigned yet: retry once it is (priority 101)
+        return;
+    }
+    if ( $post_lang !== autolingo_source_lang() ) return;
 
     // Elementor saves _elementor_data in a separate request after save_post.
     // Let elementor/document/after_save handle those posts instead.

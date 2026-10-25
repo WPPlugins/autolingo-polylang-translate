@@ -5,6 +5,11 @@
  * Uses only the documented WPML String Translation / Multilingual CMS API
  * (apply_filters / do_action), never direct DB queries or internal classes.
  * Requires WPML 4.0+.
+ *
+ * Language codes: WPML codes can carry a region or script (en-us, pt-br,
+ * zh-hans — WPML 5 names English "en-us" by default), while AutoLingo's
+ * settings use base codes (en, pt, zh). The adapter speaks AutoLingo codes to
+ * the rest of the plugin and WPML codes to WPML: to_wpml() / from_wpml().
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -17,21 +22,64 @@ class AutoLingo_WPML_Adapter implements AutoLingo_Multilingual_Adapter {
         return defined( 'ICL_SITEPRESS_VERSION' ) && function_exists( 'icl_object_id' );
     }
 
+    // ── Language codes ────────────────────────────────────────────────────────
+
+    /** WPML code → AutoLingo code: "en-us" → "en", "pt-br" → "pt", "fr" → "fr". */
+    public function from_wpml( string $code ): string {
+        return strtolower( explode( '-', str_replace( '_', '-', $code ) )[0] );
+    }
+
+    /** AutoLingo code → the active WPML language it stands for ("en" → "en-us"). */
+    public function to_wpml( string $code ): string {
+        $code   = strtolower( $code );
+        $active = array_keys( (array) apply_filters( 'wpml_active_languages', null, [ 'skip_missing' => 0 ] ) );
+        if ( in_array( $code, $active, true ) ) return $code;
+        foreach ( $active as $wpml_code ) {
+            if ( $this->from_wpml( (string) $wpml_code ) === $code ) return (string) $wpml_code;
+        }
+        return $code;
+    }
+
+    /**
+     * WPML identifies a term by its term_taxonomy_id in its element API
+     * (wpml_set_element_language_details, wpml_element_trid…), but wpml_object_id
+     * takes and returns term_id. Both are equal on a fresh install only.
+     */
+    private function term_element_id( int $term_id, string $taxonomy ): int {
+        $term = get_term( $term_id, $taxonomy );
+        return ( $term && ! is_wp_error( $term ) ) ? (int) $term->term_taxonomy_id : $term_id;
+    }
+
+    /**
+     * Set an element's language without moving it out of its translation group:
+     * WPML reads 'trid' => false as "start a new group", which detached a
+     * translation from its source every time its language was re-asserted.
+     */
+    private function set_element_language( int $element_id, string $element_type, string $lang_slug ): void {
+        // Read group and source from the element's own record. wpml_element_trid can
+        // answer for another element type sharing the ID when this one has no record
+        // yet (a term just created), which filed it in an unrelated group.
+        $details = apply_filters( 'wpml_element_language_details', null, [ 'element_id' => $element_id, 'element_type' => $element_type ] );
+        $trid    = ( $details && (int) ( $details->element_id ?? $element_id ) === $element_id ) ? ( $details->trid ?? false ) : false;
+
+        do_action( 'wpml_set_element_language_details', [
+            'element_id'           => $element_id,
+            'element_type'         => $element_type,
+            'trid'                 => $trid ?: false,
+            'language_code'        => $this->to_wpml( $lang_slug ),
+            'source_language_code' => $details->source_language_code ?? null,
+        ] );
+    }
+
     // ── Post language ─────────────────────────────────────────────────────────
 
     public function get_post_language( int $post_id ): string {
         $details = apply_filters( 'wpml_post_language_details', null, $post_id );
-        return is_array( $details ) ? (string) ( $details['language_code'] ?? '' ) : '';
+        return is_array( $details ) ? $this->from_wpml( (string) ( $details['language_code'] ?? '' ) ) : '';
     }
 
     public function set_post_language( int $post_id, string $lang_slug ): void {
-        do_action( 'wpml_set_element_language_details', [
-            'element_id'           => $post_id,
-            'element_type'         => 'post_' . get_post_type( $post_id ),
-            'trid'                 => false,
-            'language_code'        => $lang_slug,
-            'source_language_code' => null,
-        ] );
+        $this->set_element_language( $post_id, 'post_' . get_post_type( $post_id ), $lang_slug );
     }
 
     // ── Translation groups ────────────────────────────────────────────────────
@@ -47,7 +95,7 @@ class AutoLingo_WPML_Adapter implements AutoLingo_Multilingual_Adapter {
         $result = [];
         foreach ( $raw as $lang => $info ) {
             if ( isset( $info->element_id ) ) {
-                $result[ $lang ] = (int) $info->element_id;
+                $result[ $this->from_wpml( (string) $lang ) ] = (int) $info->element_id;
             }
         }
         return $result;
@@ -66,8 +114,8 @@ class AutoLingo_WPML_Adapter implements AutoLingo_Multilingual_Adapter {
             'element_id'           => $translated_id,
             'element_type'         => 'post_' . $post_type,
             'trid'                 => $source_trid ?: false,
-            'language_code'        => $translated_lang_slug,
-            'source_language_code' => $source_lang_slug,
+            'language_code'        => $this->to_wpml( $translated_lang_slug ),
+            'source_language_code' => $this->to_wpml( $source_lang_slug ),
         ] );
     }
 
@@ -105,21 +153,15 @@ class AutoLingo_WPML_Adapter implements AutoLingo_Multilingual_Adapter {
     // ── Look-ups ──────────────────────────────────────────────────────────────
 
     public function get_translated_post( int $post_id, string $lang_slug ): int {
-        return (int) apply_filters( 'wpml_object_id', $post_id, get_post_type( $post_id ), false, $lang_slug );
+        return (int) apply_filters( 'wpml_object_id', $post_id, get_post_type( $post_id ), false, $this->to_wpml( $lang_slug ) );
     }
 
     public function get_translated_term( int $term_id, string $lang_slug, string $taxonomy = 'category' ): int {
-        return (int) apply_filters( 'wpml_object_id', $term_id, $taxonomy, false, $lang_slug );
+        return (int) apply_filters( 'wpml_object_id', $term_id, $taxonomy, false, $this->to_wpml( $lang_slug ) );
     }
 
     public function set_term_language( int $term_id, string $taxonomy, string $lang_slug ): void {
-        do_action( 'wpml_set_element_language_details', [
-            'element_id'           => $term_id,
-            'element_type'         => 'tax_' . $taxonomy,
-            'trid'                 => false,
-            'language_code'        => $lang_slug,
-            'source_language_code' => null,
-        ] );
+        $this->set_element_language( $this->term_element_id( $term_id, $taxonomy ), 'tax_' . $taxonomy, $lang_slug );
     }
 
     public function save_term_translations(
@@ -129,14 +171,14 @@ class AutoLingo_WPML_Adapter implements AutoLingo_Multilingual_Adapter {
         string $translated_lang_slug,
         string $source_lang_slug
     ): void {
-        $source_trid = apply_filters( 'wpml_element_trid', null, $source_term_id, 'tax_' . $taxonomy );
+        $source_trid = apply_filters( 'wpml_element_trid', null, $this->term_element_id( $source_term_id, $taxonomy ), 'tax_' . $taxonomy );
 
         do_action( 'wpml_set_element_language_details', [
-            'element_id'           => $translated_term_id,
+            'element_id'           => $this->term_element_id( $translated_term_id, $taxonomy ),
             'element_type'         => 'tax_' . $taxonomy,
             'trid'                 => $source_trid ?: false,
-            'language_code'        => $translated_lang_slug,
-            'source_language_code' => $source_lang_slug,
+            'language_code'        => $this->to_wpml( $translated_lang_slug ),
+            'source_language_code' => $this->to_wpml( $source_lang_slug ),
         ] );
     }
 
@@ -147,7 +189,7 @@ class AutoLingo_WPML_Adapter implements AutoLingo_Multilingual_Adapter {
 
         // Switch to the target language to build the correct home URL.
         $current = apply_filters( 'wpml_current_language', null );
-        do_action( 'wpml_switch_language', $lang_slug );
+        do_action( 'wpml_switch_language', $this->to_wpml( $lang_slug ) );
         $lang_url = apply_filters( 'wpml_home_url', home_url( '/' ) );
         do_action( 'wpml_switch_language', $current );
 
@@ -159,7 +201,7 @@ class AutoLingo_WPML_Adapter implements AutoLingo_Multilingual_Adapter {
     public function get_source_post_ids( array $post_types, string $source_lang ): array {
         // Switch WPML language context so WP_Query returns only $source_lang posts.
         $current = apply_filters( 'wpml_current_language', null );
-        do_action( 'wpml_switch_language', $source_lang );
+        do_action( 'wpml_switch_language', $this->to_wpml( $source_lang ) );
 
         $ids = (array) get_posts( [
             'post_type'           => $post_types,
@@ -172,5 +214,20 @@ class AutoLingo_WPML_Adapter implements AutoLingo_Multilingual_Adapter {
         do_action( 'wpml_switch_language', $current );
 
         return $ids;
+    }
+
+    // ── Menus ─────────────────────────────────────────────────────────────────
+
+    public function link_menu_translation( int $source_menu_id, int $menu_id, string $lang_slug, string $source_lang_slug ): void {
+        $this->set_term_language( $menu_id, 'nav_menu', $lang_slug );
+        $this->save_term_translations( $source_menu_id, $menu_id, 'nav_menu', $lang_slug, $source_lang_slug );
+    }
+
+    public function switch_language( string $lang_slug ): string {
+        $previous = (string) apply_filters( 'wpml_current_language', null );
+        if ( $lang_slug !== '' ) {
+            do_action( 'wpml_switch_language', $this->to_wpml( $lang_slug ) );
+        }
+        return $previous;
     }
 }

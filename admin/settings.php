@@ -127,7 +127,7 @@ function autolingo_pro_banner(): void {
 
 function autolingo_add_settings_page(): void {
     add_options_page(
-        __( 'AutoLingo — Translation for Polylang', 'autolingo-polylang-translate' ),
+        __( 'AutoLingo — Translation for Polylang & WPML', 'autolingo-polylang-translate' ),
         __( 'AutoLingo', 'autolingo-polylang-translate' ),
         'manage_options',
         'autolingo-polylang-translate',
@@ -435,7 +435,7 @@ function autolingo_settings_page_html(): void {
     $microsoft_region = trim( get_option( 'autolingo_microsoft_region', '' ) );
     ?>
     <div class="wrap">
-        <h1>🌍 <?php esc_html_e( 'AutoLingo — Translation for Polylang', 'autolingo-polylang-translate' ); ?></h1>
+        <h1>🌍 <?php esc_html_e( 'AutoLingo — Translation for Polylang & WPML', 'autolingo-polylang-translate' ); ?></h1>
 
         <?php echo $test_result; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML built from esc_html__() and esc_url() calls above. ?>
 
@@ -447,7 +447,11 @@ function autolingo_settings_page_html(): void {
                 echo '<div class="notice notice-success is-dismissible"><p>✅ <strong>AutoLingo</strong> — '
                     . sprintf(
                         /* translators: %d: number of translated menus */
-                        esc_html__( '%d menu(s) translated successfully. Assign them in Appearance → Menus or Polylang settings.', 'autolingo-polylang-translate' ),
+                        autolingo_multilingual() instanceof AutoLingo_WPML_Adapter
+                            /* translators: %d: number of translated menus */
+                            ? esc_html__( '%d menu(s) translated successfully. WPML links each one to its source menu.', 'autolingo-polylang-translate' )
+                            /* translators: %d: number of translated menus */
+                            : esc_html__( '%d menu(s) translated successfully. Assign them in Appearance → Menus or Polylang settings.', 'autolingo-polylang-translate' ),
                         (int) $menu_notice['done']
                     )
                     . '</p></div>';
@@ -598,8 +602,7 @@ function autolingo_settings_page_html(): void {
         <hr>
         <h2>🧭 <?php esc_html_e( 'Navigation Menus', 'autolingo-polylang-translate' ); ?></h2>
         <?php
-        $menus = wp_get_nav_menus();
-        $source_menus = array_filter( $menus, fn( $m ) => ! preg_match( '/\[[A-Z]{2,5}\]$/', $m->name ) );
+        $source_menus = autolingo_source_menus();
         if ( empty( $source_menus ) ) :
         ?>
         <p><?php esc_html_e( 'No navigation menus found. Create menus in Appearance → Menus first.', 'autolingo-polylang-translate' ); ?></p>
@@ -617,7 +620,13 @@ function autolingo_settings_page_html(): void {
             <?php wp_nonce_field( 'autolingo_translate_menus' ); ?>
             <?php submit_button( __( '🌍 Translate All Menus', 'autolingo-polylang-translate' ), 'secondary', 'submit', false ); ?>
         </form>
-        <p class="description"><?php esc_html_e( 'After translation, assign the new menus to their language locations in Appearance → Menus or the Polylang settings.', 'autolingo-polylang-translate' ); ?></p>
+        <p class="description"><?php
+            if ( autolingo_multilingual() instanceof AutoLingo_WPML_Adapter ) {
+                esc_html_e( 'WPML links each translated menu to its source menu: it is shown in its own language automatically.', 'autolingo-polylang-translate' );
+            } else {
+                esc_html_e( 'After translation, assign the new menus to their language locations in Appearance → Menus or the Polylang settings.', 'autolingo-polylang-translate' );
+            }
+        ?></p>
         <?php endif; ?>
 
         <h2>📋 <?php esc_html_e( 'WP-CLI Commands', 'autolingo-polylang-translate' ); ?></h2>

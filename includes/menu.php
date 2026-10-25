@@ -22,15 +22,27 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  *
  * @return array[] One result array per [menu × lang] pair.
  */
+/**
+ * Menus to translate: every nav menu except the translated copies ("… [FR]").
+ * Unique by ID — under WPML wp_get_nav_menus() lists a menu once per language,
+ * each mapped to the current language, so the same menu came back twice.
+ *
+ * @return WP_Term[]
+ */
+function autolingo_source_menus(): array {
+    $menus = [];
+    foreach ( wp_get_nav_menus() as $menu ) {
+        if ( ! preg_match( '/\[[A-Z]{2,5}\]$/', $menu->name ) ) {
+            $menus[ $menu->term_id ] = $menu;
+        }
+    }
+    return array_values( $menus );
+}
+
 function autolingo_translate_all_menus(): array {
-    $menus   = wp_get_nav_menus();
     $results = [];
 
-    foreach ( $menus as $menu ) {
-        // Skip menus that are already translated copies (named "… [EN]" etc.).
-        if ( preg_match( '/\[[A-Z]{2,5}\]$/', $menu->name ) ) {
-            continue;
-        }
+    foreach ( autolingo_source_menus() as $menu ) {
         foreach ( autolingo_target_langs() as $lang_slug ) {
             $results[] = autolingo_translate_menu_to_lang( $menu, $lang_slug );
         }
@@ -51,8 +63,7 @@ function autolingo_translate_all_menus(): array {
  * @return array{menu:string, lang:string, menu_id:int, items:int, error:string}
  */
 function autolingo_translate_menu_to_lang( WP_Term $source_menu, string $lang_slug ): array {
-    $target_lang = strtoupper( $lang_slug );
-    $result      = [
+    $result = [
         'menu'    => $source_menu->name,
         'lang'    => $lang_slug,
         'menu_id' => 0,
@@ -60,12 +71,35 @@ function autolingo_translate_menu_to_lang( WP_Term $source_menu, string $lang_sl
         'error'   => '',
     ];
 
+    // Read the source items in the source language, build the translation in the
+    // target one: WPML maps menu and term IDs to its current language.
+    $ml       = autolingo_multilingual();
+    $previous = $ml ? $ml->switch_language( autolingo_source_lang() ) : '';
+
     // Fetch source items ordered by menu position.
     $items = wp_get_nav_menu_items( $source_menu->term_id, [ 'orderby' => 'menu_order' ] );
     if ( empty( $items ) ) {
+        if ( $previous !== '' ) $ml->switch_language( $previous );
         $result['error'] = 'empty menu';
         return $result;
     }
+
+    if ( $ml ) $ml->switch_language( $lang_slug );
+    try {
+        return autolingo_build_menu_translation( $source_menu, $items, $lang_slug, $result );
+    } finally {
+        if ( $previous !== '' ) $ml->switch_language( $previous );
+    }
+}
+
+/**
+ * Create (or rebuild) the $lang_slug copy of a menu from its source items.
+ * Runs with $lang_slug as the multilingual plugin's current language.
+ *
+ * @param WP_Post[] $items Source menu items, in menu order.
+ */
+function autolingo_build_menu_translation( WP_Term $source_menu, array $items, string $lang_slug, array $result ): array {
+    $target_lang = strtoupper( $lang_slug );
 
     // Find or create the translated menu (slug: original-slug-lang).
     $target_slug = $source_menu->slug . '-' . $lang_slug;
@@ -86,6 +120,13 @@ function autolingo_translate_menu_to_lang( WP_Term $source_menu, string $lang_sl
     }
 
     $result['menu_id'] = $menu_id;
+
+    // WPML: the translated menu must be in the target language, linked to its source,
+    // before items are added (items of one language are only attached to menus of it).
+    $ml = autolingo_multilingual();
+    if ( $ml ) {
+        $ml->link_menu_translation( $source_menu->term_id, (int) $menu_id, $lang_slug, autolingo_source_lang() );
+    }
 
     // Walk items in menu_order; map old IDs → new IDs for parent references.
     $id_map = [];

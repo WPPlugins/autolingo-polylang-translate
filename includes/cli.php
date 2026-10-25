@@ -207,10 +207,7 @@ WP_CLI::add_command( 'pdat translate-menus', function( array $args, array $assoc
         }
         $menus = [ $source_menu ];
     } else {
-        $menus = array_filter(
-            wp_get_nav_menus(),
-            fn( $m ) => ! preg_match( '/\[[A-Z]{2,5}\]$/', $m->name )
-        );
+        $menus = autolingo_source_menus();
     }
 
     if ( empty( $menus ) ) {
@@ -237,7 +234,11 @@ WP_CLI::add_command( 'pdat translate-menus', function( array $args, array $assoc
 
     WP_CLI::line( '' );
     WP_CLI::success( "{$done} menu(s) traduit(s)" . ( $errors ? ", {$errors} ignoré(s)." : '.' ) );
-    WP_CLI::line( WP_CLI::colorize( '%YAssignez les nouveaux menus dans Apparence → Menus ou les réglages Polylang.%n' ) );
+    if ( autolingo_multilingual() instanceof AutoLingo_WPML_Adapter ) {
+        WP_CLI::line( 'WPML : chaque menu traduit est relié à son menu source et s\'affiche dans sa langue.' );
+    } else {
+        WP_CLI::line( WP_CLI::colorize( '%YAssignez les nouveaux menus dans Apparence → Menus ou les réglages Polylang.%n' ) );
+    }
 
 }, [
     'shortdesc' => 'Traduit tous les menus de navigation (ou un seul) vers les langues cibles.',
