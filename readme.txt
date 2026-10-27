@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.4.6
+Stable tag: 1.4.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,13 +12,18 @@ Auto-translate posts & pages for Polylang & WPML with DeepL, Google, Microsoft, 
 
 == Description ==
 
+AutoLingo translates your Polylang or WPML site automatically. Publish a post in your language and AutoLingo creates its translations in every other language, with DeepL, Google Translate, Microsoft Translator, OpenAI (ChatGPT) or DeepSeek, on your own API keys, with no markup.
+
+**The free version includes**
+
+* All five providers, with automatic fallback when a quota runs out: about 3,000,000 free characters a month with free DeepL, Google and Microsoft accounts
+* Translation on publish, a Translate link in the post list and the editor, and bulk translation with WP-CLI
+* Categories, tags, menus and image alt text, not just posts
+* Gutenberg, the Classic Editor and shortcode builders (Divi, WPBakery, Flatsome)
+
+**AutoLingo Pro** adds Elementor, Bricks and Beaver Builder, SEO meta (Yoast, RankMath, SEOPress, The SEO Framework), ACF fields and WooCommerce, plus AutoLingo AI with no API key.
+
 <a href="https://wphealthkit.com/directory/autolingo-polylang-translate"><img src="https://wphealthkit.com/api/badge/autolingo-polylang-translate" alt="Autolingo Polylang Translate security audit by WP HealthKit" /></a>
-
-AutoLingo is the automatic translation plugin for Polylang and WPML. It auto-translates your posts and pages using DeepL, Google Translate, Microsoft Translator, OpenAI (ChatGPT) or DeepSeek — created and synced natively with your multilingual plugin. AutoLingo Pro adds WooCommerce products, SEO metadata (Yoast, RankMath), ACF fields and page builder support (Elementor, Beaver Builder, Bricks).
-
-Whether you need Polylang or WPML automatic translation for a single post or your entire content library, AutoLingo does it on publish, in bulk, or via WP-CLI, with AI translation quality from DeepL, Google, Microsoft, OpenAI or DeepSeek.
-
-**Free up to 3,000,000 characters a month with your free DeepL, Google and Microsoft accounts. No AutoLingo translation subscription.** When one provider's free quota runs out, AutoLingo automatically switches to the next one that has a key.
 
 = Features (Free) =
 
@@ -221,6 +226,11 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.4.7 =
+* Free version: the AutoLingo box in the post editor says when a page is built with Elementor, Bricks or Beaver Builder, whose layout the free version does not translate
+* Free version: the settings page lists the active plugins whose content only Pro translates (page builders, Yoast SEO, Rank Math, SEOPress, The SEO Framework, ACF, WooCommerce)
+* Readme: a clearer description of what the free version includes
 
 = 1.4.6 =
 * New installs take their source and target languages from Polylang or WPML (default language → source, the others → targets). The French → English defaults translated nothing on most sites. Existing settings are not changed

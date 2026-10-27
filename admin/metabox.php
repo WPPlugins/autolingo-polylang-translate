@@ -52,6 +52,18 @@ function autolingo_meta_box_html( WP_Post $post ): void {
 	}
 	echo '</p>';
 
+	// Free version: the builder's layout is not translated — say so here, where it matters.
+	$builder = function_exists( 'autolingo_run_premium_modules' ) ? '' : autolingo_post_builder( $post->ID );
+	if ( $builder ) {
+		echo '<p style="font-size:12px;background:#fcf9e8;border-left:3px solid #dba617;padding:6px 8px;margin:0 0 10px">'
+			. esc_html( sprintf(
+				/* translators: %1$s: page builder name, e.g. "Elementor" */
+				__( 'This page is built with %1$s. The free version translates its title and WordPress content, not the %1$s layout.', 'autolingo-polylang-translate' ),
+				$builder
+			) )
+			. ' <a href="' . esc_url( autolingo_pro_url( 'metabox' ) ) . '" target="_blank" rel="noopener">' . esc_html__( 'Page builders are translated by AutoLingo Pro.', 'autolingo-polylang-translate' ) . '</a></p>';
+	}
+
 	// Crédit restant
 	if ( $usage ) {
 		$color = $usage['remaining'] < autolingo_alert_threshold() ? '#d63638' : '#2271b1';

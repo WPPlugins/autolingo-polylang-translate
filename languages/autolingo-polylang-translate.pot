@@ -715,3 +715,14 @@ msgstr ""
 #: admin/settings.php
 msgid "WPML links each translated menu to its source menu: it is shown in its own language automatically."
 msgstr ""
+
+#. translators: %1$s: page builder name, e.g. "Elementor"
+msgid "This page is built with %1$s. The free version translates its title and WordPress content, not the %1$s layout."
+msgstr ""
+
+msgid "Page builders are translated by AutoLingo Pro."
+msgstr ""
+
+#. translators: %s: plugin names, e.g. "Elementor, Yoast SEO"
+msgid "Active on this site: %s. The free version does not translate their content."
+msgstr ""

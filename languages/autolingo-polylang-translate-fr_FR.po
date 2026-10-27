@@ -531,3 +531,14 @@ msgstr "%d menu(s) traduit(s). WPML relie chacun à son menu source."
 #: admin/settings.php
 msgid "WPML links each translated menu to its source menu: it is shown in its own language automatically."
 msgstr "WPML relie chaque menu traduit à son menu source : il s'affiche automatiquement dans sa langue."
+
+#. translators: %1$s: page builder name, e.g. "Elementor"
+msgid "This page is built with %1$s. The free version translates its title and WordPress content, not the %1$s layout."
+msgstr "Cette page est construite avec %1$s. La version gratuite traduit son titre et son contenu WordPress, pas la mise en page %1$s."
+
+msgid "Page builders are translated by AutoLingo Pro."
+msgstr "Les page builders sont traduits par AutoLingo Pro."
+
+#. translators: %s: plugin names, e.g. "Elementor, Yoast SEO"
+msgid "Active on this site: %s. The free version does not translate their content."
+msgstr "Actifs sur ce site : %s. La version gratuite ne traduit pas leur contenu."
