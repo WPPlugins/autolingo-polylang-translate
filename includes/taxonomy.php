@@ -20,7 +20,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 function autolingo_translate_term( int $source_term_id, string $taxonomy, string $target_lang, string $lang_slug, string $source_lang_slug ): int {
     if ( ! autolingo_module_enabled( 'taxonomy_names' ) ) return 0;
-    autolingo_extend_time_limit();
 
     $ml = autolingo_multilingual();
     if ( ! $ml ) return 0;

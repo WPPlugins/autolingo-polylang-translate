@@ -8,44 +8,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 add_action( 'admin_menu',             'autolingo_add_settings_page' );
 add_action( 'admin_init',             'autolingo_register_settings' );
 add_action( 'admin_init',             'autolingo_handle_pro_banner_dismiss' );
-/** The options holding a provider's API key. */
-const AUTOLINGO_KEY_OPTIONS = [ 'autolingo_api_key', 'autolingo_openai_api_key', 'autolingo_google_api_key', 'autolingo_deepseek_api_key', 'autolingo_microsoft_api_key' ];
-
-/**
- * A saved API key is never written back into the page: the field stays empty, its placeholder
- * shows the key's last four characters, and saving the form with it empty keeps the key
- * (a "Delete" box removes it). Outside the settings form (WP-CLI, code) the value is taken as given.
- */
-function autolingo_sanitize_api_key( string $option, $value ): string {
-    $value = sanitize_text_field( (string) $value );
-    // phpcs:disable WordPress.Security.NonceVerification.Missing -- options.php checked the settings nonce before sanitizing.
-    $from_form = isset( $_POST['option_page'] ) && sanitize_key( wp_unslash( $_POST['option_page'] ) ) === 'autolingo_settings_group';
-    if ( ! $from_form ) return $value;
-    if ( ! empty( $_POST[ $option . '_delete' ] ) ) return '';
-    // phpcs:enable
-    return trim( $value ) === '' ? (string) get_option( $option, '' ) : trim( $value );
-}
-
-/** The key field: empty, with the saved key's end as a placeholder and a box to delete it. */
-function autolingo_key_field( string $option, string $saved ): void {
-    $placeholder = $saved === ''
-        ? ''
-        /* translators: %s: last four characters of the saved key */
-        : sprintf( __( 'Saved key ending in %s. Leave empty to keep it.', 'autolingo-polylang-translate' ), substr( $saved, -4 ) );
-    printf(
-        '<input type="password" name="%1$s" value="" placeholder="%2$s" class="regular-text" autocomplete="new-password">',
-        esc_attr( $option ),
-        esc_attr( $placeholder )
-    );
-    if ( $saved !== '' ) {
-        printf(
-            ' <label><input type="checkbox" name="%1$s_delete" value="1"> %2$s</label>',
-            esc_attr( $option ),
-            esc_html__( 'Delete', 'autolingo-polylang-translate' )
-        );
-    }
-}
-
 add_action( 'admin_post_autolingo_translate_menus', 'autolingo_handle_translate_menus' );
 add_action( 'admin_notices',          'autolingo_pro_banner' );
 add_action( 'admin_enqueue_scripts',  'autolingo_settings_enqueue' );
@@ -79,12 +41,6 @@ function autolingo_settings_enqueue( string $hook ): void {
 
     // Provider key row toggle.
     wp_add_inline_script( 'autolingo-settings', '(function(){var sel=document.getElementById("autolingo_provider"),fb=document.getElementById("autolingo_fallback");function toggle(){var all=fb&&fb.checked;document.querySelectorAll(".autolingo-key-row").forEach(function(r){r.style.display=all?"":"none";});var row=document.getElementById("autolingo-key-"+sel.value);if(row)row.style.display="";}sel.addEventListener("change",toggle);if(fb)fb.addEventListener("change",toggle);toggle();})();' );
-
-    // Tabs: one part of the page at a time (see autolingo_settings_tabs_nav()).
-    wp_register_style( 'autolingo-settings', false, [], AUTOLINGO_VERSION );
-    wp_enqueue_style( 'autolingo-settings' );
-    wp_add_inline_style( 'autolingo-settings', '.autolingo-tabs{margin:8px 0 0}.autolingo-tabs-js .autolingo-panel{display:none}.autolingo-tabs-js .autolingo-panel.is-active{display:block}.autolingo-panel>h2:first-child{margin-top:1.2em}.autolingo-tabs-js .autolingo-panel+.autolingo-panel>h2:first-child{margin-top:1.2em}' );
-    wp_add_inline_script( 'autolingo-settings', '(function(){var nav=document.querySelector(".autolingo-tabs");if(!nav)return;var wrap=nav.closest(".wrap");wrap.classList.add("autolingo-tabs-js");var tabs=[].slice.call(nav.querySelectorAll(".nav-tab"));var submit=wrap.querySelector(".autolingo-submit");var form=submit&&submit.closest("form");function show(id){if(!id||!document.getElementById("autolingo-tab-"+id))return false;tabs.forEach(function(t){var on=t.dataset.tab===id;t.classList.toggle("nav-tab-active",on);if(on){t.setAttribute("aria-current","page");}else{t.removeAttribute("aria-current");}});[].forEach.call(wrap.querySelectorAll(".autolingo-panel"),function(p){p.classList.toggle("is-active",p.id==="autolingo-tab-"+id);});if(submit)submit.style.display=form.contains(document.getElementById("autolingo-tab-"+id))?"":"none";try{sessionStorage.setItem("autolingoTab",id);}catch(e){}return true;}tabs.forEach(function(t){t.addEventListener("click",function(e){e.preventDefault();show(t.dataset.tab);if(history.replaceState)history.replaceState(null,"","#"+t.dataset.tab);});});var saved=null;try{saved=sessionStorage.getItem("autolingoTab");}catch(e){}show(nav.dataset.default)||show(location.hash.slice(1))||show(saved)||show(tabs[0].dataset.tab);})();' );
 
     // Async enable/disable toggle.
     wp_add_inline_script( 'autolingo-settings', '(function(){var cb=document.getElementById("autolingo_async_enabled");var wrap=document.getElementById("autolingo-async-threshold-wrap");if(cb&&wrap){cb.addEventListener("change",function(){wrap.style.display=cb.checked?"":"none";});}})();' );
@@ -153,20 +109,16 @@ function autolingo_pro_banner(): void {
                 </p>
             </div>
             <ul style="flex:2;min-width:260px;margin:0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:3px 20px;font-size:12px;opacity:.92;">
-                <li>✓ <?php esc_html_e( 'Elementor, Divi, Beaver Builder, Bricks', 'autolingo-polylang-translate' ); ?></li>
+                <li>✓ <?php esc_html_e( 'Elementor, Beaver Builder, Bricks', 'autolingo-polylang-translate' ); ?></li>
                 <li>✓ <?php esc_html_e( 'Yoast, RankMath, SEOPress', 'autolingo-polylang-translate' ); ?></li>
                 <li>✓ <?php esc_html_e( 'ACF fields, repeater, flex content', 'autolingo-polylang-translate' ); ?></li>
                 <li>✓ <?php esc_html_e( 'WooCommerce product attributes', 'autolingo-polylang-translate' ); ?></li>
             </ul>
             <div>
-                <a href="<?php echo esc_url( autolingo_trial_url( 'banner' ) ); ?>" target="_blank" rel="noopener"
+                <a href="<?php echo esc_url( autolingo_pro_url( 'banner' ) ); ?>" target="_blank" rel="noopener"
                    style="display:inline-block;background:#fff;color:#1a5276;font-weight:700;padding:10px 22px;border-radius:4px;text-decoration:none;font-size:13px;white-space:nowrap;">
-                    <?php esc_html_e( 'Try it free for 14 days →', 'autolingo-polylang-translate' ); ?>
+                    <?php esc_html_e( 'Get AutoLingo Pro →', 'autolingo-polylang-translate' ); ?>
                 </a>
-                <div style="margin-top:6px;font-size:12px;opacity:.85;text-align:center;">
-                    <?php esc_html_e( 'No card needed.', 'autolingo-polylang-translate' ); ?>
-                    <a href="<?php echo esc_url( autolingo_pro_url( 'banner' ) ); ?>" target="_blank" rel="noopener" style="color:inherit;"><?php esc_html_e( 'Prices', 'autolingo-polylang-translate' ); ?></a>
-                </div>
             </div>
         </div>
     </div>
@@ -185,18 +137,18 @@ function autolingo_add_settings_page(): void {
 
 function autolingo_register_settings(): void {
     register_setting( 'autolingo_settings_group', 'autolingo_provider',        [ 'sanitize_callback' => 'sanitize_text_field' ] );
-    foreach ( AUTOLINGO_KEY_OPTIONS as $key_option ) {
-        register_setting( 'autolingo_settings_group', $key_option, [ 'sanitize_callback' => static fn( $value ): string => autolingo_sanitize_api_key( $key_option, $value ) ] );
-    }
+    register_setting( 'autolingo_settings_group', 'autolingo_api_key',         [ 'sanitize_callback' => 'sanitize_text_field' ] );
+    register_setting( 'autolingo_settings_group', 'autolingo_openai_api_key',  [ 'sanitize_callback' => 'sanitize_text_field' ] );
+    register_setting( 'autolingo_settings_group', 'autolingo_google_api_key',  [ 'sanitize_callback' => 'sanitize_text_field' ] );
+    register_setting( 'autolingo_settings_group', 'autolingo_deepseek_api_key', [ 'sanitize_callback' => 'sanitize_text_field' ] );
+    register_setting( 'autolingo_settings_group', 'autolingo_microsoft_api_key', [ 'sanitize_callback' => 'sanitize_text_field' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_microsoft_region', [ 'sanitize_callback' => 'sanitize_text_field' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_fallback',         [ 'sanitize_callback' => 'absint', 'default' => 1 ] );
     register_setting( 'autolingo_settings_group', 'autolingo_source_lang',     [ 'sanitize_callback' => 'sanitize_text_field' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_target_langs',    [ 'sanitize_callback' => 'autolingo_sanitize_array' ] );
-    register_setting( 'autolingo_settings_group', 'autolingo_language_providers', [ 'sanitize_callback' => 'autolingo_sanitize_language_providers' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_post_types',      [ 'sanitize_callback' => 'autolingo_sanitize_array' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_formality',            [ 'sanitize_callback' => 'sanitize_text_field' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_auto_translate',       [ 'sanitize_callback' => 'sanitize_text_field' ] );
-    register_setting( 'autolingo_settings_group', 'autolingo_new_status',           [ 'sanitize_callback' => 'autolingo_sanitize_new_status', 'default' => 'publish' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_alert_threshold',      [ 'sanitize_callback' => 'absint' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_async_enabled',        [ 'sanitize_callback' => 'sanitize_text_field' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_async_threshold',      [ 'sanitize_callback' => 'absint' ] );
@@ -214,10 +166,8 @@ function autolingo_register_settings(): void {
 
     add_settings_field( 'autolingo_source_lang',     __( 'Source Language', 'autolingo-polylang-translate' ),        'autolingo_field_source_lang',     'autolingo-polylang-translate', 'autolingo_section_langs' );
     add_settings_field( 'autolingo_target_langs',    __( 'Target Languages', 'autolingo-polylang-translate' ),       'autolingo_field_target_langs',    'autolingo-polylang-translate', 'autolingo_section_langs' );
-    add_settings_field( 'autolingo_language_providers', __( 'Provider per language', 'autolingo-polylang-translate' ), 'autolingo_field_language_providers', 'autolingo-polylang-translate', 'autolingo_section_langs' );
     add_settings_field( 'autolingo_post_types',      __( 'Content Types', 'autolingo-polylang-translate' ),          'autolingo_field_post_types',      'autolingo-polylang-translate', 'autolingo_section_behavior' );
     add_settings_field( 'autolingo_auto_translate',  __( 'Auto-translate', 'autolingo-polylang-translate' ),         'autolingo_field_auto_translate',  'autolingo-polylang-translate', 'autolingo_section_behavior' );
-    add_settings_field( 'autolingo_new_status',      __( 'New translations', 'autolingo-polylang-translate' ),       'autolingo_field_new_status',      'autolingo-polylang-translate', 'autolingo_section_behavior' );
     add_settings_field( 'autolingo_async_threshold', __( 'Background translation', 'autolingo-polylang-translate' ),  'autolingo_field_async_threshold', 'autolingo-polylang-translate', 'autolingo_section_behavior' );
     register_setting( 'autolingo_settings_group', 'autolingo_glossary_terms', [ 'sanitize_callback' => 'sanitize_textarea_field' ] );
     add_settings_section( 'autolingo_section_glossary', '📖 ' . __( 'DeepL Glossary', 'autolingo-polylang-translate' ), '__return_false', 'autolingo-polylang-translate' );
@@ -269,44 +219,6 @@ function autolingo_field_target_langs(): void {
     echo '<p class="description">' . esc_html__( 'Languages to automatically translate into.', 'autolingo-polylang-translate' ) . '</p>';
 }
 
-/** [ lang => provider slug ], '' (the default provider) left out. */
-function autolingo_sanitize_language_providers( $value ): array {
-    $known = [ 'deepl', 'google', 'microsoft', 'openai', 'deepseek', 'autolingo' ];
-    $out   = [];
-    foreach ( (array) $value as $lang => $slug ) {
-        $lang = sanitize_key( (string) $lang );
-        $slug = sanitize_key( (string) $slug );
-        if ( $lang !== '' && in_array( $slug, $known, true ) ) $out[ $lang ] = $slug;
-    }
-    return $out;
-}
-
-/** A provider for each target language: the default one, or another (DeepL for Catalan, AutoLingo AI for the rest…). */
-function autolingo_field_language_providers(): void {
-    $names = [
-        'deepl'     => 'DeepL',
-        'google'    => 'Google',
-        'microsoft' => 'Microsoft',
-        'openai'    => 'OpenAI',
-        'deepseek'  => 'DeepSeek',
-    ];
-    if ( class_exists( 'AUTOLINGO_Provider_AI' ) ) $names['autolingo'] = 'AutoLingo AI';
-    $chosen = autolingo_language_providers();
-    $langs  = autolingo_available_languages();
-    echo '<table class="widefat striped" style="max-width:520px"><tbody>';
-    foreach ( autolingo_target_langs() as $lang ) {
-        echo '<tr><td style="width:45%">' . esc_html( $langs[ $lang ] ?? strtoupper( $lang ) ) . '</td><td>';
-        echo '<select name="autolingo_language_providers[' . esc_attr( $lang ) . ']">';
-        echo '<option value="">' . esc_html__( 'Default provider', 'autolingo-polylang-translate' ) . '</option>';
-        foreach ( $names as $slug => $name ) {
-            echo '<option value="' . esc_attr( $slug ) . '"' . selected( $chosen[ $lang ] ?? '', $slug, false ) . '>' . esc_html( $name ) . '</option>';
-        }
-        echo '</select></td></tr>';
-    }
-    echo '</tbody></table>';
-    echo '<p class="description">' . esc_html__( 'Use another provider for a language than for the others, for example DeepL for Catalan. Each provider needs its key in the Provider tab; when its quota runs out, the fallback order applies as usual.', 'autolingo-polylang-translate' ) . '</p>';
-}
-
 function autolingo_field_modules(): void {
     $modules = [
         'page_builders' => [
@@ -323,7 +235,7 @@ function autolingo_field_modules(): void {
         ],
         'woocommerce'   => [
             'label' => __( 'WooCommerce', 'autolingo-polylang-translate' ),
-            'desc'  => __( 'Product attributes, variations and purchase note. Without Polylang for WooCommerce or WooCommerce Multilingual, translations also get the type, prices, variations and linked products of their source, and share its stock. The SKU is never copied.', 'autolingo-polylang-translate' ),
+            'desc'  => __( 'Custom product attributes, purchase note. Price, stock and SKU are never modified.', 'autolingo-polylang-translate' ),
         ],
     ];
 
@@ -379,24 +291,6 @@ function autolingo_field_auto_translate(): void {
     echo '<label><input type="checkbox" name="autolingo_auto_translate" value="1" ' . checked( $val, true, false ) . '> '
         . esc_html__( 'Automatically translate on each publish', 'autolingo-polylang-translate' ) . '</label>';
     echo '<p class="description">' . esc_html__( 'If disabled, translation only happens via the manual button or WP-CLI.', 'autolingo-polylang-translate' ) . '</p>';
-}
-
-function autolingo_sanitize_new_status( $value ): string {
-    return in_array( $value, [ 'publish', 'draft', 'pending' ], true ) ? $value : 'publish';
-}
-
-function autolingo_field_new_status(): void {
-    $val = autolingo_new_translation_status();
-    echo '<select name="autolingo_new_status">';
-    foreach ( [
-        'publish' => __( 'Published right away', 'autolingo-polylang-translate' ),
-        'draft'   => __( 'Saved as drafts, to review before publishing', 'autolingo-polylang-translate' ),
-        'pending' => __( 'Pending review (an editor publishes them)', 'autolingo-polylang-translate' ),
-    ] as $key => $label ) {
-        echo '<option value="' . esc_attr( $key ) . '"' . selected( $val, $key, false ) . '>' . esc_html( $label ) . '</option>';
-    }
-    echo '</select>';
-    echo '<p class="description">' . esc_html__( 'Updates keep the status a translation has: one you unpublished, or one still under review, stays that way.', 'autolingo-polylang-translate' ) . '</p>';
 }
 
 function autolingo_field_formality(): void {
@@ -484,7 +378,6 @@ function autolingo_available_languages(): array {
     return [
         'ar' => __( 'Arabic',     'autolingo-polylang-translate' ),
         'bg' => __( 'Bulgarian',  'autolingo-polylang-translate' ),
-        'ca' => __( 'Catalan',    'autolingo-polylang-translate' ),
         'cs' => __( 'Czech',      'autolingo-polylang-translate' ),
         'da' => __( 'Danish',     'autolingo-polylang-translate' ),
         'de' => __( 'German',     'autolingo-polylang-translate' ),
@@ -602,9 +495,8 @@ function autolingo_settings_page_html(): void {
             <?php
             $pct   = round( ( $usage['count'] / max( $usage['limit'], 1 ) ) * 100, 1 );
             $color = $usage['remaining'] < autolingo_alert_threshold() ? '#d63638' : '#00a32a';
-            $trial = $is_ai && ! empty( $usage['trial'] );
             $plan  = $is_ai
-                ? ( $trial ? esc_html__( 'Free trial · 100,000 characters', 'autolingo-polylang-translate' ) : esc_html__( 'Included with Premium · monthly', 'autolingo-polylang-translate' ) )
+                ? esc_html__( 'Included with Premium · monthly', 'autolingo-polylang-translate' )
                 : ( str_ends_with( $deepl_key, ':fx' )
                     ? esc_html__( 'Free plan · one-time credit', 'autolingo-polylang-translate' )
                     : esc_html__( 'Pro plan · monthly', 'autolingo-polylang-translate' ) );
@@ -614,12 +506,6 @@ function autolingo_settings_page_html(): void {
                 <div style="background:<?php echo esc_attr( $color ); ?>;width:<?php echo (float) $pct; ?>%;height:10px;border-radius:4px;"></div>
             </div>
             <span style="color:<?php echo esc_attr( $color ); ?>;font-weight:600"><?php echo number_format( $usage['remaining'], 0, ',', "\u{202F}" ); ?> <?php esc_html_e( 'remaining', 'autolingo-polylang-translate' ); ?></span>
-            <?php if ( $trial ) :
-                $fs          = function_exists( 'autolingo_fs' ) ? autolingo_fs() : null;
-                $upgrade_url = $fs && method_exists( $fs, 'get_upgrade_url' ) ? $fs->get_upgrade_url() : 'https://auto-lingo.com/wordpress#pricing'; ?>
-            <p style="margin:8px 0 0;color:#50575e;font-size:13px"><?php esc_html_e( 'The free trial includes 100,000 characters of AutoLingo AI to try it on a few pages. Subscribe to get 1,000,000 characters a month.', 'autolingo-polylang-translate' ); ?>
-                <a href="<?php echo esc_url( $upgrade_url ); ?>"><?php esc_html_e( 'Subscribe', 'autolingo-polylang-translate' ); ?></a></p>
-            <?php endif; ?>
             <span style="color:#666"> / <?php echo number_format( $usage['limit'], 0, ',', "\u{202F}" ); ?> <?php esc_html_e( 'total', 'autolingo-polylang-translate' ); ?></span>
             <span style="float:right"><a href="<?php echo esc_url( $test_url ); ?>">↻ <?php esc_html_e( 'Refresh', 'autolingo-polylang-translate' ); ?></a></span>
         </div>
@@ -627,13 +513,10 @@ function autolingo_settings_page_html(): void {
         <p><a href="<?php echo esc_url( $test_url ); ?>" class="button"><?php esc_html_e( 'Test connection', 'autolingo-polylang-translate' ); ?></a></p>
         <?php endif; ?>
 
-        <?php autolingo_settings_tabs_nav( $menu_notice ? 'tools' : '' ); ?>
-
         <form method="post" action="options.php">
             <?php settings_fields( 'autolingo_settings_group' ); ?>
 
             <?php /* ── Provider + API key (manual HTML for JS toggle) ── */ ?>
-            <div class="autolingo-panel" id="autolingo-tab-provider">
             <h2>🔑 <?php esc_html_e( 'Translation Provider', 'autolingo-polylang-translate' ); ?></h2>
             <table class="form-table" role="presentation">
                 <tr>
@@ -662,7 +545,7 @@ function autolingo_settings_page_html(): void {
                                 : ' <span style="color:#2271b1">✓ Pro</span>';
                         }
                         ?>
-                        <?php autolingo_key_field( 'autolingo_api_key', $deepl_key ); ?><?php echo $plan_badge; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- hardcoded HTML spans, no user input. ?>
+                        <input type="password" name="autolingo_api_key" value="<?php echo esc_attr( $deepl_key ); ?>" class="regular-text" autocomplete="off"><?php echo $plan_badge; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- hardcoded HTML spans, no user input. ?>
                         <p class="description">
                             <?php printf(
                                 /* translators: %s: code suffix :fx */
@@ -676,7 +559,7 @@ function autolingo_settings_page_html(): void {
                 <tr class="autolingo-key-row" id="autolingo-key-openai">
                     <th scope="row"><?php esc_html_e( 'OpenAI API Key', 'autolingo-polylang-translate' ); ?></th>
                     <td>
-                        <?php autolingo_key_field( 'autolingo_openai_api_key', $openai_key ); ?>
+                        <input type="password" name="autolingo_openai_api_key" value="<?php echo esc_attr( $openai_key ); ?>" class="regular-text" autocomplete="off">
                         <p class="description">
                             <?php esc_html_e( 'Uses gpt-4o-mini. Billed per token on your OpenAI account.', 'autolingo-polylang-translate' ); ?>
                             <a href="https://platform.openai.com/api-keys" target="_blank"><?php esc_html_e( 'Get a key →', 'autolingo-polylang-translate' ); ?></a>
@@ -686,7 +569,7 @@ function autolingo_settings_page_html(): void {
                 <tr class="autolingo-key-row" id="autolingo-key-google">
                     <th scope="row"><?php esc_html_e( 'Google API Key', 'autolingo-polylang-translate' ); ?></th>
                     <td>
-                        <?php autolingo_key_field( 'autolingo_google_api_key', $google_key ); ?>
+                        <input type="password" name="autolingo_google_api_key" value="<?php echo esc_attr( $google_key ); ?>" class="regular-text" autocomplete="off">
                         <p class="description">
                             <?php esc_html_e( 'Cloud Translation API v2 (Basic). Enable it in your Google Cloud project.', 'autolingo-polylang-translate' ); ?>
                             <a href="https://console.cloud.google.com/apis/library/translate.googleapis.com" target="_blank"><?php esc_html_e( 'Enable API →', 'autolingo-polylang-translate' ); ?></a>
@@ -696,7 +579,7 @@ function autolingo_settings_page_html(): void {
                 <tr class="autolingo-key-row" id="autolingo-key-deepseek">
                     <th scope="row"><?php esc_html_e( 'DeepSeek API Key', 'autolingo-polylang-translate' ); ?></th>
                     <td>
-                        <?php autolingo_key_field( 'autolingo_deepseek_api_key', $deepseek_key ); ?>
+                        <input type="password" name="autolingo_deepseek_api_key" value="<?php echo esc_attr( $deepseek_key ); ?>" class="regular-text" autocomplete="off">
                         <p class="description">
                             <?php esc_html_e( 'Uses deepseek-chat. Billed per token on your DeepSeek account.', 'autolingo-polylang-translate' ); ?>
                             <a href="https://platform.deepseek.com/api_keys" target="_blank"><?php esc_html_e( 'Get a key →', 'autolingo-polylang-translate' ); ?></a>
@@ -706,7 +589,7 @@ function autolingo_settings_page_html(): void {
                 <tr class="autolingo-key-row" id="autolingo-key-microsoft">
                     <th scope="row"><?php esc_html_e( 'Microsoft Translator Key', 'autolingo-polylang-translate' ); ?></th>
                     <td>
-                        <?php autolingo_key_field( 'autolingo_microsoft_api_key', $microsoft_key ); ?>
+                        <input type="password" name="autolingo_microsoft_api_key" value="<?php echo esc_attr( $microsoft_key ); ?>" class="regular-text" autocomplete="off">
                         <p class="description">
                             <?php esc_html_e( 'Azure AI Translator resource key. The free tier (F0) includes 2,000,000 characters a month.', 'autolingo-polylang-translate' ); ?>
                             <a href="https://portal.azure.com/#create/Microsoft.CognitiveServicesTextTranslation" target="_blank"><?php esc_html_e( 'Get a key →', 'autolingo-polylang-translate' ); ?></a>
@@ -731,29 +614,10 @@ function autolingo_settings_page_html(): void {
                     </td>
                 </tr>
             </table>
-            </div>
 
-            <div class="autolingo-panel" id="autolingo-tab-content">
-                <?php autolingo_render_settings_section( 'autolingo_section_langs' ); ?>
-                <?php autolingo_render_settings_section( 'autolingo_section_behavior' ); ?>
-            </div>
-            <?php if ( autolingo_settings_has_section( 'autolingo_section_modules' ) ) : ?>
-            <div class="autolingo-panel" id="autolingo-tab-modules">
-                <?php autolingo_render_settings_section( 'autolingo_section_modules' ); ?>
-                <?php autolingo_render_settings_section( 'autolingo_section_images' ); ?>
-            </div>
-            <?php endif; ?>
-            <div class="autolingo-panel" id="autolingo-tab-memory">
-                <?php autolingo_render_settings_section( 'autolingo_section_glossary' ); ?>
-                <?php autolingo_render_settings_section( 'autolingo_section_tm' ); ?>
-            </div>
-
-            <div class="autolingo-submit"><?php submit_button( __( 'Save Settings', 'autolingo-polylang-translate' ) ); ?></div>
+            <?php do_settings_sections( 'autolingo-polylang-translate' ); ?>
+            <?php submit_button( __( 'Save Settings', 'autolingo-polylang-translate' ) ); ?>
         </form>
-
-        <div class="autolingo-panel" id="autolingo-tab-tools">
-        <h2>📚 <?php esc_html_e( 'Whole site', 'autolingo-polylang-translate' ); ?></h2>
-        <?php autolingo_bulk_settings_section(); ?>
 
         <hr>
         <h2>🧭 <?php esc_html_e( 'Navigation Menus', 'autolingo-polylang-translate' ); ?></h2>
@@ -785,31 +649,6 @@ function autolingo_settings_page_html(): void {
         ?></p>
         <?php endif; ?>
 
-        <hr>
-        <h2>🔤 <?php esc_html_e( 'Theme and plugin strings', 'autolingo-polylang-translate' ); ?>
-            <?php if ( ! function_exists( 'autolingo_strings_settings_section' ) ) : ?>
-            <span style="display:inline-block;font-size:10px;font-weight:600;color:#fff;background:#135e96;border-radius:3px;padding:1px 5px;vertical-align:middle;margin-left:4px">PRO</span>
-            <?php endif; ?>
-        </h2>
-        <?php
-        if ( function_exists( 'autolingo_strings_settings_section' ) ) {
-            autolingo_strings_settings_section();
-        } else {
-            echo '<p class="description">' . wp_kses(
-                sprintf(
-                    /* translators: %s: link to AutoLingo website */
-                    __( 'Translate the strings of your theme and plugins (Polylang\'s Languages → Translations, or WPML String Translation): site title, widgets, cookie banner… with <a href="%s" target="_blank">AutoLingo Pro</a>.', 'autolingo-polylang-translate' ),
-                    esc_url( autolingo_pro_url( 'strings' ) )
-                ),
-                [ 'a' => [ 'href' => [], 'target' => [] ] ]
-            ) . '</p>';
-        }
-        ?>
-        </div>
-
-        <?php if ( function_exists( 'autolingo_assistant_panel' ) && autolingo_is_premium() ) autolingo_assistant_panel(); ?>
-
-        <div class="autolingo-panel" id="autolingo-tab-cli">
         <h2>📋 <?php esc_html_e( 'WP-CLI Commands', 'autolingo-polylang-translate' ); ?></h2>
         <table class="widefat striped" style="max-width:680px">
             <thead><tr>
@@ -824,79 +663,10 @@ function autolingo_settings_page_html(): void {
                 <tr><td><code>wp pdat translate-all</code></td><td><?php esc_html_e( 'Translates or updates all source posts', 'autolingo-polylang-translate' ); ?></td></tr>
                 <tr><td><code>wp pdat translate-menus</code></td><td><?php esc_html_e( 'Translates all nav menus (same as the button above)', 'autolingo-polylang-translate' ); ?></td></tr>
                 <tr><td><code>wp pdat translate-menus --menu=main-menu</code></td><td><?php esc_html_e( 'Translates one specific menu by slug', 'autolingo-polylang-translate' ); ?></td></tr>
-                <tr><td><code>wp pdat fix-dates --dry-run</code></td><td><?php esc_html_e( 'Lists the translations dated the day they were created instead of their original’s publication date; without --dry-run, gives them the original’s date', 'autolingo-polylang-translate' ); ?></td></tr>
-                <tr><td><code>wp pdat repair --dry-run</code></td><td><?php esc_html_e( 'Lists the translations with SEO fields or an address left in the source language; without --dry-run, translates them (the old address redirects)', 'autolingo-polylang-translate' ); ?></td></tr>
-                <tr><td><code>wp pdat duplicates</code></td><td><?php esc_html_e( 'Lists the duplicates linked to no original; --trash moves them to the trash', 'autolingo-polylang-translate' ); ?></td></tr>
-                <?php if ( function_exists( 'autolingo_assistant_turn' ) ) : ?>
-                <tr><td><code>wp pdat ask "…"</code></td><td><?php esc_html_e( 'Asks Lingo, the assistant, in plain words: it answers and lists the actions it proposes, without running them', 'autolingo-polylang-translate' ); ?></td></tr>
-                <?php endif; ?>
-                <?php if ( function_exists( 'autolingo_review_post' ) ) : ?>
-                <tr><td><code>wp pdat review --dry-run</code></td><td><?php esc_html_e( 'Lingo, the review agent: counts the translations not reread yet; without --dry-run, rereads them and lists or fixes what it finds', 'autolingo-polylang-translate' ); ?></td></tr>
-                <?php endif; ?>
-                <?php if ( function_exists( 'autolingo_wc_sync_all' ) ) : ?>
-                <tr><td><code>wp pdat sync-products --dry-run</code></td><td><?php esc_html_e( 'WooCommerce: gives existing product translations the prices, stock, variations and linked products of their source', 'autolingo-polylang-translate' ); ?></td></tr>
-                <?php endif; ?>
-                <?php if ( function_exists( 'autolingo_strings_settings_section' ) ) : ?>
-                <tr><td><code>wp pdat translate-strings --dry-run</code></td><td><?php esc_html_e( 'Counts the theme and plugin strings still to translate (Polylang, WPML String Translation)', 'autolingo-polylang-translate' ); ?></td></tr>
-                <tr><td><code>wp pdat translate-strings --lang=en,de</code></td><td><?php esc_html_e( 'Translates the missing strings, for every target language or the ones given', 'autolingo-polylang-translate' ); ?></td></tr>
-                <?php endif; ?>
-
             </tbody>
         </table>
-        </div>
     </div>
     <?php
-}
-
-/** True when a settings section was registered (some only exist in Pro). */
-function autolingo_settings_has_section( string $section_id ): bool {
-    global $wp_settings_sections;
-    return isset( $wp_settings_sections['autolingo-polylang-translate'][ $section_id ] );
-}
-
-/** One registered settings section (title and fields), as do_settings_sections() prints it. */
-function autolingo_render_settings_section( string $section_id ): void {
-    global $wp_settings_sections;
-    $section = $wp_settings_sections['autolingo-polylang-translate'][ $section_id ] ?? null;
-    if ( ! $section ) return;
-    if ( $section['title'] ) {
-        echo '<h2>' . esc_html( $section['title'] ) . '</h2>';
-    }
-    if ( $section['callback'] ) {
-        call_user_func( $section['callback'], $section );
-    }
-    echo '<table class="form-table" role="presentation">';
-    do_settings_fields( 'autolingo-polylang-translate', $section_id );
-    echo '</table>';
-}
-
-/**
- * Tabs of the settings page. All the settings stay in one form (a save sends
- * every option, and a missing one would be emptied): the tabs only show one
- * part at a time. Without JavaScript, every part is shown.
- *
- * @param string $default Tab to open when the page did not ask for one ('' = first).
- */
-function autolingo_settings_tabs_nav( string $default = '' ): void {
-    $tabs = [
-        'provider' => __( 'Provider', 'autolingo-polylang-translate' ),
-        'content'  => __( 'Languages & content', 'autolingo-polylang-translate' ),
-    ];
-    if ( autolingo_settings_has_section( 'autolingo_section_modules' ) ) {
-        $tabs['modules'] = __( 'Modules', 'autolingo-polylang-translate' );
-    }
-    $tabs['memory'] = __( 'Glossary & memory', 'autolingo-polylang-translate' );
-    $tabs['tools']  = __( 'Tools', 'autolingo-polylang-translate' );
-    if ( function_exists( 'autolingo_assistant_panel' ) && autolingo_is_premium() ) {
-        $tabs['assistant'] = 'Lingo';
-    }
-    $tabs['cli']    = __( 'WP-CLI', 'autolingo-polylang-translate' );
-
-    echo '<nav class="nav-tab-wrapper autolingo-tabs" data-default="' . esc_attr( $default ) . '" aria-label="' . esc_attr__( 'AutoLingo settings', 'autolingo-polylang-translate' ) . '">';
-    foreach ( $tabs as $id => $label ) {
-        echo '<a href="#' . esc_attr( $id ) . '" class="nav-tab" data-tab="' . esc_attr( $id ) . '">' . esc_html( $label ) . '</a>';
-    }
-    echo '</nav>';
 }
 
 function autolingo_field_glossary(): void {

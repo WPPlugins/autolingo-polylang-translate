@@ -3,7 +3,7 @@
  * Plugin Name:       AutoLingo — Automatic Translation for Polylang & WPML
  * Plugin URI:        https://auto-lingo.com
  * Description:       Automatic translation via DeepL, OpenAI or Google Translate. Works with Polylang and WPML. Supports Elementor, Beaver Builder, Bricks, WooCommerce, ACF, and all major SEO plugins.
- * Version:           1.13.10
+ * Version:           1.4.9
  * Requires at least: 6.0
  * Requires PHP:      8.0
  * Author:            AutoLingo
@@ -18,7 +18,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // ── Constantes ────────────────────────────────────────────
-define( 'AUTOLINGO_VERSION',     '1.13.10' );
+define( 'AUTOLINGO_VERSION',     '1.4.9' );
 define( 'AUTOLINGO_PLUGIN_DIR',  plugin_dir_path( __FILE__ ) );
 define( 'AUTOLINGO_PLUGIN_URL',  plugin_dir_url( __FILE__ ) );
 define( 'AUTOLINGO_PLUGIN_FILE', __FILE__ );
@@ -35,7 +35,6 @@ require_once AUTOLINGO_PLUGIN_DIR . 'includes/multilingual/functions.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/helpers.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/providers/interface-provider.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/providers/class-deepl.php';
-require_once AUTOLINGO_PLUGIN_DIR . 'includes/providers/trait-chat-translation.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/providers/class-openai.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/providers/class-google.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/providers/class-deepseek.php';
@@ -50,24 +49,15 @@ require_once AUTOLINGO_PLUGIN_DIR . 'includes/media.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/taxonomy.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/translate.php';
 require_once AUTOLINGO_PLUGIN_DIR . 'includes/menu.php';
-require_once AUTOLINGO_PLUGIN_DIR . 'includes/bulk.php';
 
 // Premium module files — absent in the free (WP.org) build.
 foreach ( [
     'includes/elementor.php',
     'includes/beaver-builder.php',
     'includes/bricks.php',
-    'includes/breakdance.php',
     'includes/woocommerce.php',
     'includes/seo.php',
     'includes/acf.php',
-    'includes/divi.php',
-    'includes/shortcode-builders.php',
-    'includes/cf7.php',
-    'includes/strings.php',
-    'includes/review.php',
-    'includes/assistant.php',
-    'includes/alt-text.php',
     'includes/premium-modules.php', // must load last (calls functions defined above)
 ] as $autolingo_file ) {
     if ( file_exists( AUTOLINGO_PLUGIN_DIR . $autolingo_file ) ) {

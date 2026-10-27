@@ -52,20 +52,16 @@ function autolingo_meta_box_html( WP_Post $post ): void {
 	}
 	echo '</p>';
 
-	// Free version: what Pro would translate on this post, said here, where it matters.
-	$builder = autolingo_is_free_build() ? autolingo_post_builder( $post->ID ) : '';
-	$product = autolingo_is_free_build() && 'product' === $post->post_type && class_exists( 'WooCommerce' );
-	if ( $builder || $product ) {
-		$text = $builder
-			? sprintf(
+	// Free version: the builder's layout is not translated — say so here, where it matters.
+	$builder = function_exists( 'autolingo_run_premium_modules' ) ? '' : autolingo_post_builder( $post->ID );
+	if ( $builder ) {
+		echo '<p style="font-size:12px;background:#fcf9e8;border-left:3px solid #dba617;padding:6px 8px;margin:0 0 10px">'
+			. esc_html( sprintf(
 				/* translators: %1$s: page builder name, e.g. "Elementor" */
 				__( 'This page is built with %1$s. The free version translates its title and WordPress content, not the %1$s layout.', 'autolingo-polylang-translate' ),
 				$builder
-			)
-			: __( 'The free version translates the product title and descriptions, not its attributes, variations and purchase note.', 'autolingo-polylang-translate' );
-		echo '<p style="font-size:12px;background:#fcf9e8;border-left:3px solid #dba617;padding:6px 8px;margin:0 0 10px">'
-			. esc_html( $text )
-			. ' <a href="' . esc_url( autolingo_trial_url( 'metabox' ) ) . '" target="_blank" rel="noopener">' . esc_html__( 'AutoLingo Pro translates it all: try it free for 14 days.', 'autolingo-polylang-translate' ) . '</a></p>';
+			) )
+			. ' <a href="' . esc_url( autolingo_pro_url( 'metabox' ) ) . '" target="_blank" rel="noopener">' . esc_html__( 'Page builders are translated by AutoLingo Pro.', 'autolingo-polylang-translate' ) . '</a></p>';
 	}
 
 	// Crédit restant
