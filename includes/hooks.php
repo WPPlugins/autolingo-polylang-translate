@@ -13,6 +13,29 @@ add_action( 'autolingo_async_translate', 'autolingo_translate_post' );
 add_action( 'admin_init', 'autolingo_setup_languages_from_site' );
 add_action( 'save_post', 'autolingo_on_save_post', 20, 3 );
 add_action( 'save_post', 'autolingo_on_save_post_late', 101, 3 );
+add_action( 'load-post.php', 'autolingo_keep_new_translation_links', 5 );
+
+/**
+ * The block editor saves the meta boxes in a second request, after the REST save that published
+ * the post, with the forms as they were when the editor opened. Polylang's Languages box then
+ * re-saves the links it showed (load-post.php, priority 10): none for the translation AutoLingo
+ * has just created, so Polylang unlinked it and save_post translated the post a second time.
+ * Put the links created since then back into that form first.
+ */
+function autolingo_keep_new_translation_links(): void {
+    // phpcs:disable WordPress.Security.NonceVerification -- Polylang's own form fields, its handler checks its nonce.
+    if ( empty( $_GET['meta-box-loader'] ) || ! isset( $_POST['post_ID'], $_POST['post_tr_lang'] ) || ! is_array( $_POST['post_tr_lang'] ) ) return;
+
+    $new_links = get_transient( 'autolingo_new_translations_' . absint( $_POST['post_ID'] ) );
+    if ( ! is_array( $new_links ) ) return;
+
+    foreach ( $new_links as $lang_slug => $tr_id ) {
+        if ( empty( $_POST['post_tr_lang'][ $lang_slug ] ) && get_post( $tr_id ) ) {
+            $_POST['post_tr_lang'][ $lang_slug ] = (int) $tr_id;
+        }
+    }
+    // phpcs:enable
+}
 
 /**
  * Posts whose language was not assigned yet when autolingo_on_save_post ran.

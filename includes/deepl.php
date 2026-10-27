@@ -469,7 +469,7 @@ function autolingo_translate_between_placeholders( string $text, callable $trans
     $send  = [];
     foreach ( $parts as $k => $part ) {
         if ( $k % 2 === 1 ) continue; // a placeholder
-        if ( trim( html_entity_decode( strip_tags( $part ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ) === '' ) continue;
+        if ( trim( html_entity_decode( wp_strip_all_tags( $part ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ) === '' ) continue;
         $send[ $k ] = $part;
     }
     if ( ! $send ) return $text;

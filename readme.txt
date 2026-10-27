@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.4.7
+Stable tag: 1.4.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,6 +13,8 @@ Auto-translate posts & pages for Polylang & WPML with DeepL, Google, Microsoft, 
 == Description ==
 
 AutoLingo translates your Polylang or WPML site automatically. Publish a post in your language and AutoLingo creates its translations in every other language, with DeepL, Google Translate, Microsoft Translator, OpenAI (ChatGPT) or DeepSeek, on your own API keys, with no markup.
+
+https://www.youtube.com/watch?v=cZiq3PXC2-w
 
 **The free version includes**
 
@@ -211,7 +213,7 @@ It works with both Polylang (free) and Polylang Pro.
 
 = Will it overwrite my existing translations? =
 
-`translate-missing` only creates translations that do not yet exist. `translate-all` creates or updates all translations. Auto-translate on publish updates existing translations each time the source post is published.
+No translation you edited by hand is overwritten: when the source post changes, AutoLingo skips that translation and notes it in the translation log. Otherwise, auto-translate on publish updates the translations when the source changes. `translate-missing` only creates translations that do not exist yet; `translate-all` also updates the others.
 
 = Are shortcodes translated? =
 
@@ -226,6 +228,11 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.4.8 =
+* Fix: with Polylang, publishing a new post in the block editor created its translation twice (one linked, one left unlinked)
+* Fix: the dashboard widget showed "DeepL Credit" and a DeepL plan when AutoLingo AI was the provider
+* Readme: a translation you edited by hand is kept when the source post changes
 
 = 1.4.7 =
 * Free version: the AutoLingo box in the post editor says when a page is built with Elementor, Bricks or Beaver Builder, whose layout the free version does not translate

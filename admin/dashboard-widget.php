@@ -129,14 +129,17 @@ function autolingo_dashboard_widget_html(): void {
     }
 
     echo '<p style="font-weight:600;font-size:12px;text-transform:uppercase;color:#1d2327;letter-spacing:.5px;margin:0 0 8px">';
-    echo esc_html__( 'DeepL Credit', 'autolingo-polylang-translate' );
+    $is_ai = $provider->get_slug() === 'autolingo'; // the usage shown is AutoLingo AI's, not DeepL's
+    echo $is_ai ? esc_html__( 'AutoLingo AI — this month', 'autolingo-polylang-translate' ) : esc_html__( 'DeepL Credit', 'autolingo-polylang-translate' );
     echo '</p>';
 
     $pct   = round( ( $usage['count'] / max( $usage['limit'], 1 ) ) * 100, 1 );
     $color = $usage['remaining'] < autolingo_alert_threshold() ? '#d63638' : '#00a32a';
-    $plan  = str_ends_with( trim( get_option( 'autolingo_api_key', '' ) ), ':fx' )
-        ? esc_html__( 'Free — one-time credit', 'autolingo-polylang-translate' )
-        : esc_html__( 'Pro — monthly', 'autolingo-polylang-translate' );
+    $plan  = $is_ai
+        ? esc_html__( 'Included with Premium · monthly', 'autolingo-polylang-translate' )
+        : ( str_ends_with( trim( get_option( 'autolingo_api_key', '' ) ), ':fx' )
+            ? esc_html__( 'Free — one-time credit', 'autolingo-polylang-translate' )
+            : esc_html__( 'Pro — monthly', 'autolingo-polylang-translate' ) );
 
     echo '<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:10px">';
     echo '<tr><td style="color:#666">' . esc_html__( 'Plan',      'autolingo-polylang-translate' ) . '</td><td style="text-align:right">' . esc_html( $plan ) . '</td></tr>';

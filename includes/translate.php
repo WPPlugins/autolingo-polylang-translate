@@ -214,6 +214,11 @@ function autolingo_create_translation( WP_Post $source_post, string $target_lang
         md5( $translated_title . "\x00" . $translated_content . "\x00" . $translated_excerpt )
     );
 
+    // The block editor's meta box request may still post the links as they were before (hooks.php).
+    $new_links               = get_transient( 'autolingo_new_translations_' . $source_post->ID ) ?: [];
+    $new_links[ $lang_slug ] = $new_post_id;
+    set_transient( 'autolingo_new_translations_' . $source_post->ID, $new_links, 10 * MINUTE_IN_SECONDS );
+
     autolingo_log_success(
         "Post traduit vers {$target_lang} (nouveau post #{$new_post_id}).",
         [ 'source_id' => $source_post->ID, 'target_id' => $new_post_id ],
