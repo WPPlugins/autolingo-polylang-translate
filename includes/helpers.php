@@ -33,6 +33,27 @@ function autolingo_target_langs(): array {
     $langs = autolingo_option( 'target_langs', [ 'en' ] );
     return array_map( 'strtolower', (array) $langs );
 }
+
+/**
+ * New install: take the source and target languages from Polylang / WPML once they
+ * have at least two languages (default language → source, the others → targets).
+ * The 'fr' → 'en' defaults would otherwise translate nothing on most sites.
+ * Existing installs are never changed: the flag is only set on first activation.
+ */
+function autolingo_setup_languages_from_site(): bool {
+    if ( ! get_option( 'autolingo_language_setup_pending' ) ) return false;
+    $ml = autolingo_multilingual();
+    if ( ! $ml ) return false;
+
+    $default = $ml->get_default_language();
+    $targets = array_values( array_diff( $ml->get_languages(), [ $default ] ) );
+    if ( $default === '' || ! $targets ) return false;
+
+    update_option( 'autolingo_source_lang', $default );
+    update_option( 'autolingo_target_langs', $targets );
+    delete_option( 'autolingo_language_setup_pending' );
+    return true;
+}
 /**
  * Parse le textarea de glossaire (format "source | cible" par ligne).
  * Retourne un tableau de [ 'source' => '\', 'target' => '\'] ].

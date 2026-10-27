@@ -3,7 +3,7 @@
  * Plugin Name:       AutoLingo — Automatic Translation for Polylang & WPML
  * Plugin URI:        https://auto-lingo.com
  * Description:       Automatic translation via DeepL, OpenAI or Google Translate. Works with Polylang and WPML. Supports Elementor, Beaver Builder, Bricks, WooCommerce, ACF, and all major SEO plugins.
- * Version:           1.4.5
+ * Version:           1.4.6
  * Requires at least: 6.0
  * Requires PHP:      8.0
  * Author:            AutoLingo
@@ -18,7 +18,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // ── Constantes ────────────────────────────────────────────
-define( 'AUTOLINGO_VERSION',     '1.4.5' );
+define( 'AUTOLINGO_VERSION',     '1.4.6' );
 define( 'AUTOLINGO_PLUGIN_DIR',  plugin_dir_path( __FILE__ ) );
 define( 'AUTOLINGO_PLUGIN_URL',  plugin_dir_url( __FILE__ ) );
 define( 'AUTOLINGO_PLUGIN_FILE', __FILE__ );
@@ -86,6 +86,9 @@ function autolingo_activate() {
     add_option( 'autolingo_openai_api_key',  '' );
     add_option( 'autolingo_google_api_key',  '' );
     add_option( 'autolingo_deepseek_api_key', '' );
+    if ( false === get_option( 'autolingo_source_lang' ) ) {
+        add_option( 'autolingo_language_setup_pending', '1' );
+    }
     add_option( 'autolingo_source_lang',     'fr' );
     add_option( 'autolingo_target_langs',    [ 'en' ] );
     $default_types = [ 'post', 'page' ];
@@ -127,7 +130,7 @@ function autolingo_uninstall() {
         'autolingo_alert_threshold', 'autolingo_module_seo', 'autolingo_module_acf',
         'autolingo_module_woocommerce', 'autolingo_module_page_builders',
         'autolingo_log_db_version', 'autolingo_low_credit_alert', 'autolingo_banner_dismissed',
-        'autolingo_tm_db_version',
+        'autolingo_tm_db_version', 'autolingo_language_setup_pending',
     ] as $option ) {
         delete_option( $option );
     }

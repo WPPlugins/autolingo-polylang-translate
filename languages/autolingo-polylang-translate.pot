@@ -177,6 +177,10 @@ msgstr ""
 msgid "Language in which you write your content."
 msgstr ""
 
+#. translators: 1: source language code, 2: the site's language codes
+msgid "\"%1$s\" is not one of your site’s languages (%2$s). AutoLingo only translates posts written in the source language, so nothing will be translated."
+msgstr ""
+
 #: admin/settings.php:90
 msgid "Languages to automatically translate into."
 msgstr ""

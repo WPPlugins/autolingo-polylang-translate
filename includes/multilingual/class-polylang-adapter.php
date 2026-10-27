@@ -138,4 +138,12 @@ class AutoLingo_Polylang_Adapter implements AutoLingo_Multilingual_Adapter {
     public function switch_language( string $lang_slug ): string {
         return ''; // Polylang does not remap IDs to a "current language" when saving.
     }
+
+    public function get_default_language(): string {
+        return function_exists( 'pll_default_language' ) ? (string) pll_default_language( 'slug' ) : '';
+    }
+
+    public function get_languages(): array {
+        return function_exists( 'pll_languages_list' ) ? array_map( 'strval', (array) pll_languages_list( [ 'fields' => 'slug' ] ) ) : [];
+    }
 }

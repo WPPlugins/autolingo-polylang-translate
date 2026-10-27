@@ -47,6 +47,10 @@ msgstr "Langue source"
 msgid "Language in which you write your content."
 msgstr "Langue dans laquelle vous rédigez votre contenu."
 
+#. translators: 1: source language code, 2: the site's language codes
+msgid "\"%1$s\" is not one of your site’s languages (%2$s). AutoLingo only translates posts written in the source language, so nothing will be translated."
+msgstr "« %1$s » ne fait pas partie des langues de votre site (%2$s). AutoLingo ne traduit que les articles rédigés dans la langue source : rien ne sera traduit."
+
 msgid "Target Languages"
 msgstr "Langues cibles"
 

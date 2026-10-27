@@ -115,7 +115,7 @@ function autolingo_pro_banner(): void {
                 <li>✓ <?php esc_html_e( 'WooCommerce product attributes', 'autolingo-polylang-translate' ); ?></li>
             </ul>
             <div>
-                <a href="https://auto-lingo.com" target="_blank" rel="noopener"
+                <a href="https://auto-lingo.com/wordpress#pricing" target="_blank" rel="noopener"
                    style="display:inline-block;background:#fff;color:#1a5276;font-weight:700;padding:10px 22px;border-radius:4px;text-decoration:none;font-size:13px;white-space:nowrap;">
                     <?php esc_html_e( 'Get AutoLingo Pro →', 'autolingo-polylang-translate' ); ?>
                 </a>
@@ -194,6 +194,17 @@ function autolingo_field_source_lang(): void {
     }
     echo '</select>';
     echo '<p class="description">' . esc_html__( 'Language in which you write your content.', 'autolingo-polylang-translate' ) . '</p>';
+
+    $ml        = autolingo_multilingual();
+    $site_lang = $ml ? $ml->get_languages() : [];
+    if ( $site_lang && ! in_array( $val, $site_lang, true ) ) {
+        echo '<p class="description" style="color:#b32d2e;">' . esc_html( sprintf(
+            /* translators: 1: source language code, 2: the site's language codes */
+            __( '"%1$s" is not one of your site’s languages (%2$s). AutoLingo only translates posts written in the source language, so nothing will be translated.', 'autolingo-polylang-translate' ),
+            $val,
+            implode( ', ', $site_lang )
+        ) ) . '</p>';
+    }
 }
 
 function autolingo_field_target_langs(): void {
@@ -246,7 +257,7 @@ function autolingo_field_modules(): void {
             sprintf(
                 /* translators: %s: link to AutoLingo website */
                 __( 'These modules are included in <a href="%s" target="_blank">AutoLingo Pro</a>. Install the Pro version to enable them.', 'autolingo-polylang-translate' ),
-                'https://auto-lingo.com'
+                'https://auto-lingo.com/wordpress#pricing'
             ),
             [ 'a' => [ 'href' => [], 'target' => [] ] ]
         ) . '</p>';

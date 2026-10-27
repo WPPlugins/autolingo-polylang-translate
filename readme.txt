@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.4.5
+Stable tag: 1.4.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -148,23 +148,23 @@ This plugin optionally connects to one of four external translation APIs dependi
 
 == Installation ==
 
-1. Upload the `autolingo-polylang-translate` folder to `/wp-content/plugins/`
-2. Activate the plugin under **Plugins**
-3. Go to **Settings → AutoLingo** and enter your DeepL API key
+1. Set up your languages in Polylang or WPML first (at least two languages).
+2. In **Plugins → Add New**, search for "AutoLingo", then install and activate it.
+3. Go to **Settings → AutoLingo** and paste at least one API key (DeepL, Google, Microsoft, OpenAI or DeepSeek).
+4. Publish a post: it is translated into every target language.
 
-**Via SSH / WP-CLI:**
+On a new install, AutoLingo takes its source and target languages from Polylang or WPML: your default language is the source, the others are the targets. You can change them in the settings.
 
-`cp -r autolingo-polylang-translate /var/www/html/wp-content/plugins/`
-`wp plugin activate autolingo-polylang-translate`
+**Via WP-CLI:**
+
+`wp plugin install autolingo-polylang-translate --activate`
 
 == Configuration ==
 
-1. Get a DeepL API key at deepl.com
-   * Free plan — 500,000 characters/month, key ends with `:fx`
-   * Pro plan — pay-as-you-go
-2. Enter the key under **Settings → AutoLingo**
-3. Choose your source language (default: French) and target languages (default: English)
-4. Choose which content types to translate (default: Posts and Pages)
+1. Get one or more API keys. Free tiers: DeepL API Free (500,000 characters a month, key ends with `:fx`), Google Cloud Translation (500,000), Microsoft Translator (2,000,000).
+2. Paste the keys under **Settings → AutoLingo** and pick the provider to use first. When its quota runs out, the next provider with a key translates.
+3. Check the source language (the one you write in) and the target languages.
+4. Choose which content types to translate (default: posts and pages, plus products when WooCommerce is active).
 
 == WP-CLI Commands ==
 
@@ -192,6 +192,14 @@ Both plans work. The Free plan gives 500,000 characters/month at no cost — the
 
 The free plugin is free. Translation itself is billed by the provider you choose, on your own account — and DeepL, Google and Microsoft each have a free monthly quota. Enter several keys and AutoLingo uses them one after the other: when one quota runs out, the next provider translates. That is about 3,000,000 free characters a month, with no AutoLingo translation subscription.
 
+= I published a post and nothing was translated. Why? =
+
+AutoLingo only translates posts written in the source language set under **Settings → AutoLingo**. If that language is not one of your site's languages, the settings page says so. Also check that at least one API key is saved and that "Auto-translate" is on. Every request, with its error if any, is listed in the translation log.
+
+= Does the free version translate Elementor pages? =
+
+No. Elementor, Beaver Builder and Bricks content is translated by AutoLingo Pro. Gutenberg, the Classic Editor and shortcode builders (Divi, WPBakery, Flatsome) are translated by the free version.
+
 = Does it work with Polylang free or only Polylang Pro? =
 
 It works with both Polylang (free) and Polylang Pro.
@@ -213,6 +221,12 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.4.6 =
+* New installs take their source and target languages from Polylang or WPML (default language → source, the others → targets). The French → English defaults translated nothing on most sites. Existing settings are not changed
+* The settings page warns when the source language is not one of the site's languages, since nothing is translated then
+* "AutoLingo Pro" links go to the WordPress pricing on auto-lingo.com
+* Readme: installation, configuration and two new FAQ entries
 
 = 1.4.5 =
 * Premium: Freemius SDK updated to 2.13.5 (security hardening of admin notices and the opt-in flow)

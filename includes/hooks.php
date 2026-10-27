@@ -10,6 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 // Cron hook for async translation (scheduled by autolingo_maybe_translate).
 add_action( 'autolingo_async_translate', 'autolingo_translate_post' );
 
+add_action( 'admin_init', 'autolingo_setup_languages_from_site' );
 add_action( 'save_post', 'autolingo_on_save_post', 20, 3 );
 add_action( 'save_post', 'autolingo_on_save_post_late', 101, 3 );
 

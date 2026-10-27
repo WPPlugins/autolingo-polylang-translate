@@ -230,4 +230,13 @@ class AutoLingo_WPML_Adapter implements AutoLingo_Multilingual_Adapter {
         }
         return $previous;
     }
+
+    public function get_default_language(): string {
+        return $this->from_wpml( (string) apply_filters( 'wpml_default_language', null ) );
+    }
+
+    public function get_languages(): array {
+        $active = array_keys( (array) apply_filters( 'wpml_active_languages', null, [ 'skip_missing' => 0 ] ) );
+        return array_values( array_unique( array_map( fn( $code ) => $this->from_wpml( (string) $code ), $active ) ) );
+    }
 }

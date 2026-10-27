@@ -106,4 +106,10 @@ interface AutoLingo_Multilingual_Adapter {
      * language, so content must be created in its own language. '' = no-op.
      */
     public function switch_language( string $lang_slug ): string;
+
+    /** The site's default language ("en"), '' when not configured yet. */
+    public function get_default_language(): string;
+
+    /** The site's languages ("en", "fr"…), [] when not configured yet. */
+    public function get_languages(): array;
 }
