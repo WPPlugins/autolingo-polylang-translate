@@ -234,13 +234,36 @@ function autolingo_invalidate_progress_cache(): void {
 }
 
 /**
+ * Whether a URL points at a file of the site rather than at a page: uploads,
+ * themes, plugins, WordPress's own files. These are served from one address
+ * whatever the language, so a language prefix would make them answer 404.
+ *
+ * @param  string $url Absolute URL.
+ * @return bool
+ */
+function autolingo_is_file_url( string $url ): bool {
+    $bare = static fn( string $u ): string => untrailingslashit( preg_replace( '#^https?:#i', '', $u ) );
+
+    $uploads = wp_get_upload_dir();
+    $bases   = array( content_url(), includes_url(), $uploads['baseurl'] ?? '' );
+
+    foreach ( $bases as $base ) {
+        if ( '' !== $base && str_starts_with( $bare( $url ) . '/', $bare( $base ) . '/' ) ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
  * Replaces internal links in translated content with their target-language equivalents.
  *
  * Strategy (per href/src attribute):
- *   1. Resolve URL → post ID via url_to_postid().
- *   2. Find translated post via pll_get_post().
- *   3. Swap URL with get_permalink() of the translated post.
- *   4. Fallback: replace home URL prefix only (handles non-post URLs like archives).
+ *   1. Leave the site's files alone (images, PDFs, anything in wp-content).
+ *   2. Resolve URL → post ID via url_to_postid().
+ *   3. Find translated post via pll_get_post().
+ *   4. Swap URL with get_permalink() of the translated post.
+ *   5. Fallback: replace home URL prefix only (handles non-post URLs like archives).
  *
  * @param  string $content          Translated post content.
  * @param  string $target_lang_slug Target language slug (e.g. 'en').
@@ -260,7 +283,12 @@ function autolingo_replace_internal_urls( string $content, string $target_lang_s
     return preg_replace_callback(
         '/(?<=href=["\']|src=["\'])(' . $escaped . '[^"\']*)/i',
         function ( array $m ) use ( $ml, $source_home, $target_home, $target_lang_slug ): string {
-            $url     = $m[1];
+            $url = $m[1];
+
+            if ( autolingo_is_file_url( $url ) ) {
+                return $url;
+            }
+
             $post_id = url_to_postid( $url );
 
             if ( $post_id ) {
