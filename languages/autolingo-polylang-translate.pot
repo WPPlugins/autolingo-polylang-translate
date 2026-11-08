@@ -729,3 +729,56 @@ msgstr ""
 
 msgid "Watch the 90-second demo"
 msgstr ""
+
+msgid "Theme and plugin strings"
+msgstr ""
+
+msgid "Translate the strings of Languages → Translations (site title, widgets, cookie banner and other plugin texts) with <a href=\"%s\" target=\"_blank\">AutoLingo Pro</a>."
+msgstr ""
+
+msgid "Counts the Languages → Translations strings still to translate (Polylang)"
+msgstr ""
+
+msgid "Translates the missing strings, for every target language or the ones given"
+msgstr ""
+
+msgid "String translation is included in AutoLingo Pro."
+msgstr ""
+
+msgid "String translation needs Polylang."
+msgstr ""
+
+msgid "This language is not a target language in the AutoLingo settings."
+msgstr ""
+
+msgid "This language does not exist in Polylang."
+msgstr ""
+
+msgid "The translation credit is used up."
+msgstr ""
+
+msgid "The translation service returned no text."
+msgstr ""
+
+msgid "Available with Polylang: translates the strings of Languages → Translations (site title, widgets, plugin texts such as the cookie banner)."
+msgstr ""
+
+msgid "%d string(s) are registered by your theme and plugins in Languages → Translations. Missing translations are filled in; translations already entered are never changed."
+msgstr ""
+
+msgid "🌍 Translate missing strings"
+msgstr ""
+
+msgid "Date and time formats, addresses and placeholders (such as {title}) are kept as they are."
+msgstr ""
+
+msgid "✓ %d translated"
+msgstr ""
+
+msgid "%d left as they were (placeholders changed by the provider)"
+msgstr ""
+
+msgid "%d string to translate"
+msgid_plural "%d strings to translate"
+msgstr[0] ""
+msgstr[1] ""

@@ -545,3 +545,56 @@ msgstr "Actifs sur ce site : %s. La version gratuite ne traduit pas leur contenu
 
 msgid "Watch the 90-second demo"
 msgstr "Voir la démo de 90 secondes"
+
+msgid "Theme and plugin strings"
+msgstr "Textes du thème et des extensions"
+
+msgid "Translate the strings of Languages → Translations (site title, widgets, cookie banner and other plugin texts) with <a href=\"%s\" target=\"_blank\">AutoLingo Pro</a>."
+msgstr "Traduisez les textes de Langues → Traductions (titre du site, widgets, bannière de cookies et autres textes d’extensions) avec <a href=\"%s\" target=\"_blank\">AutoLingo Pro</a>."
+
+msgid "Counts the Languages → Translations strings still to translate (Polylang)"
+msgstr "Compte les textes de Langues → Traductions encore à traduire (Polylang)"
+
+msgid "Translates the missing strings, for every target language or the ones given"
+msgstr "Traduit les textes manquants, pour toutes les langues cibles ou celles indiquées"
+
+msgid "String translation is included in AutoLingo Pro."
+msgstr "La traduction des textes est incluse dans AutoLingo Pro."
+
+msgid "String translation needs Polylang."
+msgstr "La traduction des textes nécessite Polylang."
+
+msgid "This language is not a target language in the AutoLingo settings."
+msgstr "Cette langue n’est pas une langue cible dans les réglages d’AutoLingo."
+
+msgid "This language does not exist in Polylang."
+msgstr "Cette langue n’existe pas dans Polylang."
+
+msgid "The translation credit is used up."
+msgstr "Le crédit de traduction est épuisé."
+
+msgid "The translation service returned no text."
+msgstr "Le service de traduction n’a renvoyé aucun texte."
+
+msgid "Available with Polylang: translates the strings of Languages → Translations (site title, widgets, plugin texts such as the cookie banner)."
+msgstr "Disponible avec Polylang : traduit les textes de Langues → Traductions (titre du site, widgets, textes d’extensions comme la bannière de cookies)."
+
+msgid "%d string(s) are registered by your theme and plugins in Languages → Translations. Missing translations are filled in; translations already entered are never changed."
+msgstr "%d texte(s) sont déclarés par votre thème et vos extensions dans Langues → Traductions. Les traductions manquantes sont complétées ; celles déjà saisies ne sont jamais modifiées."
+
+msgid "🌍 Translate missing strings"
+msgstr "🌍 Traduire les textes manquants"
+
+msgid "Date and time formats, addresses and placeholders (such as {title}) are kept as they are."
+msgstr "Les formats de date et d’heure, les adresses et les variables (comme {title}) sont conservés tels quels."
+
+msgid "✓ %d translated"
+msgstr "✓ %d traduit(s)"
+
+msgid "%d left as they were (placeholders changed by the provider)"
+msgstr "%d laissé(s) tel(s) quel(s) (variables modifiées par le service)"
+
+msgid "%d string to translate"
+msgid_plural "%d strings to translate"
+msgstr[0] "%d texte à traduire"
+msgstr[1] "%d textes à traduire"
