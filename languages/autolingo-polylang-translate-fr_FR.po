@@ -631,3 +631,33 @@ msgstr "WP-CLI"
 
 msgid "AutoLingo settings"
 msgstr "Réglages d’AutoLingo"
+
+msgid "String translation needs Polylang, or WPML with String Translation."
+msgstr "La traduction des textes nécessite Polylang, ou WPML avec String Translation."
+
+msgid "This language is not active in the multilingual plugin."
+msgstr "Cette langue n’est pas active dans l’extension multilingue."
+
+msgid "Domains to translate: %1$d of %2$d"
+msgstr "Domaines à traduire : %1$d sur %2$d"
+
+msgid "WPML String Translation also lists the texts of plugins and themes, which their own translation files (.mo) usually translate already. Those domains are left out by default."
+msgstr "WPML String Translation liste aussi les textes des extensions et des thèmes, que leurs propres fichiers de traduction (.mo) traduisent en général déjà. Ces domaines sont exclus par défaut."
+
+msgid "translation files"
+msgstr "fichiers de traduction"
+
+msgid "Save the domains"
+msgstr "Enregistrer les domaines"
+
+msgid "Needs WPML String Translation (version 5 or later with WPML 5): it keeps the strings of your theme and plugins."
+msgstr "Nécessite WPML String Translation (version 5 ou plus avec WPML 5) : c’est lui qui garde les textes de votre thème et de vos extensions."
+
+msgid "%d string(s) to consider in WPML String Translation, in the domains picked below. Missing translations are filled in, from the language each string is written in, and marked complete; translations already entered are never changed."
+msgstr "%d texte(s) à examiner dans WPML String Translation, dans les domaines choisis ci-dessous. Les traductions manquantes sont complétées, depuis la langue dans laquelle chaque texte est écrit, et marquées terminées ; celles déjà saisies ne sont jamais modifiées."
+
+msgid "Translate the strings of your theme and plugins (Polylang's Languages → Translations, or WPML String Translation): site title, widgets, cookie banner… with <a href=\"%s\" target=\"_blank\">AutoLingo Pro</a>."
+msgstr "Traduisez les textes de votre thème et de vos extensions (Langues → Traductions de Polylang, ou WPML String Translation) : titre du site, widgets, bannière de cookies… avec <a href=\"%s\" target=\"_blank\">AutoLingo Pro</a>."
+
+msgid "Counts the theme and plugin strings still to translate (Polylang, WPML String Translation)"
+msgstr "Compte les textes du thème et des extensions encore à traduire (Polylang, WPML String Translation)"

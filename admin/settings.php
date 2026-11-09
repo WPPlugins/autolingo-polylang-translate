@@ -672,7 +672,6 @@ function autolingo_settings_page_html(): void {
         ?></p>
         <?php endif; ?>
 
-        <?php if ( ! ( autolingo_multilingual() instanceof AutoLingo_WPML_Adapter ) ) : ?>
         <hr>
         <h2>🔤 <?php esc_html_e( 'Theme and plugin strings', 'autolingo-polylang-translate' ); ?>
             <?php if ( ! function_exists( 'autolingo_strings_settings_section' ) ) : ?>
@@ -686,14 +685,13 @@ function autolingo_settings_page_html(): void {
             echo '<p class="description">' . wp_kses(
                 sprintf(
                     /* translators: %s: link to AutoLingo website */
-                    __( 'Translate the strings of Languages → Translations (site title, widgets, cookie banner and other plugin texts) with <a href="%s" target="_blank">AutoLingo Pro</a>.', 'autolingo-polylang-translate' ),
+                    __( 'Translate the strings of your theme and plugins (Polylang\'s Languages → Translations, or WPML String Translation): site title, widgets, cookie banner… with <a href="%s" target="_blank">AutoLingo Pro</a>.', 'autolingo-polylang-translate' ),
                     esc_url( autolingo_pro_url( 'strings' ) )
                 ),
                 [ 'a' => [ 'href' => [], 'target' => [] ] ]
             ) . '</p>';
         }
         ?>
-        <?php endif; ?>
         </div>
 
         <div class="autolingo-panel" id="autolingo-tab-cli">
@@ -712,7 +710,7 @@ function autolingo_settings_page_html(): void {
                 <tr><td><code>wp pdat translate-menus</code></td><td><?php esc_html_e( 'Translates all nav menus (same as the button above)', 'autolingo-polylang-translate' ); ?></td></tr>
                 <tr><td><code>wp pdat translate-menus --menu=main-menu</code></td><td><?php esc_html_e( 'Translates one specific menu by slug', 'autolingo-polylang-translate' ); ?></td></tr>
                 <?php if ( function_exists( 'autolingo_strings_settings_section' ) ) : ?>
-                <tr><td><code>wp pdat translate-strings --dry-run</code></td><td><?php esc_html_e( 'Counts the Languages → Translations strings still to translate (Polylang)', 'autolingo-polylang-translate' ); ?></td></tr>
+                <tr><td><code>wp pdat translate-strings --dry-run</code></td><td><?php esc_html_e( 'Counts the theme and plugin strings still to translate (Polylang, WPML String Translation)', 'autolingo-polylang-translate' ); ?></td></tr>
                 <tr><td><code>wp pdat translate-strings --lang=en,de</code></td><td><?php esc_html_e( 'Translates the missing strings, for every target language or the ones given', 'autolingo-polylang-translate' ); ?></td></tr>
                 <?php endif; ?>
 

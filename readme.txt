@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.5.1
+Stable tag: 1.6.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,7 +52,7 @@ https://www.youtube.com/watch?v=cZiq3PXC2-w
 * SEO meta translation: Yoast SEO, RankMath, SEOPress, The SEO Framework
 * ACF field translation: text, textarea, wysiwyg, link, repeater, flexible content
 * WooCommerce: custom product attributes and purchase note
-* Theme and plugin strings: the strings of Polylang's Languages → Translations (site title, widgets, cookie banner, plugin texts)
+* Theme and plugin strings: Polylang's Languages → Translations or WPML String Translation (site title, widgets, cookie banner, plugin texts)
 
 = Page builder support (Pro) =
 
@@ -78,9 +78,12 @@ Translates `text`, `textarea`, `wysiwyg`, and `link` (title only) fields, includ
 
 Translates custom product attributes (name + pipe-separated values) and the purchase note. Price, stock, and SKU are never modified.
 
-= Theme and plugin strings (Pro, Polylang) =
+= Theme and plugin strings (Pro) =
 
-Themes and plugins declare their interface texts in Polylang's Languages → Translations: site title and tagline, widgets, footer and header texts, cookie banner, e-mail templates. Settings → AutoLingo → Menus & strings fills in the missing translations, language by language, or `wp pdat translate-strings` does it from the command line. Translations already entered are never changed; date and time formats, addresses and placeholders such as `%s` or `{title}` are kept as they are.
+Themes and plugins declare their interface texts for translation: site title and tagline, widgets, footer and header texts, cookie banner, e-mail templates. Settings → AutoLingo → Menus & strings fills in the missing translations, language by language, or `wp pdat translate-strings` does it from the command line. Translations already entered are never changed; date and time formats, addresses and placeholders such as `%s` or `{title}` are kept as they are.
+
+* **Polylang** — the strings of Languages → Translations.
+* **WPML** — the strings of WPML String Translation (version 5 or later), each translated from the language it is written in and marked complete. You pick the domains to translate; those of installed plugins and themes, which their own .mo files translate, are left out by default (`wp pdat translate-strings --list-domains`, `--domains=`).
 
 = Reliability =
 
@@ -235,6 +238,11 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.6.0 =
+* Premium: theme and plugin strings are now translated with WPML String Translation (version 5 or later) too: each string from the language it is written in, marked complete; pick the domains to translate in Settings → AutoLingo → Menus & strings, or with `wp pdat translate-strings --list-domains` / `--domains=`
+* Fix: a new translation got its source's settings stored as text instead of arrays (an ACF link, a theme's page settings…), and lost the backslashes of JSON settings
+* ACF flexible content now covered by the test suite (tested with Secure Custom Fields)
 
 = 1.5.1 =
 * The settings page is organised in tabs: Provider, Languages & content, Modules, Glossary & memory, Menus & strings, WP-CLI

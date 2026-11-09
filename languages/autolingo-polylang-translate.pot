@@ -815,3 +815,33 @@ msgstr ""
 
 msgid "AutoLingo settings"
 msgstr ""
+
+msgid "String translation needs Polylang, or WPML with String Translation."
+msgstr ""
+
+msgid "This language is not active in the multilingual plugin."
+msgstr ""
+
+msgid "Domains to translate: %1$d of %2$d"
+msgstr ""
+
+msgid "WPML String Translation also lists the texts of plugins and themes, which their own translation files (.mo) usually translate already. Those domains are left out by default."
+msgstr ""
+
+msgid "translation files"
+msgstr ""
+
+msgid "Save the domains"
+msgstr ""
+
+msgid "Needs WPML String Translation (version 5 or later with WPML 5): it keeps the strings of your theme and plugins."
+msgstr ""
+
+msgid "%d string(s) to consider in WPML String Translation, in the domains picked below. Missing translations are filled in, from the language each string is written in, and marked complete; translations already entered are never changed."
+msgstr ""
+
+msgid "Translate the strings of your theme and plugins (Polylang's Languages → Translations, or WPML String Translation): site title, widgets, cookie banner… with <a href=\"%s\" target=\"_blank\">AutoLingo Pro</a>."
+msgstr ""
+
+msgid "Counts the theme and plugin strings still to translate (Polylang, WPML String Translation)"
+msgstr ""

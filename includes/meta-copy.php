@@ -54,9 +54,12 @@ function autolingo_copy_post_meta( int $source_id, int $target_id ): void {
         // Effacer les éventuelles valeurs existantes sur le post cible
         delete_post_meta( $target_id, $key );
 
-        // Copier chaque valeur (get_post_meta renvoie déjà les valeurs désérialisées)
+        // get_post_meta() without a key returns the values as stored, still serialized:
+        // unserialize them, or add_post_meta() serializes them a second time (an ACF link,
+        // a theme's settings array… read back as a string). add_post_meta() also unslashes
+        // what it gets: slash it, or JSON and other texts with backslashes lose them.
         foreach ( $values as $value ) {
-            add_post_meta( $target_id, $key, $value );
+            add_post_meta( $target_id, $key, wp_slash( maybe_unserialize( $value ) ) );
         }
     }
 }
