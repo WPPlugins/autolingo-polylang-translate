@@ -667,3 +667,82 @@ msgstr "Attributs produit, variations et note d’achat. Sans Polylang for WooCo
 
 msgid "WooCommerce: gives existing product translations the prices, stock, variations and linked products of their source"
 msgstr "WooCommerce : donne aux traductions existantes les prix, le stock, les variations et les produits liés de leur produit source"
+
+msgid "New translations"
+msgstr "Nouvelles traductions"
+
+msgid "Published right away"
+msgstr "Publiées tout de suite"
+
+msgid "Saved as drafts, to review before publishing"
+msgstr "Enregistrées en brouillon, à relire avant publication"
+
+msgid "Pending review (an editor publishes them)"
+msgstr "En attente de relecture (un éditeur les publie)"
+
+msgid "Updates keep the status a translation has: one you unpublished, or one still under review, stays that way."
+msgstr "Les mises à jour gardent le statut de la traduction : celle que vous avez dépubliée, ou qui attend encore sa relecture, le reste."
+
+msgid "Tools"
+msgstr "Outils"
+
+msgid "Whole site"
+msgstr "Site entier"
+
+msgid "Needs Polylang or WPML."
+msgstr "Nécessite Polylang ou WPML."
+
+msgid "%1$d translation missing, for %2$d post or page."
+msgid_plural "%1$d translations missing, for %2$d posts and pages."
+msgstr[0] "%1$d traduction manquante, pour %2$d article ou page."
+msgstr[1] "%1$d traductions manquantes, pour %2$d articles et pages."
+
+msgid "Translate what is missing"
+msgstr "Traduire ce qui manque"
+
+msgid "Translations to repair: %1$d with SEO fields left in the source language, %2$d with the address of the original (the old address redirects to the new one)."
+msgstr "Traductions à réparer : %1$d avec des champs SEO restés dans la langue source, %2$d avec l’adresse de l’original (l’ancienne adresse redirige vers la nouvelle)."
+
+msgid "Repair them"
+msgstr "Les réparer"
+
+msgid "%d duplicate linked to no original (same title as a translation of the same language)."
+msgid_plural "%d duplicates linked to no original (same title as a translation of the same language)."
+msgstr[0] "%d doublon lié à aucun original (même titre qu’une traduction de la même langue)."
+msgstr[1] "%d doublons liés à aucun original (même titre qu’une traduction de la même langue)."
+
+msgid "Move them to the trash"
+msgstr "Les mettre à la corbeille"
+
+msgid "✓ Nothing to do"
+msgstr "✓ Rien à faire"
+
+msgid "See them"
+msgstr "Les voir"
+
+msgid "kept:"
+msgstr "gardé :"
+
+msgid "Move these duplicates to the trash? You can restore them from the trash."
+msgstr "Mettre ces doublons à la corbeille ? Vous pourrez les restaurer depuis la corbeille."
+
+msgid "Each step works for a few seconds at a time, so that no host or cache time limit stops it. You can leave this page open and come back."
+msgstr "Chaque étape travaille quelques secondes à la fois, pour qu’aucune limite de temps de l’hébergeur ou du cache ne l’arrête. Vous pouvez laisser cette page ouverte et revenir plus tard."
+
+msgid "Working… %1$d / %2$d"
+msgstr "En cours… %1$d / %2$d"
+
+msgid "✓ Done: %d"
+msgstr "✓ Fait : %d"
+
+msgid "%d could not be done"
+msgstr "%d n’ont pas pu être faits"
+
+msgid "The server cut the request short. What was done is saved: click the button again to carry on."
+msgstr "Le serveur a interrompu la requête. Ce qui a été fait est enregistré : cliquez de nouveau sur le bouton pour continuer."
+
+msgid "Lists the translations with SEO fields or an address left in the source language; without --dry-run, translates them (the old address redirects)"
+msgstr "Liste les traductions dont les champs SEO ou l’adresse sont restés dans la langue source ; sans --dry-run, les traduit (l’ancienne adresse redirige)"
+
+msgid "Lists the duplicates linked to no original; --trash moves them to the trash"
+msgstr "Liste les doublons liés à aucun original ; --trash les met à la corbeille"

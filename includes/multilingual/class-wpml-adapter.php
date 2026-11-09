@@ -125,7 +125,7 @@ class AutoLingo_WPML_Adapter implements AutoLingo_Multilingual_Adapter {
         // We create the post normally and then link it via save_post_translations().
         $postarr = [
             'post_author'    => $source->post_author,
-            'post_status'    => 'publish',
+            'post_status'    => autolingo_new_translation_status(),
             'post_type'      => $source->post_type,
             'post_title'     => $data['title']   ?? $source->post_title,
             'post_content'   => $data['content'] ?? $source->post_content,

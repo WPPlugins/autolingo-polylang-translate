@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.7.1
+Stable tag: 1.8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,7 +19,7 @@ https://www.youtube.com/watch?v=cZiq3PXC2-w
 **The free version includes**
 
 * All five providers, with automatic fallback when a quota runs out: about 3,000,000 free characters a month with free DeepL, Google and Microsoft accounts
-* Translation on publish, a Translate link in the post list and the editor, and bulk translation with WP-CLI
+* Translation on publish, a Translate link in the post list and the editor, and the whole site in one click from the admin (or with WP-CLI)
 * Categories, tags, menus and image alt text, not just posts
 * Gutenberg, the Classic Editor and shortcode builders (Divi, WPBakery, Flatsome)
 
@@ -31,7 +31,9 @@ https://www.youtube.com/watch?v=cZiq3PXC2-w
 
 * Translate Gutenberg content (title, blocks, excerpt) on publish or manually
 * Manual translate button in the post editor and post list
-* Bulk translation via WP-CLI (`translate-missing`, `translate-all`)
+* Translate the whole site from Settings → AutoLingo → Tools: one button creates every missing translation, a few seconds per request so that no host or cache time limit stops it, with no shell access needed (or `wp pdat translate-missing`, `translate-all`)
+* Review before publishing: new translations can be published right away, saved as drafts, or left pending review; updates keep the status a translation has
+* Repair tools: translations whose address is still the original's get one from their translated title, and the old address redirects to the new one; duplicates linked to no original are listed and can be moved to the trash (`wp pdat repair`, `wp pdat duplicates`)
 * Nav menu translation (Polylang and WPML)
 * Five providers: DeepL (Free and Pro, auto-detected from the `:fx` key suffix), Google Translate, Microsoft Translator, OpenAI and DeepSeek
 * Automatic fallback: when the selected provider runs out of quota, the next one that has a key translates — free DeepL, Google and Microsoft accounts add up to about 3,000,000 characters a month
@@ -69,6 +71,7 @@ Shortcode-based builders (Divi, WPBakery, Flatsome) are supported on the free pl
 * SEOPress — title, description
 * The SEO Framework — title, description
 * SEO template variables (`%%title%%`, `%sep%`, `%sitename%`…) are preserved automatically
+* Translations whose SEO title or description stayed in the source language (copied by hand, or translated before the SEO module was on) are found and translated in Settings → AutoLingo → Tools or with `wp pdat repair`
 
 = ACF (Pro) =
 
@@ -82,7 +85,7 @@ Without Polylang for WooCommerce or WooCommerce Multilingual (which keep transla
 
 = Theme and plugin strings (Pro) =
 
-Themes and plugins declare their interface texts for translation: site title and tagline, widgets, footer and header texts, cookie banner, e-mail templates. Settings → AutoLingo → Menus & strings fills in the missing translations, language by language, or `wp pdat translate-strings` does it from the command line. Translations already entered are never changed; date and time formats, addresses and placeholders such as `%s` or `{title}` are kept as they are.
+Themes and plugins declare their interface texts for translation: site title and tagline, widgets, footer and header texts, cookie banner, e-mail templates. Settings → AutoLingo → Tools fills in the missing translations, language by language, or `wp pdat translate-strings` does it from the command line. Translations already entered are never changed; date and time formats, addresses and placeholders such as `%s` or `{title}` are kept as they are.
 
 * **Polylang** — the strings of Languages → Translations.
 * **WPML** — the strings of WPML String Translation (version 5 or later), each translated from the language it is written in and marked complete. You pick the domains to translate; those of installed plugins and themes, which their own .mo files translate, are left out by default (`wp pdat translate-strings --list-domains`, `--domains=`).
@@ -190,15 +193,17 @@ On a new install, AutoLingo takes its source and target languages from Polylang 
 `wp pdat translate-missing --dry-run` — simulate without creating anything
 `wp pdat translate-missing` — translate only missing translations
 `wp pdat translate-all` — translate or update all source posts
+`wp pdat repair --dry-run` — list the translations with SEO fields or an address left in the source language; without `--dry-run`, translate them (the old address redirects)
+`wp pdat duplicates [--trash]` — list the posts of a target language linked to no original that duplicate a translation; `--trash` moves them to the trash
 `wp pdat translate-options` — translate ACF Options Page fields
 `wp pdat audit-acf` — list all translatable ACF fields
 
 == Screenshots ==
 
-1. Settings, Provider tab: choose DeepL, Google, Microsoft, OpenAI or DeepSeek, paste your key, and see the remaining credit. The settings are split into tabs: Provider, Languages & content, Modules, Glossary & memory, Menus & strings, WP-CLI.
+1. Settings, Provider tab: choose DeepL, Google, Microsoft, OpenAI or DeepSeek, paste your key, and see the remaining credit. The settings are split into tabs: Provider, Languages & content, Modules, Glossary & memory, Tools, WP-CLI.
 2. Post list: the translation status of each post per language, and a one-click Translate link next to each source-language post.
 3. Dashboard widget: translation coverage per language, estimated time and money saved, and remaining credit at a glance.
-4. Menus & strings tab: translate navigation menus, and (Premium) the theme and plugin strings of Polylang's Languages → Translations, language by language.
+4. Tools tab: translate what is missing on the whole site, repair translations and duplicates, translate navigation menus, and (Premium) the theme and plugin strings of Polylang's Languages → Translations, language by language.
 5. Languages & content tab: source and target languages, content types, automatic translation on publish, and background translation for long posts.
 
 == Frequently Asked Questions ==
@@ -240,6 +245,15 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.8.0 =
+* Translate the whole site from the admin: Settings → AutoLingo → Tools creates every missing translation with one button, a few seconds per request, so it works on hosts with no WP-CLI and behind caches that cut long requests
+* Review before publishing: new translations can be published right away (default), saved as drafts, or left pending review (Settings → Languages & content)
+* Fix: updating a translation published it again, even one you had unpublished or one still under review
+* Repair tool (Tools tab, or `wp pdat repair`): translations with the address of their original get one from their translated title, and the old address redirects to the new one; Premium: SEO titles, descriptions and focus keywords left in the source language are translated
+* Duplicates tool (Tools tab, or `wp pdat duplicates --trash`): posts of a target language linked to no original, with the title of a translation, are listed and can be moved to the trash
+* Premium, RankMath: its fields are now read under their real names (`rank_math_title`, `rank_math_description`, `rank_math_focus_keyword`)
+* The "Menus & strings" settings tab is now "Tools"
 
 = 1.7.1 =
 * Premium, WooCommerce: `wp pdat sync-products` gives the translations made before 1.7 the type, prices, stock, variations and linked products of their source, for the whole catalogue at once, without translating their texts again

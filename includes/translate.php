@@ -169,7 +169,7 @@ function autolingo_create_translation( WP_Post $source_post, string $target_lang
             'post_title'   => $translated_title,
             'post_content' => $translated_content,
             'post_excerpt' => $translated_excerpt,
-            'post_status'  => 'publish',
+            'post_status'  => autolingo_new_translation_status(),
             'post_type'    => $source_post->post_type,
             'post_author'  => $source_post->post_author,
         ] );
@@ -305,7 +305,8 @@ function autolingo_update_translation( WP_Post $source_post, int $translated_id,
             'post_title'   => $translated_title,
             'post_content' => $translated_content,
             'post_excerpt' => $translated_excerpt,
-            'post_status'  => 'publish',
+            // No post_status: a translation keeps its status (a draft under review, one
+            // the editor took offline). It used to be published again on every update.
         ], true );
 
         // Réaffirmer la langue après la sauvegarde (certains plugins peuvent la réinitialiser)

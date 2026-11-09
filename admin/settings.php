@@ -155,6 +155,7 @@ function autolingo_register_settings(): void {
     register_setting( 'autolingo_settings_group', 'autolingo_post_types',      [ 'sanitize_callback' => 'autolingo_sanitize_array' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_formality',            [ 'sanitize_callback' => 'sanitize_text_field' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_auto_translate',       [ 'sanitize_callback' => 'sanitize_text_field' ] );
+    register_setting( 'autolingo_settings_group', 'autolingo_new_status',           [ 'sanitize_callback' => 'autolingo_sanitize_new_status', 'default' => 'publish' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_alert_threshold',      [ 'sanitize_callback' => 'absint' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_async_enabled',        [ 'sanitize_callback' => 'sanitize_text_field' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_async_threshold',      [ 'sanitize_callback' => 'absint' ] );
@@ -174,6 +175,7 @@ function autolingo_register_settings(): void {
     add_settings_field( 'autolingo_target_langs',    __( 'Target Languages', 'autolingo-polylang-translate' ),       'autolingo_field_target_langs',    'autolingo-polylang-translate', 'autolingo_section_langs' );
     add_settings_field( 'autolingo_post_types',      __( 'Content Types', 'autolingo-polylang-translate' ),          'autolingo_field_post_types',      'autolingo-polylang-translate', 'autolingo_section_behavior' );
     add_settings_field( 'autolingo_auto_translate',  __( 'Auto-translate', 'autolingo-polylang-translate' ),         'autolingo_field_auto_translate',  'autolingo-polylang-translate', 'autolingo_section_behavior' );
+    add_settings_field( 'autolingo_new_status',      __( 'New translations', 'autolingo-polylang-translate' ),       'autolingo_field_new_status',      'autolingo-polylang-translate', 'autolingo_section_behavior' );
     add_settings_field( 'autolingo_async_threshold', __( 'Background translation', 'autolingo-polylang-translate' ),  'autolingo_field_async_threshold', 'autolingo-polylang-translate', 'autolingo_section_behavior' );
     register_setting( 'autolingo_settings_group', 'autolingo_glossary_terms', [ 'sanitize_callback' => 'sanitize_textarea_field' ] );
     add_settings_section( 'autolingo_section_glossary', '📖 ' . __( 'DeepL Glossary', 'autolingo-polylang-translate' ), '__return_false', 'autolingo-polylang-translate' );
@@ -297,6 +299,24 @@ function autolingo_field_auto_translate(): void {
     echo '<label><input type="checkbox" name="autolingo_auto_translate" value="1" ' . checked( $val, true, false ) . '> '
         . esc_html__( 'Automatically translate on each publish', 'autolingo-polylang-translate' ) . '</label>';
     echo '<p class="description">' . esc_html__( 'If disabled, translation only happens via the manual button or WP-CLI.', 'autolingo-polylang-translate' ) . '</p>';
+}
+
+function autolingo_sanitize_new_status( $value ): string {
+    return in_array( $value, [ 'publish', 'draft', 'pending' ], true ) ? $value : 'publish';
+}
+
+function autolingo_field_new_status(): void {
+    $val = autolingo_new_translation_status();
+    echo '<select name="autolingo_new_status">';
+    foreach ( [
+        'publish' => __( 'Published right away', 'autolingo-polylang-translate' ),
+        'draft'   => __( 'Saved as drafts, to review before publishing', 'autolingo-polylang-translate' ),
+        'pending' => __( 'Pending review (an editor publishes them)', 'autolingo-polylang-translate' ),
+    ] as $key => $label ) {
+        echo '<option value="' . esc_attr( $key ) . '"' . selected( $val, $key, false ) . '>' . esc_html( $label ) . '</option>';
+    }
+    echo '</select>';
+    echo '<p class="description">' . esc_html__( 'Updates keep the status a translation has: one you unpublished, or one still under review, stays that way.', 'autolingo-polylang-translate' ) . '</p>';
 }
 
 function autolingo_field_formality(): void {
@@ -643,6 +663,10 @@ function autolingo_settings_page_html(): void {
         </form>
 
         <div class="autolingo-panel" id="autolingo-tab-tools">
+        <h2>📚 <?php esc_html_e( 'Whole site', 'autolingo-polylang-translate' ); ?></h2>
+        <?php autolingo_bulk_settings_section(); ?>
+
+        <hr>
         <h2>🧭 <?php esc_html_e( 'Navigation Menus', 'autolingo-polylang-translate' ); ?></h2>
         <?php
         $source_menus = autolingo_source_menus();
@@ -709,6 +733,8 @@ function autolingo_settings_page_html(): void {
                 <tr><td><code>wp pdat translate-all</code></td><td><?php esc_html_e( 'Translates or updates all source posts', 'autolingo-polylang-translate' ); ?></td></tr>
                 <tr><td><code>wp pdat translate-menus</code></td><td><?php esc_html_e( 'Translates all nav menus (same as the button above)', 'autolingo-polylang-translate' ); ?></td></tr>
                 <tr><td><code>wp pdat translate-menus --menu=main-menu</code></td><td><?php esc_html_e( 'Translates one specific menu by slug', 'autolingo-polylang-translate' ); ?></td></tr>
+                <tr><td><code>wp pdat repair --dry-run</code></td><td><?php esc_html_e( 'Lists the translations with SEO fields or an address left in the source language; without --dry-run, translates them (the old address redirects)', 'autolingo-polylang-translate' ); ?></td></tr>
+                <tr><td><code>wp pdat duplicates</code></td><td><?php esc_html_e( 'Lists the duplicates linked to no original; --trash moves them to the trash', 'autolingo-polylang-translate' ); ?></td></tr>
                 <?php if ( function_exists( 'autolingo_wc_sync_all' ) ) : ?>
                 <tr><td><code>wp pdat sync-products --dry-run</code></td><td><?php esc_html_e( 'WooCommerce: gives existing product translations the prices, stock, variations and linked products of their source', 'autolingo-polylang-translate' ); ?></td></tr>
                 <?php endif; ?>
@@ -762,7 +788,7 @@ function autolingo_settings_tabs_nav( string $default = '' ): void {
         $tabs['modules'] = __( 'Modules', 'autolingo-polylang-translate' );
     }
     $tabs['memory'] = __( 'Glossary & memory', 'autolingo-polylang-translate' );
-    $tabs['tools']  = __( 'Menus & strings', 'autolingo-polylang-translate' );
+    $tabs['tools']  = __( 'Tools', 'autolingo-polylang-translate' );
     $tabs['cli']    = __( 'WP-CLI', 'autolingo-polylang-translate' );
 
     echo '<nav class="nav-tab-wrapper autolingo-tabs" data-default="' . esc_attr( $default ) . '" aria-label="' . esc_attr__( 'AutoLingo settings', 'autolingo-polylang-translate' ) . '">';

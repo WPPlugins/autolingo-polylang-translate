@@ -182,6 +182,16 @@ function autolingo_translation_status( int $post_id ): array {
 }
 
 /**
+ * Status of a translation when AutoLingo creates it: 'publish' (default), or
+ * 'draft' / 'pending' to review it before it goes live. An existing translation
+ * keeps its status when it is updated.
+ */
+function autolingo_new_translation_status(): string {
+    $status = (string) autolingo_option( 'new_status', 'publish' );
+    return in_array( $status, [ 'publish', 'draft', 'pending' ], true ) ? $status : 'publish';
+}
+
+/**
  * Retourne tous les posts publiés dans la langue source.
  */
 function autolingo_get_all_source_posts(): array {

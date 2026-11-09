@@ -851,3 +851,82 @@ msgstr ""
 
 msgid "WooCommerce: gives existing product translations the prices, stock, variations and linked products of their source"
 msgstr ""
+
+msgid "New translations"
+msgstr ""
+
+msgid "Published right away"
+msgstr ""
+
+msgid "Saved as drafts, to review before publishing"
+msgstr ""
+
+msgid "Pending review (an editor publishes them)"
+msgstr ""
+
+msgid "Updates keep the status a translation has: one you unpublished, or one still under review, stays that way."
+msgstr ""
+
+msgid "Tools"
+msgstr ""
+
+msgid "Whole site"
+msgstr ""
+
+msgid "Needs Polylang or WPML."
+msgstr ""
+
+msgid "%1$d translation missing, for %2$d post or page."
+msgid_plural "%1$d translations missing, for %2$d posts and pages."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Translate what is missing"
+msgstr ""
+
+msgid "Translations to repair: %1$d with SEO fields left in the source language, %2$d with the address of the original (the old address redirects to the new one)."
+msgstr ""
+
+msgid "Repair them"
+msgstr ""
+
+msgid "%d duplicate linked to no original (same title as a translation of the same language)."
+msgid_plural "%d duplicates linked to no original (same title as a translation of the same language)."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Move them to the trash"
+msgstr ""
+
+msgid "✓ Nothing to do"
+msgstr ""
+
+msgid "See them"
+msgstr ""
+
+msgid "kept:"
+msgstr ""
+
+msgid "Move these duplicates to the trash? You can restore them from the trash."
+msgstr ""
+
+msgid "Each step works for a few seconds at a time, so that no host or cache time limit stops it. You can leave this page open and come back."
+msgstr ""
+
+msgid "Working… %1$d / %2$d"
+msgstr ""
+
+msgid "✓ Done: %d"
+msgstr ""
+
+msgid "%d could not be done"
+msgstr ""
+
+msgid "The server cut the request short. What was done is saved: click the button again to carry on."
+msgstr ""
+
+msgid "Lists the translations with SEO fields or an address left in the source language; without --dry-run, translates them (the old address redirects)"
+msgstr ""
+
+msgid "Lists the duplicates linked to no original; --trash moves them to the trash"
+msgstr ""
