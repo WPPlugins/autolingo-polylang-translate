@@ -709,6 +709,9 @@ function autolingo_settings_page_html(): void {
                 <tr><td><code>wp pdat translate-all</code></td><td><?php esc_html_e( 'Translates or updates all source posts', 'autolingo-polylang-translate' ); ?></td></tr>
                 <tr><td><code>wp pdat translate-menus</code></td><td><?php esc_html_e( 'Translates all nav menus (same as the button above)', 'autolingo-polylang-translate' ); ?></td></tr>
                 <tr><td><code>wp pdat translate-menus --menu=main-menu</code></td><td><?php esc_html_e( 'Translates one specific menu by slug', 'autolingo-polylang-translate' ); ?></td></tr>
+                <?php if ( function_exists( 'autolingo_wc_sync_all' ) ) : ?>
+                <tr><td><code>wp pdat sync-products --dry-run</code></td><td><?php esc_html_e( 'WooCommerce: gives existing product translations the prices, stock, variations and linked products of their source', 'autolingo-polylang-translate' ); ?></td></tr>
+                <?php endif; ?>
                 <?php if ( function_exists( 'autolingo_strings_settings_section' ) ) : ?>
                 <tr><td><code>wp pdat translate-strings --dry-run</code></td><td><?php esc_html_e( 'Counts the theme and plugin strings still to translate (Polylang, WPML String Translation)', 'autolingo-polylang-translate' ); ?></td></tr>
                 <tr><td><code>wp pdat translate-strings --lang=en,de</code></td><td><?php esc_html_e( 'Translates the missing strings, for every target language or the ones given', 'autolingo-polylang-translate' ); ?></td></tr>

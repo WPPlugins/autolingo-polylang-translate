@@ -664,3 +664,6 @@ msgstr "Compte les textes du thème et des extensions encore à traduire (Polyla
 
 msgid "Product attributes, variations and purchase note. Without Polylang for WooCommerce or WooCommerce Multilingual, translations also get the type, prices, variations and linked products of their source, and share its stock. The SKU is never copied."
 msgstr "Attributs produit, variations et note d’achat. Sans Polylang for WooCommerce ni WooCommerce Multilingual, les traductions reçoivent aussi le type, les prix, les variations et les produits liés de leur source, et partagent son stock. Le SKU n’est jamais copié."
+
+msgid "WooCommerce: gives existing product translations the prices, stock, variations and linked products of their source"
+msgstr "WooCommerce : donne aux traductions existantes les prix, le stock, les variations et les produits liés de leur produit source"

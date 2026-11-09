@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.7.0
+Stable tag: 1.7.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,7 +78,7 @@ Translates `text`, `textarea`, `wysiwyg`, and `link` (title only) fields, includ
 
 Translates custom product attributes (name + pipe-separated values), variation descriptions and the purchase note.
 
-Without Polylang for WooCommerce or WooCommerce Multilingual (which keep translated products in sync themselves), AutoLingo makes each translation sellable like its source: same product type, prices and sale dates, tax, stock and shipping settings, images and downloads; one variation per source variation, with its attributes pointing at the translated ones; upsells, cross-sells and grouped products pointing at their translations. Saving the source updates its translations, and the stock is shared: a sale, a refund or an edit in any language sets the same stock everywhere. The SKU is never copied, as WooCommerce wants it unique.
+Without Polylang for WooCommerce or WooCommerce Multilingual (which keep translated products in sync themselves), AutoLingo makes each translation sellable like its source: same product type, prices and sale dates, tax, stock and shipping settings, images and downloads; one variation per source variation, with its attributes pointing at the translated ones; upsells, cross-sells and grouped products pointing at their translations. Saving the source updates its translations, and the stock is shared: a sale, a refund or an edit in any language sets the same stock everywhere. The SKU is never copied, as WooCommerce wants it unique. For products translated before, `wp pdat sync-products` brings the whole catalogue in line without translating the texts again (`--dry-run`, `--ids=`, `--lang=`).
 
 = Theme and plugin strings (Pro) =
 
@@ -241,8 +241,11 @@ Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter lay
 
 == Changelog ==
 
+= 1.7.1 =
+* Premium, WooCommerce: `wp pdat sync-products` gives the translations made before 1.7 the type, prices, stock, variations and linked products of their source, for the whole catalogue at once, without translating their texts again
+
 = 1.7.0 =
-* Premium, WooCommerce: without Polylang for WooCommerce or WooCommerce Multilingual, a translated product now gets the type, prices, stock and shipping settings, images, variations and linked products of its source, so it can be sold; saving the source updates it, and the stock is shared between languages. Products translated before get this the next time their source is saved
+* Premium, WooCommerce: without Polylang for WooCommerce or WooCommerce Multilingual, a translated product now gets the type, prices, stock and shipping settings, images, variations and linked products of its source, so it can be sold; saving the source updates it, and the stock is shared between languages. Products translated before get this the next time their source is saved, or all at once with `wp pdat sync-products` (1.7.1)
 * Fix: the translation of a variable product with its own attributes found no variation on its product page
 * The SKU is never copied to translations (WooCommerce wants it unique)
 

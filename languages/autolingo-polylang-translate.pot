@@ -848,3 +848,6 @@ msgstr ""
 
 msgid "Product attributes, variations and purchase note. Without Polylang for WooCommerce or WooCommerce Multilingual, translations also get the type, prices, variations and linked products of their source, and share its stock. The SKU is never copied."
 msgstr ""
+
+msgid "WooCommerce: gives existing product translations the prices, stock, variations and linked products of their source"
+msgstr ""
