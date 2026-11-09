@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,6 +52,7 @@ https://www.youtube.com/watch?v=cZiq3PXC2-w
 * SEO meta translation: Yoast SEO, RankMath, SEOPress, The SEO Framework
 * ACF field translation: text, textarea, wysiwyg, link, repeater, flexible content
 * WooCommerce: custom product attributes and purchase note
+* Theme and plugin strings: the strings of Polylang's Languages → Translations (site title, widgets, cookie banner, plugin texts)
 
 = Page builder support (Pro) =
 
@@ -77,12 +78,16 @@ Translates `text`, `textarea`, `wysiwyg`, and `link` (title only) fields, includ
 
 Translates custom product attributes (name + pipe-separated values) and the purchase note. Price, stock, and SKU are never modified.
 
+= Theme and plugin strings (Pro, Polylang) =
+
+Themes and plugins declare their interface texts in Polylang's Languages → Translations: site title and tagline, widgets, footer and header texts, cookie banner, e-mail templates. Settings → AutoLingo → Menus & strings fills in the missing translations, language by language, or `wp pdat translate-strings` does it from the command line. Translations already entered are never changed; date and time formats, addresses and placeholders such as `%s` or `{title}` are kept as they are.
+
 = Reliability =
 
 * Exponential back-off retry on HTTP 429 (rate limit): 2 s → 4 s → 8 s, up to 3 retries
 * Dual lock (static + transient) prevents duplicate translations on Gutenberg REST saves
 * Translation log viewer in the admin (DB-backed, 30-day retention)
-* Integration test suite — 41 tests covering all modules
+* Integration test suite — 54 tests covering all modules
 
 == External Services ==
 
@@ -185,9 +190,11 @@ On a new install, AutoLingo takes its source and target languages from Polylang 
 
 == Screenshots ==
 
-1. Settings page — choose your translation provider (DeepL, Google, Microsoft, OpenAI, DeepSeek), API keys, source and target languages, and which modules to enable.
-2. Post list — one-click translate action link next to each source-language post.
-3. Dashboard widget — translation coverage per language, estimated time and money saved vs. a translation agency, and remaining API credit at a glance.
+1. Settings, Provider tab: choose DeepL, Google, Microsoft, OpenAI or DeepSeek, paste your key, and see the remaining credit. The settings are split into tabs: Provider, Languages & content, Modules, Glossary & memory, Menus & strings, WP-CLI.
+2. Post list: the translation status of each post per language, and a one-click Translate link next to each source-language post.
+3. Dashboard widget: translation coverage per language, estimated time and money saved, and remaining credit at a glance.
+4. Menus & strings tab: translate navigation menus, and (Premium) the theme and plugin strings of Polylang's Languages → Translations, language by language.
+5. Languages & content tab: source and target languages, content types, automatic translation on publish, and background translation for long posts.
 
 == Frequently Asked Questions ==
 
@@ -228,6 +235,12 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.5.1 =
+* The settings page is organised in tabs: Provider, Languages & content, Modules, Glossary & memory, Menus & strings, WP-CLI
+* Premium: theme and plugin strings are translated in short requests that carry on by themselves, so a host or cache time limit no longer stops them; a request cut short shows a clear message instead of a JavaScript error
+* Fix: on WordPress 7.1, the dashboard widget's title was split, with the globe on the left and the text on the right
+* New screenshots
 
 = 1.5.0 =
 * Premium: translate the strings of Polylang's Languages → Translations (site title, widgets, cookie banner and other plugin texts) from Settings → AutoLingo or with `wp pdat translate-strings`. Only missing translations are filled in; formats, addresses and placeholders are kept

@@ -10,7 +10,8 @@ add_action( 'wp_dashboard_setup', 'autolingo_register_dashboard_widget' );
 function autolingo_register_dashboard_widget(): void {
     wp_add_dashboard_widget(
         'autolingo_usage_widget',
-        '🌍 ' . __( 'AutoLingo — Credit', 'autolingo-polylang-translate' ),
+        // One element: WordPress spreads the children of a widget header across its width.
+        '<span>🌍 ' . esc_html__( 'AutoLingo — Credit', 'autolingo-polylang-translate' ) . '</span>',
         'autolingo_dashboard_widget_html'
     );
 }

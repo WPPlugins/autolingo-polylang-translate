@@ -598,3 +598,36 @@ msgid "%d string to translate"
 msgid_plural "%d strings to translate"
 msgstr[0] "%d texte à traduire"
 msgstr[1] "%d textes à traduire"
+
+msgid "✓ Up to date"
+msgstr "✓ À jour"
+
+msgid "Translating… %1$d / %2$d"
+msgstr "Traduction en cours… %1$d / %2$d"
+
+msgid "The server cut the request short (a time limit of the host or its cache). What was translated is saved: click the button again to carry on."
+msgstr "Le serveur a interrompu la requête (une limite de temps de l’hébergeur ou de son cache). Ce qui a été traduit est enregistré : cliquez de nouveau sur le bouton pour continuer."
+
+msgid "Some strings could not be saved. Check them in Languages → Translations."
+msgstr "Certains textes n’ont pas pu être enregistrés. Vérifiez-les dans Langues → Traductions."
+
+msgid "Provider"
+msgstr "Fournisseur"
+
+msgid "Languages & content"
+msgstr "Langues et contenus"
+
+msgid "Modules"
+msgstr "Modules"
+
+msgid "Glossary & memory"
+msgstr "Glossaire et mémoire"
+
+msgid "Menus & strings"
+msgstr "Menus et textes"
+
+msgid "WP-CLI"
+msgstr "WP-CLI"
+
+msgid "AutoLingo settings"
+msgstr "Réglages d’AutoLingo"

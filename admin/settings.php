@@ -42,6 +42,12 @@ function autolingo_settings_enqueue( string $hook ): void {
     // Provider key row toggle.
     wp_add_inline_script( 'autolingo-settings', '(function(){var sel=document.getElementById("autolingo_provider"),fb=document.getElementById("autolingo_fallback");function toggle(){var all=fb&&fb.checked;document.querySelectorAll(".autolingo-key-row").forEach(function(r){r.style.display=all?"":"none";});var row=document.getElementById("autolingo-key-"+sel.value);if(row)row.style.display="";}sel.addEventListener("change",toggle);if(fb)fb.addEventListener("change",toggle);toggle();})();' );
 
+    // Tabs: one part of the page at a time (see autolingo_settings_tabs_nav()).
+    wp_register_style( 'autolingo-settings', false, [], AUTOLINGO_VERSION );
+    wp_enqueue_style( 'autolingo-settings' );
+    wp_add_inline_style( 'autolingo-settings', '.autolingo-tabs{margin:8px 0 0}.autolingo-tabs-js .autolingo-panel{display:none}.autolingo-tabs-js .autolingo-panel.is-active{display:block}.autolingo-panel>h2:first-child{margin-top:1.2em}.autolingo-tabs-js .autolingo-panel+.autolingo-panel>h2:first-child{margin-top:1.2em}' );
+    wp_add_inline_script( 'autolingo-settings', '(function(){var nav=document.querySelector(".autolingo-tabs");if(!nav)return;var wrap=nav.closest(".wrap");wrap.classList.add("autolingo-tabs-js");var tabs=[].slice.call(nav.querySelectorAll(".nav-tab"));var submit=wrap.querySelector(".autolingo-submit");var form=submit&&submit.closest("form");function show(id){if(!id||!document.getElementById("autolingo-tab-"+id))return false;tabs.forEach(function(t){var on=t.dataset.tab===id;t.classList.toggle("nav-tab-active",on);if(on){t.setAttribute("aria-current","page");}else{t.removeAttribute("aria-current");}});[].forEach.call(wrap.querySelectorAll(".autolingo-panel"),function(p){p.classList.toggle("is-active",p.id==="autolingo-tab-"+id);});if(submit)submit.style.display=form.contains(document.getElementById("autolingo-tab-"+id))?"":"none";try{sessionStorage.setItem("autolingoTab",id);}catch(e){}return true;}tabs.forEach(function(t){t.addEventListener("click",function(e){e.preventDefault();show(t.dataset.tab);if(history.replaceState)history.replaceState(null,"","#"+t.dataset.tab);});});var saved=null;try{saved=sessionStorage.getItem("autolingoTab");}catch(e){}show(nav.dataset.default)||show(location.hash.slice(1))||show(saved)||show(tabs[0].dataset.tab);})();' );
+
     // Async enable/disable toggle.
     wp_add_inline_script( 'autolingo-settings', '(function(){var cb=document.getElementById("autolingo_async_enabled");var wrap=document.getElementById("autolingo-async-threshold-wrap");if(cb&&wrap){cb.addEventListener("change",function(){wrap.style.display=cb.checked?"":"none";});}})();' );
 
@@ -513,10 +519,13 @@ function autolingo_settings_page_html(): void {
         <p><a href="<?php echo esc_url( $test_url ); ?>" class="button"><?php esc_html_e( 'Test connection', 'autolingo-polylang-translate' ); ?></a></p>
         <?php endif; ?>
 
+        <?php autolingo_settings_tabs_nav( $menu_notice ? 'tools' : '' ); ?>
+
         <form method="post" action="options.php">
             <?php settings_fields( 'autolingo_settings_group' ); ?>
 
             <?php /* ── Provider + API key (manual HTML for JS toggle) ── */ ?>
+            <div class="autolingo-panel" id="autolingo-tab-provider">
             <h2>🔑 <?php esc_html_e( 'Translation Provider', 'autolingo-polylang-translate' ); ?></h2>
             <table class="form-table" role="presentation">
                 <tr>
@@ -614,12 +623,26 @@ function autolingo_settings_page_html(): void {
                     </td>
                 </tr>
             </table>
+            </div>
 
-            <?php do_settings_sections( 'autolingo-polylang-translate' ); ?>
-            <?php submit_button( __( 'Save Settings', 'autolingo-polylang-translate' ) ); ?>
+            <div class="autolingo-panel" id="autolingo-tab-content">
+                <?php autolingo_render_settings_section( 'autolingo_section_langs' ); ?>
+                <?php autolingo_render_settings_section( 'autolingo_section_behavior' ); ?>
+            </div>
+            <?php if ( autolingo_settings_has_section( 'autolingo_section_modules' ) ) : ?>
+            <div class="autolingo-panel" id="autolingo-tab-modules">
+                <?php autolingo_render_settings_section( 'autolingo_section_modules' ); ?>
+            </div>
+            <?php endif; ?>
+            <div class="autolingo-panel" id="autolingo-tab-memory">
+                <?php autolingo_render_settings_section( 'autolingo_section_glossary' ); ?>
+                <?php autolingo_render_settings_section( 'autolingo_section_tm' ); ?>
+            </div>
+
+            <div class="autolingo-submit"><?php submit_button( __( 'Save Settings', 'autolingo-polylang-translate' ) ); ?></div>
         </form>
 
-        <hr>
+        <div class="autolingo-panel" id="autolingo-tab-tools">
         <h2>🧭 <?php esc_html_e( 'Navigation Menus', 'autolingo-polylang-translate' ); ?></h2>
         <?php
         $source_menus = autolingo_source_menus();
@@ -671,7 +694,9 @@ function autolingo_settings_page_html(): void {
         }
         ?>
         <?php endif; ?>
+        </div>
 
+        <div class="autolingo-panel" id="autolingo-tab-cli">
         <h2>📋 <?php esc_html_e( 'WP-CLI Commands', 'autolingo-polylang-translate' ); ?></h2>
         <table class="widefat striped" style="max-width:680px">
             <thead><tr>
@@ -693,8 +718,57 @@ function autolingo_settings_page_html(): void {
 
             </tbody>
         </table>
+        </div>
     </div>
     <?php
+}
+
+/** True when a settings section was registered (some only exist in Pro). */
+function autolingo_settings_has_section( string $section_id ): bool {
+    global $wp_settings_sections;
+    return isset( $wp_settings_sections['autolingo-polylang-translate'][ $section_id ] );
+}
+
+/** One registered settings section (title and fields), as do_settings_sections() prints it. */
+function autolingo_render_settings_section( string $section_id ): void {
+    global $wp_settings_sections;
+    $section = $wp_settings_sections['autolingo-polylang-translate'][ $section_id ] ?? null;
+    if ( ! $section ) return;
+    if ( $section['title'] ) {
+        echo '<h2>' . esc_html( $section['title'] ) . '</h2>';
+    }
+    if ( $section['callback'] ) {
+        call_user_func( $section['callback'], $section );
+    }
+    echo '<table class="form-table" role="presentation">';
+    do_settings_fields( 'autolingo-polylang-translate', $section_id );
+    echo '</table>';
+}
+
+/**
+ * Tabs of the settings page. All the settings stay in one form (a save sends
+ * every option, and a missing one would be emptied): the tabs only show one
+ * part at a time. Without JavaScript, every part is shown.
+ *
+ * @param string $default Tab to open when the page did not ask for one ('' = first).
+ */
+function autolingo_settings_tabs_nav( string $default = '' ): void {
+    $tabs = [
+        'provider' => __( 'Provider', 'autolingo-polylang-translate' ),
+        'content'  => __( 'Languages & content', 'autolingo-polylang-translate' ),
+    ];
+    if ( autolingo_settings_has_section( 'autolingo_section_modules' ) ) {
+        $tabs['modules'] = __( 'Modules', 'autolingo-polylang-translate' );
+    }
+    $tabs['memory'] = __( 'Glossary & memory', 'autolingo-polylang-translate' );
+    $tabs['tools']  = __( 'Menus & strings', 'autolingo-polylang-translate' );
+    $tabs['cli']    = __( 'WP-CLI', 'autolingo-polylang-translate' );
+
+    echo '<nav class="nav-tab-wrapper autolingo-tabs" data-default="' . esc_attr( $default ) . '" aria-label="' . esc_attr__( 'AutoLingo settings', 'autolingo-polylang-translate' ) . '">';
+    foreach ( $tabs as $id => $label ) {
+        echo '<a href="#' . esc_attr( $id ) . '" class="nav-tab" data-tab="' . esc_attr( $id ) . '">' . esc_html( $label ) . '</a>';
+    }
+    echo '</nav>';
 }
 
 function autolingo_field_glossary(): void {
