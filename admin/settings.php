@@ -241,7 +241,7 @@ function autolingo_field_modules(): void {
         ],
         'woocommerce'   => [
             'label' => __( 'WooCommerce', 'autolingo-polylang-translate' ),
-            'desc'  => __( 'Custom product attributes, purchase note. Price, stock and SKU are never modified.', 'autolingo-polylang-translate' ),
+            'desc'  => __( 'Product attributes, variations and purchase note. Without Polylang for WooCommerce or WooCommerce Multilingual, translations also get the type, prices, variations and linked products of their source, and share its stock. The SKU is never copied.', 'autolingo-polylang-translate' ),
         ],
     ];
 

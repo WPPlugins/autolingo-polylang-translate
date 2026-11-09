@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.6.0
+Stable tag: 1.7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,7 +51,7 @@ https://www.youtube.com/watch?v=cZiq3PXC2-w
 * Page builder support: Elementor, Beaver Builder, Bricks Builder
 * SEO meta translation: Yoast SEO, RankMath, SEOPress, The SEO Framework
 * ACF field translation: text, textarea, wysiwyg, link, repeater, flexible content
-* WooCommerce: custom product attributes and purchase note
+* WooCommerce: custom product attributes, variations and purchase note; without Polylang for WooCommerce or WooCommerce Multilingual, translated products also get prices, variations and linked products, with a shared stock
 * Theme and plugin strings: Polylang's Languages → Translations or WPML String Translation (site title, widgets, cookie banner, plugin texts)
 
 = Page builder support (Pro) =
@@ -76,7 +76,9 @@ Translates `text`, `textarea`, `wysiwyg`, and `link` (title only) fields, includ
 
 = WooCommerce (Pro) =
 
-Translates custom product attributes (name + pipe-separated values) and the purchase note. Price, stock, and SKU are never modified.
+Translates custom product attributes (name + pipe-separated values), variation descriptions and the purchase note.
+
+Without Polylang for WooCommerce or WooCommerce Multilingual (which keep translated products in sync themselves), AutoLingo makes each translation sellable like its source: same product type, prices and sale dates, tax, stock and shipping settings, images and downloads; one variation per source variation, with its attributes pointing at the translated ones; upsells, cross-sells and grouped products pointing at their translations. Saving the source updates its translations, and the stock is shared: a sale, a refund or an edit in any language sets the same stock everywhere. The SKU is never copied, as WooCommerce wants it unique.
 
 = Theme and plugin strings (Pro) =
 
@@ -238,6 +240,11 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.7.0 =
+* Premium, WooCommerce: without Polylang for WooCommerce or WooCommerce Multilingual, a translated product now gets the type, prices, stock and shipping settings, images, variations and linked products of its source, so it can be sold; saving the source updates it, and the stock is shared between languages. Products translated before get this the next time their source is saved
+* Fix: the translation of a variable product with its own attributes found no variation on its product page
+* The SKU is never copied to translations (WooCommerce wants it unique)
 
 = 1.6.0 =
 * Premium: theme and plugin strings are now translated with WPML String Translation (version 5 or later) too: each string from the language it is written in, marked complete; pick the domains to translate in Settings → AutoLingo → Menus & strings, or with `wp pdat translate-strings --list-domains` / `--domains=`
