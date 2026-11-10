@@ -1069,3 +1069,127 @@ msgstr[1] ""
 
 msgid "Lingo, the review agent: counts the translations not reread yet; without --dry-run, rereads them and lists or fixes what it finds"
 msgstr ""
+
+msgid "Lingo needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key."
+msgstr ""
+
+msgid "Lingo could not finish looking: ask again more precisely."
+msgstr ""
+
+msgid "This proposal has expired: ask Lingo again."
+msgstr ""
+
+msgid "Ask %s"
+msgstr ""
+
+msgid "Say what you want in your own words. Lingo looks at the site and proposes the actions; nothing changes until you confirm each one."
+msgstr ""
+
+msgid "Lingo needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key in the Provider tab."
+msgstr ""
+
+msgid "What is left to translate?"
+msgstr ""
+
+msgid "Translate all my products into Spanish, as drafts"
+msgstr ""
+
+msgid "Never translate the name of my brand"
+msgstr ""
+
+msgid "For example: translate my new pages into German"
+msgstr ""
+
+msgid "Send"
+msgstr ""
+
+msgid "With AutoLingo AI, on the same credit as translation. The conversation is kept while this tab stays open."
+msgstr ""
+
+msgid "With your %s key. The conversation is kept while this tab stays open."
+msgstr ""
+
+msgid "You"
+msgstr ""
+
+msgid "Lingo is looking…"
+msgstr ""
+
+msgid "Confirm"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Cancelled."
+msgstr ""
+
+msgid "Working… %d done"
+msgstr ""
+
+msgid "The server cut the request short. What was done is saved: confirm again to carry on."
+msgstr ""
+
+msgid "every target language"
+msgstr ""
+
+msgid "published"
+msgstr ""
+
+msgid "as drafts"
+msgstr ""
+
+msgid "pending review"
+msgstr ""
+
+msgid "all content types"
+msgstr ""
+
+msgid "Repair %d translations (SEO fields and addresses left in the source language; old addresses redirect)"
+msgstr ""
+
+msgid "Move %1$d duplicates to the trash: %2$s"
+msgstr ""
+
+msgid "Have up to %1$d translations reread by Lingo (%2$s)"
+msgstr ""
+
+msgid "Translate %1$d menu(s) into %2$d language(s)"
+msgstr ""
+
+msgid "Translate the missing theme and plugin strings (%s)"
+msgstr ""
+
+msgid "Review agent"
+msgstr ""
+
+msgid "Formality"
+msgstr ""
+
+msgid "Change the setting “%1$s” to “%2$s”"
+msgstr ""
+
+msgid "Add to the glossary: “%1$s” is always translated as “%2$s”"
+msgstr ""
+
+msgid "Lingo read site content that contains instructions addressed to an AI. Actions that delete or change settings were not proposed. Check the others carefully."
+msgstr ""
+
+msgid "Lingo read site content that contains instructions addressed to an AI. Check the proposals carefully."
+msgstr ""
+
+msgid "Lingo has answered many messages this hour: try again in a little while."
+msgstr ""
+
+msgid "Create %1$d missing translation (%2$s, %3$s), %4$s"
+msgid_plural "Create %1$d missing translations (%2$s, %3$s), %4$s"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Translate %1$d post again (%2$s) into %3$s; new translations %4$s"
+msgid_plural "Translate %1$d posts again (%2$s) into %3$s; new translations %4$s"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Asks Lingo, the assistant, in plain words: it answers and lists the actions it proposes, without running them"
+msgstr ""

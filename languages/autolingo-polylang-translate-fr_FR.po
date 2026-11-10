@@ -885,3 +885,127 @@ msgstr[1] "%d corrections faites"
 
 msgid "Lingo, the review agent: counts the translations not reread yet; without --dry-run, rereads them and lists or fixes what it finds"
 msgstr "Lingo, l’agent de relecture : compte les traductions pas encore relues ; sans --dry-run, les relit et liste ou corrige ce qu’il trouve"
+
+msgid "Lingo needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key."
+msgstr "Lingo a besoin de l’IA AutoLingo (licence Premium), ou d’une clé OpenAI ou DeepSeek."
+
+msgid "Lingo could not finish looking: ask again more precisely."
+msgstr "Lingo n’a pas pu terminer ses recherches : reformulez votre demande plus précisément."
+
+msgid "This proposal has expired: ask Lingo again."
+msgstr "Cette proposition a expiré : redemandez à Lingo."
+
+msgid "Ask %s"
+msgstr "Demander à %s"
+
+msgid "Say what you want in your own words. Lingo looks at the site and proposes the actions; nothing changes until you confirm each one."
+msgstr "Dites ce que vous voulez avec vos mots. Lingo regarde le site et propose les actions ; rien ne change tant que vous ne les confirmez pas une par une."
+
+msgid "Lingo needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key in the Provider tab."
+msgstr "Lingo a besoin de l’IA AutoLingo (licence Premium), ou d’une clé OpenAI ou DeepSeek dans l’onglet Fournisseur."
+
+msgid "What is left to translate?"
+msgstr "Que reste-t-il à traduire ?"
+
+msgid "Translate all my products into Spanish, as drafts"
+msgstr "Traduis tous mes produits en espagnol, en brouillon"
+
+msgid "Never translate the name of my brand"
+msgstr "Ne traduis jamais le nom de ma marque"
+
+msgid "For example: translate my new pages into German"
+msgstr "Par exemple : traduis mes nouvelles pages en allemand"
+
+msgid "Send"
+msgstr "Envoyer"
+
+msgid "With AutoLingo AI, on the same credit as translation. The conversation is kept while this tab stays open."
+msgstr "Avec l’IA AutoLingo, sur le même crédit que la traduction. La conversation est gardée tant que cet onglet reste ouvert."
+
+msgid "With your %s key. The conversation is kept while this tab stays open."
+msgstr "Avec votre clé %s. La conversation est gardée tant que cet onglet reste ouvert."
+
+msgid "You"
+msgstr "Vous"
+
+msgid "Lingo is looking…"
+msgstr "Lingo regarde…"
+
+msgid "Confirm"
+msgstr "Confirmer"
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Cancelled."
+msgstr "Annulé."
+
+msgid "Working… %d done"
+msgstr "En cours… %d fait(s)"
+
+msgid "The server cut the request short. What was done is saved: confirm again to carry on."
+msgstr "Le serveur a interrompu la requête. Ce qui a été fait est enregistré : confirmez de nouveau pour continuer."
+
+msgid "every target language"
+msgstr "toutes les langues cibles"
+
+msgid "published"
+msgstr "publiées"
+
+msgid "as drafts"
+msgstr "en brouillon"
+
+msgid "pending review"
+msgstr "en attente de relecture"
+
+msgid "all content types"
+msgstr "tous les types de contenu"
+
+msgid "Repair %d translations (SEO fields and addresses left in the source language; old addresses redirect)"
+msgstr "Réparer %d traductions (champs SEO et adresses restés dans la langue source ; les anciennes adresses redirigent)"
+
+msgid "Move %1$d duplicates to the trash: %2$s"
+msgstr "Mettre %1$d doublons à la corbeille : %2$s"
+
+msgid "Have up to %1$d translations reread by Lingo (%2$s)"
+msgstr "Faire relire jusqu’à %1$d traductions par Lingo (%2$s)"
+
+msgid "Translate %1$d menu(s) into %2$d language(s)"
+msgstr "Traduire %1$d menu(s) dans %2$d langue(s)"
+
+msgid "Translate the missing theme and plugin strings (%s)"
+msgstr "Traduire les textes manquants du thème et des extensions (%s)"
+
+msgid "Review agent"
+msgstr "Agent de relecture"
+
+msgid "Formality"
+msgstr "Formalité"
+
+msgid "Change the setting “%1$s” to “%2$s”"
+msgstr "Passer le réglage « %1$s » à « %2$s »"
+
+msgid "Add to the glossary: “%1$s” is always translated as “%2$s”"
+msgstr "Ajouter au glossaire : « %1$s » se traduit toujours par « %2$s »"
+
+msgid "Lingo read site content that contains instructions addressed to an AI. Actions that delete or change settings were not proposed. Check the others carefully."
+msgstr "Lingo a lu sur le site un contenu qui contient des instructions adressées à une IA. Les actions qui suppriment ou changent les réglages n’ont pas été proposées. Vérifiez bien les autres."
+
+msgid "Lingo read site content that contains instructions addressed to an AI. Check the proposals carefully."
+msgstr "Lingo a lu sur le site un contenu qui contient des instructions adressées à une IA. Vérifiez bien les propositions."
+
+msgid "Lingo has answered many messages this hour: try again in a little while."
+msgstr "Lingo a déjà répondu à beaucoup de messages cette heure-ci : réessayez dans un moment."
+
+msgid "Create %1$d missing translation (%2$s, %3$s), %4$s"
+msgid_plural "Create %1$d missing translations (%2$s, %3$s), %4$s"
+msgstr[0] "Créer %1$d traduction manquante (%2$s, %3$s), %4$s"
+msgstr[1] "Créer %1$d traductions manquantes (%2$s, %3$s), %4$s"
+
+msgid "Translate %1$d post again (%2$s) into %3$s; new translations %4$s"
+msgid_plural "Translate %1$d posts again (%2$s) into %3$s; new translations %4$s"
+msgstr[0] "Retraduire %1$d contenu (%2$s) en %3$s ; nouvelles traductions %4$s"
+msgstr[1] "Retraduire %1$d contenus (%2$s) en %3$s ; nouvelles traductions %4$s"
+
+msgid "Asks Lingo, the assistant, in plain words: it answers and lists the actions it proposes, without running them"
+msgstr "Pose une question à Lingo, l’assistant, avec vos mots : il répond et liste les actions qu’il propose, sans les exécuter"

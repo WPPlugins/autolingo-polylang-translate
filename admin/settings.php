@@ -718,6 +718,8 @@ function autolingo_settings_page_html(): void {
         ?>
         </div>
 
+        <?php if ( function_exists( 'autolingo_assistant_panel' ) && autolingo_is_premium() ) autolingo_assistant_panel(); ?>
+
         <div class="autolingo-panel" id="autolingo-tab-cli">
         <h2>📋 <?php esc_html_e( 'WP-CLI Commands', 'autolingo-polylang-translate' ); ?></h2>
         <table class="widefat striped" style="max-width:680px">
@@ -735,6 +737,9 @@ function autolingo_settings_page_html(): void {
                 <tr><td><code>wp pdat translate-menus --menu=main-menu</code></td><td><?php esc_html_e( 'Translates one specific menu by slug', 'autolingo-polylang-translate' ); ?></td></tr>
                 <tr><td><code>wp pdat repair --dry-run</code></td><td><?php esc_html_e( 'Lists the translations with SEO fields or an address left in the source language; without --dry-run, translates them (the old address redirects)', 'autolingo-polylang-translate' ); ?></td></tr>
                 <tr><td><code>wp pdat duplicates</code></td><td><?php esc_html_e( 'Lists the duplicates linked to no original; --trash moves them to the trash', 'autolingo-polylang-translate' ); ?></td></tr>
+                <?php if ( function_exists( 'autolingo_assistant_turn' ) ) : ?>
+                <tr><td><code>wp pdat ask "…"</code></td><td><?php esc_html_e( 'Asks Lingo, the assistant, in plain words: it answers and lists the actions it proposes, without running them', 'autolingo-polylang-translate' ); ?></td></tr>
+                <?php endif; ?>
                 <?php if ( function_exists( 'autolingo_review_post' ) ) : ?>
                 <tr><td><code>wp pdat review --dry-run</code></td><td><?php esc_html_e( 'Lingo, the review agent: counts the translations not reread yet; without --dry-run, rereads them and lists or fixes what it finds', 'autolingo-polylang-translate' ); ?></td></tr>
                 <?php endif; ?>
@@ -792,6 +797,9 @@ function autolingo_settings_tabs_nav( string $default = '' ): void {
     }
     $tabs['memory'] = __( 'Glossary & memory', 'autolingo-polylang-translate' );
     $tabs['tools']  = __( 'Tools', 'autolingo-polylang-translate' );
+    if ( function_exists( 'autolingo_assistant_panel' ) && autolingo_is_premium() ) {
+        $tabs['assistant'] = 'Lingo';
+    }
     $tabs['cli']    = __( 'WP-CLI', 'autolingo-polylang-translate' );
 
     echo '<nav class="nav-tab-wrapper autolingo-tabs" data-default="' . esc_attr( $default ) . '" aria-label="' . esc_attr__( 'AutoLingo settings', 'autolingo-polylang-translate' ) . '">';
