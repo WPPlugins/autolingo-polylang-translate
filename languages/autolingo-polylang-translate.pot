@@ -930,3 +930,142 @@ msgstr ""
 
 msgid "Lists the duplicates linked to no original; --trash moves them to the trash"
 msgstr ""
+
+msgid "The review needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key."
+msgstr ""
+
+msgid "The AI did not answer."
+msgstr ""
+
+msgid "The AI gave an answer that could not be read."
+msgstr ""
+
+msgid "%1$s returned HTTP %2$d."
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Excerpt"
+msgstr ""
+
+msgid "Content"
+msgstr ""
+
+msgid "SEO"
+msgstr ""
+
+msgid "This passage is still in the source language."
+msgstr ""
+
+msgid "%s, the review agent, needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key in the Provider tab."
+msgstr ""
+
+msgid "Have them reread"
+msgstr ""
+
+msgid "%s, review agent"
+msgstr ""
+
+msgid "Meaning"
+msgstr ""
+
+msgid "Number or name"
+msgstr ""
+
+msgid "Not translated"
+msgstr ""
+
+msgid "Glossary"
+msgstr ""
+
+msgid "Grammar"
+msgstr ""
+
+msgid "Fluency"
+msgstr ""
+
+msgid "Tone"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+msgid "%s has not reread this translation yet."
+msgstr ""
+
+msgid "%1$s reread this translation on %2$s: nothing to check."
+msgstr ""
+
+msgid "Original"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "Ignore"
+msgstr ""
+
+msgid "Ask %s to reread it"
+msgstr ""
+
+msgid "Working…"
+msgstr ""
+
+msgid "Done. The page reloads to show the change (save your other edits first)."
+msgstr ""
+
+msgid "Applying a fix reloads the page: unsaved changes in the editor would be lost. Continue?"
+msgstr ""
+
+msgid "This passage changed since the review: review again."
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
+msgid "List the points for me to check"
+msgstr ""
+
+msgid "Fix the sure ones, list the others"
+msgstr ""
+
+msgid "After each translation, %s rereads it next to the original, like a proofreader: meaning, numbers and names, passages left untranslated, glossary, grammar, tone. The points to check are listed in the editor and in the Tools tab."
+msgstr ""
+
+msgid "Reviews with %s. It costs about as many characters as the translation itself."
+msgstr ""
+
+msgid "Needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key in the Provider tab."
+msgstr ""
+
+msgid "Publish a translation created as a draft once the review finds nothing to check"
+msgstr ""
+
+msgid "%d translation has points to check"
+msgid_plural "%d translations have points to check"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d point"
+msgid_plural "%d points"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%1$s, the review agent: %2$d translation not reread yet (or changed since), with %3$s."
+msgid_plural "%1$s, the review agent: %2$d translations not reread yet (or changed since), with %3$s."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%1$s reread this translation on %2$s: %3$d point to check."
+msgid_plural "%1$s reread this translation on %2$s: %3$d points to check."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d correction made"
+msgid_plural "%d corrections made"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Lingo, the review agent: counts the translations not reread yet; without --dry-run, rereads them and lists or fixes what it finds"
+msgstr ""

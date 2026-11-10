@@ -432,6 +432,9 @@ function autolingo_handle_bulk(): void {
             wp_send_json_success( [ 'done' => $done, 'remaining' => 0, 'failed' => [], 'error' => '' ] );
             break;
     }
+    // Tasks of other modules (Premium review): array{done, remaining, failed, error}.
+    $result = apply_filters( 'autolingo_bulk_task', null, $task, $exclude, (float) AUTOLINGO_BULK_BUDGET );
+    if ( is_array( $result ) ) wp_send_json_success( $result );
     wp_send_json_error( 'Unknown task.' );
 }
 
@@ -481,9 +484,16 @@ function autolingo_bulk_settings_section(): void {
         ],
     ];
 
+    /**
+     * Rows of other modules: task => [ text, button label, count, extra HTML (escaped) ].
+     */
+    $rows = apply_filters( 'autolingo_bulk_rows', $rows );
+
     echo '<table class="widefat striped" style="max-width:820px;margin-bottom:8px"><tbody>';
-    foreach ( $rows as $task => [ $text, $button, $count ] ) {
-        echo '<tr><td><span class="autolingo-bulk-status" data-task="' . esc_attr( $task ) . '"' . ( $count ? '' : ' style="color:#00a32a"' ) . '>' . esc_html( $count ? $text : __( '✓ Nothing to do', 'autolingo-polylang-translate' ) . ' — ' . $text ) . '</span>';
+    foreach ( $rows as $task => $row ) {
+        [ $text, $button, $count ] = $row;
+        $unavailable = ( $row[4] ?? '' ) === 'unavailable'; // the module cannot run here: its text says why
+        echo '<tr><td><span class="autolingo-bulk-status" data-task="' . esc_attr( $task ) . '"' . ( $count || $unavailable ? '' : ' style="color:#00a32a"' ) . '>' . esc_html( $count || $unavailable ? $text : __( '✓ Nothing to do', 'autolingo-polylang-translate' ) . ' — ' . $text ) . '</span>';
         if ( $task === 'duplicates' && $dupes ) {
             echo '<details style="margin-top:6px"><summary>' . esc_html__( 'See them', 'autolingo-polylang-translate' ) . '</summary><ul style="margin:6px 0 0 18px;list-style:disc">';
             foreach ( array_slice( $dupes, 0, 50, true ) as $id => $kept ) {
@@ -491,6 +501,7 @@ function autolingo_bulk_settings_section(): void {
             }
             echo '</ul></details>';
         }
+        if ( ! empty( $row[3] ) ) echo $row[3]; // phpcs:ignore WordPress.Security.EscapeOutput -- built escaped by the module.
         echo '</td><td style="width:240px;text-align:right">';
         printf(
             '<button type="button" class="button%s autolingo-bulk-run" data-task="%s" data-total="%d"%s%s>%s</button>',

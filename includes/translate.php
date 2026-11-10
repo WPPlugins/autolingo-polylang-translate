@@ -214,6 +214,8 @@ function autolingo_create_translation( WP_Post $source_post, string $target_lang
         md5( $translated_title . "\x00" . $translated_content . "\x00" . $translated_excerpt )
     );
     $ml->mark_translation_current( $source_post->ID, $new_post_id );
+    // Created as a draft or pending review: the review agent (Premium) may publish it once it finds nothing.
+    if ( get_post_status( $new_post_id ) !== 'publish' ) update_post_meta( $new_post_id, '_autolingo_awaiting_review', 1 );
 
     // The block editor's meta box request may still post the links as they were before (hooks.php).
     $new_links               = get_transient( 'autolingo_new_translations_' . $source_post->ID ) ?: [];

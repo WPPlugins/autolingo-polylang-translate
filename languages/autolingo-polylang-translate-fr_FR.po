@@ -746,3 +746,142 @@ msgstr "Liste les traductions dont les champs SEO ou l’adresse sont restés da
 
 msgid "Lists the duplicates linked to no original; --trash moves them to the trash"
 msgstr "Liste les doublons liés à aucun original ; --trash les met à la corbeille"
+
+msgid "The review needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key."
+msgstr "La relecture nécessite l’IA AutoLingo (licence Premium), ou une clé OpenAI ou DeepSeek."
+
+msgid "The AI did not answer."
+msgstr "L’IA n’a pas répondu."
+
+msgid "The AI gave an answer that could not be read."
+msgstr "L’IA a donné une réponse illisible."
+
+msgid "%1$s returned HTTP %2$d."
+msgstr "%1$s a renvoyé une erreur HTTP %2$d."
+
+msgid "Title"
+msgstr "Titre"
+
+msgid "Excerpt"
+msgstr "Extrait"
+
+msgid "Content"
+msgstr "Contenu"
+
+msgid "SEO"
+msgstr "SEO"
+
+msgid "This passage is still in the source language."
+msgstr "Ce passage est encore dans la langue source."
+
+msgid "%s, the review agent, needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key in the Provider tab."
+msgstr "%s, l’agent de relecture, a besoin de l’IA AutoLingo (licence Premium), ou d’une clé OpenAI ou DeepSeek dans l’onglet Fournisseur."
+
+msgid "Have them reread"
+msgstr "Les faire relire"
+
+msgid "%s, review agent"
+msgstr "%s, agent de relecture"
+
+msgid "Meaning"
+msgstr "Sens"
+
+msgid "Number or name"
+msgstr "Nombre ou nom"
+
+msgid "Not translated"
+msgstr "Non traduit"
+
+msgid "Glossary"
+msgstr "Glossaire"
+
+msgid "Grammar"
+msgstr "Grammaire"
+
+msgid "Fluency"
+msgstr "Fluidité"
+
+msgid "Tone"
+msgstr "Ton"
+
+msgid "Other"
+msgstr "Autre"
+
+msgid "%s has not reread this translation yet."
+msgstr "%s n’a pas encore relu cette traduction."
+
+msgid "%1$s reread this translation on %2$s: nothing to check."
+msgstr "%1$s a relu cette traduction le %2$s : rien à vérifier."
+
+msgid "Original"
+msgstr "Original"
+
+msgid "Apply"
+msgstr "Appliquer"
+
+msgid "Ignore"
+msgstr "Ignorer"
+
+msgid "Ask %s to reread it"
+msgstr "Demander à %s de la relire"
+
+msgid "Working…"
+msgstr "En cours…"
+
+msgid "Done. The page reloads to show the change (save your other edits first)."
+msgstr "C’est fait. La page se recharge pour afficher la modification (enregistrez d’abord vos autres changements)."
+
+msgid "Applying a fix reloads the page: unsaved changes in the editor would be lost. Continue?"
+msgstr "Appliquer une correction recharge la page : les modifications non enregistrées dans l’éditeur seraient perdues. Continuer ?"
+
+msgid "This passage changed since the review: review again."
+msgstr "Ce passage a changé depuis la relecture : relancez la relecture."
+
+msgid "Off"
+msgstr "Désactivé"
+
+msgid "List the points for me to check"
+msgstr "Lister les points à vérifier"
+
+msgid "Fix the sure ones, list the others"
+msgstr "Corriger les points sûrs, lister les autres"
+
+msgid "After each translation, %s rereads it next to the original, like a proofreader: meaning, numbers and names, passages left untranslated, glossary, grammar, tone. The points to check are listed in the editor and in the Tools tab."
+msgstr "Après chaque traduction, %s la relit à côté de l’original, comme un correcteur : sens, nombres et noms, passages non traduits, glossaire, grammaire, ton. Les points à vérifier sont listés dans l’éditeur et dans l’onglet Outils."
+
+msgid "Reviews with %s. It costs about as many characters as the translation itself."
+msgstr "Relit avec %s. Cela coûte à peu près autant de caractères que la traduction elle-même."
+
+msgid "Needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key in the Provider tab."
+msgstr "Nécessite l’IA AutoLingo (licence Premium), ou une clé OpenAI ou DeepSeek dans l’onglet Fournisseur."
+
+msgid "Publish a translation created as a draft once the review finds nothing to check"
+msgstr "Publier une traduction créée en brouillon dès que la relecture ne trouve rien à vérifier"
+
+msgid "%d translation has points to check"
+msgid_plural "%d translations have points to check"
+msgstr[0] "%d traduction a des points à vérifier"
+msgstr[1] "%d traductions ont des points à vérifier"
+
+msgid "%d point"
+msgid_plural "%d points"
+msgstr[0] "%d point"
+msgstr[1] "%d points"
+
+msgid "%1$s, the review agent: %2$d translation not reread yet (or changed since), with %3$s."
+msgid_plural "%1$s, the review agent: %2$d translations not reread yet (or changed since), with %3$s."
+msgstr[0] "%1$s, l’agent de relecture : %2$d traduction pas encore relue (ou modifiée depuis), avec %3$s."
+msgstr[1] "%1$s, l’agent de relecture : %2$d traductions pas encore relues (ou modifiées depuis), avec %3$s."
+
+msgid "%1$s reread this translation on %2$s: %3$d point to check."
+msgid_plural "%1$s reread this translation on %2$s: %3$d points to check."
+msgstr[0] "%1$s a relu cette traduction le %2$s : %3$d point à vérifier."
+msgstr[1] "%1$s a relu cette traduction le %2$s : %3$d points à vérifier."
+
+msgid "%d correction made"
+msgid_plural "%d corrections made"
+msgstr[0] "%d correction faite"
+msgstr[1] "%d corrections faites"
+
+msgid "Lingo, the review agent: counts the translations not reread yet; without --dry-run, rereads them and lists or fixes what it finds"
+msgstr "Lingo, l’agent de relecture : compte les traductions pas encore relues ; sans --dry-run, les relit et liste ou corrige ce qu’il trouve"

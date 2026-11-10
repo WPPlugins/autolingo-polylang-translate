@@ -735,6 +735,9 @@ function autolingo_settings_page_html(): void {
                 <tr><td><code>wp pdat translate-menus --menu=main-menu</code></td><td><?php esc_html_e( 'Translates one specific menu by slug', 'autolingo-polylang-translate' ); ?></td></tr>
                 <tr><td><code>wp pdat repair --dry-run</code></td><td><?php esc_html_e( 'Lists the translations with SEO fields or an address left in the source language; without --dry-run, translates them (the old address redirects)', 'autolingo-polylang-translate' ); ?></td></tr>
                 <tr><td><code>wp pdat duplicates</code></td><td><?php esc_html_e( 'Lists the duplicates linked to no original; --trash moves them to the trash', 'autolingo-polylang-translate' ); ?></td></tr>
+                <?php if ( function_exists( 'autolingo_review_post' ) ) : ?>
+                <tr><td><code>wp pdat review --dry-run</code></td><td><?php esc_html_e( 'Lingo, the review agent: counts the translations not reread yet; without --dry-run, rereads them and lists or fixes what it finds', 'autolingo-polylang-translate' ); ?></td></tr>
+                <?php endif; ?>
                 <?php if ( function_exists( 'autolingo_wc_sync_all' ) ) : ?>
                 <tr><td><code>wp pdat sync-products --dry-run</code></td><td><?php esc_html_e( 'WooCommerce: gives existing product translations the prices, stock, variations and linked products of their source', 'autolingo-polylang-translate' ); ?></td></tr>
                 <?php endif; ?>

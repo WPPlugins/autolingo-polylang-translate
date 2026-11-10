@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.8.2
+Stable tag: 1.9.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -55,6 +55,19 @@ https://www.youtube.com/watch?v=cZiq3PXC2-w
 * ACF field translation: text, textarea, wysiwyg, link, repeater, flexible content
 * WooCommerce: custom product attributes, variations and purchase note; without Polylang for WooCommerce or WooCommerce Multilingual, translated products also get prices, variations and linked products, with a shared stock
 * Theme and plugin strings: Polylang's Languages → Translations or WPML String Translation (site title, widgets, cookie banner, plugin texts)
+* Lingo, the review agent: rereads each translation next to its original, like a proofreader, fixes what it is sure about and lists the rest
+
+= Lingo, the review agent (Pro) =
+
+Machine translation is fast, not flawless: a price or an opening time that changes, a sentence left in the original language, a brand name translated word for word. After each translation, Lingo rereads it next to its original, the title, excerpt, content passage by passage and SEO fields, and checks the meaning, numbers and names, passages left untranslated, your glossary, grammar, fluency and the tone you chose.
+
+* "List the points to check": each point shows the passage, a suggestion and why, with Apply and Ignore buttons in the editor; a point you ignore does not come back
+* "Fix the sure ones, list the others": the corrections any professional would make are applied for you
+* Translations created as drafts can be published once Lingo finds nothing to check
+* The whole site at once from Settings → AutoLingo → Tools, or `wp pdat review`
+* Reviews with AutoLingo AI (no key, on the same monthly credit), or your OpenAI or DeepSeek key
+
+Page builder content (Elementor, Bricks, Beaver Builder) is not reviewed yet.
 
 = Page builder support (Pro) =
 
@@ -195,6 +208,7 @@ On a new install, AutoLingo takes its source and target languages from Polylang 
 `wp pdat translate-all` — translate or update all source posts
 `wp pdat repair --dry-run` — list the translations with SEO fields or an address left in the source language; without `--dry-run`, translate them (the old address redirects)
 `wp pdat duplicates [--trash]` — list the posts of a target language linked to no original that duplicate a translation; `--trash` moves them to the trash
+`wp pdat review [--ids=] [--lang=] [--all] [--dry-run]` — (Premium) Lingo rereads the translations not reviewed yet, or changed since, and lists or fixes what it finds
 `wp pdat translate-options` — translate ACF Options Page fields
 `wp pdat audit-acf` — list all translatable ACF fields
 
@@ -245,6 +259,10 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.9.0 =
+* Premium: Lingo, the review agent. After each translation it rereads it next to the original, like a proofreader (meaning, numbers and names, passages left untranslated, glossary, grammar, fluency, tone), fixes what it is sure about and lists the rest in the editor, with Apply and Ignore. Choose it in Settings → AutoLingo → Modules; the whole site at once from the Tools tab or with `wp pdat review`
+* Premium: a translation created as a draft can be published once Lingo finds nothing to check
 
 = 1.8.2 =
 * When AutoLingo gives a translation a new address (repair tool, duplicates), the Redirection rules that sent that address to the old one are disabled: they would now send visitors in a loop
