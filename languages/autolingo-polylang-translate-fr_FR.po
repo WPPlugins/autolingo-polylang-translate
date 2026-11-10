@@ -1,11 +1,11 @@
-# French translations for AutoLingo — DeepL Translation for Polylang.
+# French translations for AutoLingo — Automatic Translation for Polylang & WPML.
 # Copyright (C) 2026 Julien Perrot
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: AutoLingo — DeepL Translation for Polylang 1.1.5\n"
+"Project-Id-Version: AutoLingo — Automatic Translation for Polylang & WPML 1.10.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/autolingo-polylang-translate\n"
-"PO-Revision-Date: 2026-05-19 00:00+0000\n"
+"PO-Revision-Date: 2026-11-10 00:00+0000\n"
 "Last-Translator: Julien Perrot <julien.perrot@akeneo.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -14,998 +14,1720 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-msgid "AutoLingo — DeepL Translation for Polylang"
-msgstr "AutoLingo — Traduction DeepL pour Polylang"
+#. Plugin Name of the plugin
+#: autolingo-polylang-translate.php
+msgid "AutoLingo — Automatic Translation for Polylang & WPML"
+msgstr "AutoLingo — Traduction automatique pour Polylang et WPML"
 
+#. Plugin URI of the plugin
+#: autolingo-polylang-translate.php
+msgid "https://auto-lingo.com"
+msgstr "https://auto-lingo.com"
+
+#. Description of the plugin
+#: autolingo-polylang-translate.php
+msgid "Automatic translation via DeepL, OpenAI or Google Translate. Works with Polylang and WPML. Supports Elementor, Beaver Builder, Bricks, WooCommerce, ACF, and all major SEO plugins."
+msgstr "Traduction automatique avec DeepL, OpenAI ou Google Translate. Fonctionne avec Polylang et WPML. Prend en charge Elementor, Beaver Builder, Bricks, WooCommerce, ACF et les principales extensions SEO."
+
+#. Author of the plugin
+#: autolingo-polylang-translate.php
+#: admin/settings.php:137
 msgid "AutoLingo"
 msgstr "AutoLingo"
 
+#: admin/dashboard-widget.php:14
 msgid "AutoLingo — Credit"
 msgstr "AutoLingo — Crédit"
 
-msgid "DeepL Connection"
-msgstr "Connexion DeepL"
+#: admin/dashboard-widget.php:28
+msgid "Translation Coverage"
+msgstr "Couverture de traduction"
 
+#. translators: 1: translated count, 2: total count, 3: percentage
+#: admin/dashboard-widget.php:42
+#, php-format
+msgid "%1$s / %2$s (%3$s%%)"
+msgstr "%1$s / %2$s (%3$s %%)"
+
+#. translators: %d: total number of source posts
+#: admin/dashboard-widget.php:57
+#, php-format
+msgid "%d source post"
+msgid_plural "%d source posts"
+msgstr[0] "%d article source"
+msgstr[1] "%d articles source"
+
+#: admin/dashboard-widget.php:61
+msgid "View all"
+msgstr "Tout voir"
+
+#: admin/dashboard-widget.php:81
+msgid "Estimated Savings"
+msgstr "Économies estimées"
+
+#: admin/dashboard-widget.php:85
+msgid "Time saved"
+msgstr "Temps économisé"
+
+#. translators: %s: number of hours, formatted
+#: admin/dashboard-widget.php:88
+#, php-format
+msgid "~%s h"
+msgstr "~%s h"
+
+#: admin/dashboard-widget.php:91
+msgid "vs. a translation agency"
+msgstr "vs une agence de traduction"
+
+#. translators: %s: amount saved, formatted
+#: admin/dashboard-widget.php:94
+#, php-format
+msgid "~$%s"
+msgstr "~%s $"
+
+#. translators: 1: number of translations, 2: assumed words per post
+#: admin/dashboard-widget.php:102
+#, php-format
+msgid "Based on %1$d translations, assuming ~%2$d words/post. Adjustable via filters."
+msgstr "Basé sur %1$d traductions, en supposant ~%2$d mots/article. Ajustable via des filtres."
+
+#: admin/dashboard-widget.php:120
+#: admin/settings.php:465
+msgid "This provider does not expose a usage balance."
+msgstr "Ce fournisseur n’indique pas de solde."
+
+#: admin/dashboard-widget.php:123
+msgid "Unable to retrieve balance. Check your API key."
+msgstr "Impossible de récupérer le solde. Vérifiez votre clé d’API."
+
+#: admin/dashboard-widget.php:127
+msgid "Settings →"
+msgstr "Réglages →"
+
+#: admin/dashboard-widget.php:134
+#: admin/settings.php:520
+msgid "AutoLingo AI — this month"
+msgstr "IA AutoLingo — ce mois-ci"
+
+#: admin/dashboard-widget.php:134
+#: admin/settings.php:520
+msgid "DeepL Credit"
+msgstr "Crédit DeepL"
+
+#: admin/dashboard-widget.php:140
+#: admin/settings.php:525
+msgid "Included with Premium · monthly"
+msgstr "Incluse avec Premium · mensuel"
+
+#: admin/dashboard-widget.php:142
+msgid "Free — one-time credit"
+msgstr "Gratuit — crédit unique"
+
+#: admin/dashboard-widget.php:143
+msgid "Pro — monthly"
+msgstr "Pro — mensuel"
+
+#: admin/dashboard-widget.php:146
+msgid "Plan"
+msgstr "Plan"
+
+#: admin/dashboard-widget.php:147
+msgid "Used"
+msgstr "Utilisés"
+
+#: admin/dashboard-widget.php:148
+msgid "Remaining"
+msgstr "Restants"
+
+#: admin/dashboard-widget.php:149
+msgid "Total"
+msgstr "Total"
+
+#: admin/dashboard-widget.php:157
+msgid "Updated every hour"
+msgstr "Mis à jour toutes les heures"
+
+#: admin/dashboard-widget.php:159
+msgid "Settings"
+msgstr "Réglages"
+
+#: admin/metabox.php:15
+msgid "AutoLingo Translation"
+msgstr "Traduction AutoLingo"
+
+#. translators: %s: uppercase language code, e.g. "FR"
+#: admin/metabox.php:31
+#, php-format
+msgid "Only available on %s content."
+msgstr "Disponible uniquement sur les contenus en %s."
+
+#. translators: %1$s: page builder name, e.g. "Elementor"
+#: admin/metabox.php:61
+#, php-format
+msgid "This page is built with %1$s. The free version translates its title and WordPress content, not the %1$s layout."
+msgstr "Cette page est construite avec %1$s. La version gratuite traduit son titre et son contenu WordPress, pas la mise en page %1$s."
+
+#: admin/metabox.php:64
+msgid "Page builders are translated by AutoLingo Pro."
+msgstr "Les page builders sont traduits par AutoLingo Pro."
+
+#. translators: %s: formatted number of characters
+#: admin/metabox.php:73
+#, php-format
+msgid "%s characters remaining"
+msgstr "%s caractères restants"
+
+#. translators: %s: target language codes, e.g. "EN, DE"
+#: admin/metabox.php:89
+#, php-format
+msgid "Translate → %s"
+msgstr "Traduire → %s"
+
+#: admin/metabox.php:98
+msgid "Translating…"
+msgstr "Traduction en cours…"
+
+#: admin/metabox.php:103
+msgid "Translations will be published automatically."
+msgstr "Les traductions seront publiées automatiquement."
+
+#: admin/metabox.php:156
+msgid "Translation in progress, please wait…"
+msgstr "Traduction en cours, veuillez patienter…"
+
+#: admin/metabox.php:158
+msgid "The page will reload automatically when done."
+msgstr "La page se rechargera automatiquement une fois terminé."
+
+#: admin/settings.php:18
+#: admin/settings.php:854
+#: includes/assistant.php:590
+#: includes/bulk.php:413
+#: includes/hooks.php:198
+#: includes/review.php:907
+#: includes/strings.php:502
+#: includes/strings.php:522
+msgid "Permission denied."
+msgstr "Permission refusée."
+
+#: admin/settings.php:78
+msgid "Syncing…"
+msgstr "Synchronisation…"
+
+#: admin/settings.php:108
+msgid "Dismiss"
+msgstr "Masquer"
+
+#: admin/settings.php:112
+msgid "AutoLingo Pro"
+msgstr "AutoLingo Pro"
+
+#: admin/settings.php:114
+msgid "Translate page builders, SEO meta, ACF fields and WooCommerce products."
+msgstr "Traduisez les constructeurs de pages, les métadonnées SEO, les champs ACF et les produits WooCommerce."
+
+#: admin/settings.php:118
+msgid "Elementor, Beaver Builder, Bricks"
+msgstr "Elementor, Beaver Builder, Bricks"
+
+#: admin/settings.php:119
+msgid "Yoast, RankMath, SEOPress"
+msgstr "Yoast, RankMath, SEOPress"
+
+#: admin/settings.php:120
+msgid "ACF fields, repeater, flex content"
+msgstr "Champs ACF, répéteur, contenu flexible"
+
+#: admin/settings.php:121
+msgid "WooCommerce product attributes"
+msgstr "Attributs de produits WooCommerce"
+
+#: admin/settings.php:126
+msgid "Get AutoLingo Pro →"
+msgstr "Obtenir AutoLingo Pro →"
+
+#: admin/settings.php:136
+#: admin/settings.php:483
+msgid "AutoLingo — Translation for Polylang & WPML"
+msgstr "AutoLingo — Traduction pour Polylang et WPML"
+
+#: admin/settings.php:162
 msgid "Languages"
 msgstr "Langues"
 
+#: admin/settings.php:163
 msgid "Behavior"
 msgstr "Comportement"
 
-msgid "DeepL API Key"
-msgstr "Clé API DeepL"
+#: admin/settings.php:170
+#: admin/settings.php:796
+msgid "Modules"
+msgstr "Modules"
 
-msgid "DeepL API key (ends with %s for the Free plan)."
-msgstr "Clé API DeepL (se termine par %s pour le plan gratuit)."
+#: admin/settings.php:171
+msgid "Fields to translate"
+msgstr "Champs à traduire"
 
-msgid "Get a key →"
-msgstr "Obtenir une clé →"
-
+#: admin/settings.php:174
 msgid "Source Language"
 msgstr "Langue source"
 
+#: admin/settings.php:175
+msgid "Target Languages"
+msgstr "Langues cibles"
+
+#: admin/settings.php:176
+msgid "Content Types"
+msgstr "Types de contenu"
+
+#: admin/settings.php:177
+#: includes/assistant.php:394
+msgid "Auto-translate"
+msgstr "Traduction automatique"
+
+#: admin/settings.php:178
+#: includes/assistant.php:394
+msgid "New translations"
+msgstr "Nouvelles traductions"
+
+#: admin/settings.php:179
+msgid "Background translation"
+msgstr "Traduction en arrière-plan"
+
+#: admin/settings.php:181
+msgid "DeepL Glossary"
+msgstr "Glossaire DeepL"
+
+#: admin/settings.php:182
+msgid "Glossary Terms"
+msgstr "Termes du glossaire"
+
+#: admin/settings.php:183
+msgid "Translation Memory"
+msgstr "Mémoire de traduction"
+
+#: admin/settings.php:184
+msgid "Cached Segments"
+msgstr "Segments en cache"
+
+#: admin/settings.php:185
+msgid "DeepL Formality"
+msgstr "Formalité DeepL"
+
+#: admin/settings.php:186
+msgid "Credit Alert Threshold"
+msgstr "Seuil d'alerte de crédit"
+
+#: admin/settings.php:204
 msgid "Language in which you write your content."
 msgstr "Langue dans laquelle vous rédigez votre contenu."
 
 #. translators: 1: source language code, 2: the site's language codes
+#: admin/settings.php:211
+#, php-format
 msgid "\"%1$s\" is not one of your site’s languages (%2$s). AutoLingo only translates posts written in the source language, so nothing will be translated."
 msgstr "« %1$s » ne fait pas partie des langues de votre site (%2$s). AutoLingo ne traduit que les articles rédigés dans la langue source : rien ne sera traduit."
 
-msgid "Target Languages"
-msgstr "Langues cibles"
-
+#: admin/settings.php:227
 msgid "Languages to automatically translate into."
 msgstr "Langues vers lesquelles traduire automatiquement."
 
-msgid "Content Types"
-msgstr "Types de contenu"
-
-msgid "Content types to include in automatic translation."
-msgstr "Types de contenu à inclure dans la traduction automatique."
-
-msgid "Auto-translate"
-msgstr "Traduction automatique"
-
-msgid "Automatically translate on each publish"
-msgstr "Traduire automatiquement à chaque publication"
-
-msgid "If disabled, translation only happens via the manual button or WP-CLI."
-msgstr "Si désactivé, la traduction n'a lieu que via le bouton manuel ou WP-CLI."
-
-msgid "Credit Alert Threshold"
-msgstr "Seuil d'alerte de crédit"
-
-msgid "Shows an admin alert when remaining credit falls below this threshold."
-msgstr "Affiche une alerte dans l'admin quand le crédit restant passe sous ce seuil."
-
-msgid "characters"
-msgstr "caractères"
-
-msgid "DeepL connection OK — %1$s characters remaining out of %2$s."
-msgstr "Connexion DeepL OK — %1$s caractères restants sur %2$s."
-
-msgid "Unable to reach the DeepL API. Please check your API key."
-msgstr "Impossible de contacter l'API DeepL. Vérifiez votre clé API."
-
-msgid "Estimated Savings"
-msgstr "Économies estimées"
-
-msgid "Time saved"
-msgstr "Temps économisé"
-
-msgid "~%s h"
-msgstr "~%s h"
-
-msgid "vs. a translation agency"
-msgstr "vs une agence de traduction"
-
-msgid "~$%s"
-msgstr "~%s $"
-
-msgid "Based on %1$d translations, assuming ~%2$d words/post. Adjustable via filters."
-msgstr "Basé sur %1$d traductions, en supposant ~%2$d mots/article. Ajustable via des filtres."
-
-msgid "DeepL Credit"
-msgstr "Crédit DeepL"
-
-msgid "Free plan · one-time credit"
-msgstr "Plan gratuit · crédit unique"
-
-msgid "Pro plan · monthly"
-msgstr "Plan Pro · mensuel"
-
-msgid "Free — one-time credit"
-msgstr "Gratuit — crédit unique"
-
-msgid "Pro — monthly"
-msgstr "Pro — mensuel"
-
-msgid "remaining"
-msgstr "restants"
-
-msgid "total"
-msgstr "total"
-
-msgid "Refresh"
-msgstr "Actualiser"
-
-msgid "Test DeepL connection"
-msgstr "Tester la connexion DeepL"
-
-msgid "Save Settings"
-msgstr "Enregistrer les réglages"
-
-msgid "WP-CLI Commands"
-msgstr "Commandes WP-CLI"
-
-msgid "Command"
-msgstr "Commande"
-
-msgid "Description"
-msgstr "Description"
-
-msgid "Lists all source posts with translation status per language"
-msgstr "Liste tous les posts sources avec le statut de traduction par langue"
-
-msgid "Same output in CSV format (export)"
-msgstr "Même résultat au format CSV (export)"
-
-msgid "Simulates without creating anything"
-msgstr "Simule sans rien créer"
-
-msgid "Translates only missing translations"
-msgstr "Traduit uniquement les traductions manquantes"
-
-msgid "Translates or updates all source posts"
-msgstr "Traduit ou met à jour tous les posts sources"
-
-msgid "DeepL Translation"
-msgstr "Traduction DeepL"
-
-msgid "Only available on %s content."
-msgstr "Disponible uniquement sur les contenus en %s."
-
-msgid "%s characters remaining"
-msgstr "%s caractères restants"
-
-msgid "Translate → %s"
-msgstr "Traduire → %s"
-
-msgid "Translate %s"
-msgstr "Traduire %s"
-
-msgid "Translating…"
-msgstr "Traduction en cours…"
-
-msgid "Translations will be published automatically."
-msgstr "Les traductions seront publiées automatiquement."
-
-msgid "Translation in progress, please wait…"
-msgstr "Traduction en cours, veuillez patienter…"
-
-msgid "The page will reload automatically when done."
-msgstr "La page se rechargera automatiquement une fois terminé."
-
-msgid "Unable to retrieve DeepL balance."
-msgstr "Impossible de récupérer le solde DeepL."
-
-msgid "Check configuration →"
-msgstr "Vérifier la configuration →"
-
-msgid "Plan"
-msgstr "Plan"
-
-msgid "Used"
-msgstr "Utilisés"
-
-msgid "Remaining"
-msgstr "Restants"
-
-msgid "Total"
-msgstr "Total"
-
-msgid "Updated every hour"
-msgstr "Mis à jour toutes les heures"
-
-msgid "Settings"
-msgstr "Réglages"
-
-msgid "Translations created successfully."
-msgstr "Traductions créées avec succès."
-
-msgid "Translation error. Check your %s and the logs."
-msgstr "Erreur lors de la traduction. Vérifiez votre %s et les logs."
-
-msgid "API key"
-msgstr "clé API"
-
-msgid "Low DeepL credit: %1$s characters remaining (%2$s%%)."
-msgstr "Crédit DeepL faible : %1$s caractères restants (%2$s%%)."
-
-msgid "Missing post ID."
-msgstr "ID de post manquant."
-
-msgid "Permission denied."
-msgstr "Permission refusée."
-
-msgid "Polylang not loaded."
-msgstr "Polylang non chargé."
-
-msgid "Activate your licence"
-msgstr "Activer votre licence"
-
-msgid "AutoLingo has translated %d posts for you so far. If it&#8217;s saving you time, a quick review helps other WordPress users find it."
-msgstr "AutoLingo a traduit %d articles pour vous jusqu’ici. Si ça vous fait gagner du temps, un avis rapide aide d’autres utilisateurs WordPress à trouver le plugin."
-
-msgid "Leave a review"
-msgstr "Laisser un avis"
-
-msgid "No thanks"
-msgstr "Non merci"
-
-msgid "Arabic"
-msgstr "Arabe"
-
-msgid "Bulgarian"
-msgstr "Bulgare"
-
-msgid "Czech"
-msgstr "Tchèque"
-
-msgid "Danish"
-msgstr "Danois"
-
-msgid "German"
-msgstr "Allemand"
-
-msgid "Greek"
-msgstr "Grec"
-
-msgid "English"
-msgstr "Anglais"
-
-msgid "Spanish"
-msgstr "Espagnol"
-
-msgid "Estonian"
-msgstr "Estonien"
-
-msgid "Finnish"
-msgstr "Finnois"
-
-msgid "French"
-msgstr "Français"
-
-msgid "Hungarian"
-msgstr "Hongrois"
-
-msgid "Indonesian"
-msgstr "Indonésien"
-
-msgid "Italian"
-msgstr "Italien"
-
-msgid "Japanese"
-msgstr "Japonais"
-
-msgid "Korean"
-msgstr "Coréen"
-
-msgid "Lithuanian"
-msgstr "Lituanien"
-
-msgid "Latvian"
-msgstr "Letton"
-
-msgid "Norwegian"
-msgstr "Norvégien"
-
-msgid "Dutch"
-msgstr "Néerlandais"
-
-msgid "Polish"
-msgstr "Polonais"
-
-msgid "Portuguese"
-msgstr "Portugais"
-
-msgid "Romanian"
-msgstr "Roumain"
-
-msgid "Russian"
-msgstr "Russe"
-
-msgid "Slovak"
-msgstr "Slovaque"
-
-msgid "Slovenian"
-msgstr "Slovène"
-
-msgid "Swedish"
-msgstr "Suédois"
-
-msgid "Turkish"
-msgstr "Turc"
-
-msgid "Ukrainian"
-msgstr "Ukrainien"
-
-msgid "Chinese"
-msgstr "Chinois"
-
-msgid "Translation Log — AutoLingo"
-msgstr "Journal des traductions — AutoLingo"
-
-msgid "DeepL Log"
-msgstr "Journal DeepL"
-
-msgid "%d entry deleted."
-msgid_plural "%d entries deleted."
-msgstr[0] "%d entrée supprimée."
-msgstr[1] "%d entrées supprimées."
-
-msgid "%d entry"
-msgid_plural "%d entries"
-msgstr[0] "%d entrée"
-msgstr[1] "%d entrées"
-
-msgid "Success"
-msgstr "Succès"
-
-msgid "Error"
-msgstr "Erreur"
-
-msgid "Warning"
-msgstr "Avertissement"
-
-msgid "Info"
-msgstr "Info"
-
-msgid "Reset filters"
-msgstr "Réinitialiser les filtres"
-
-msgid "Clear all logs?"
-msgstr "Vider tous les logs ?"
-
-msgid "Clear logs"
-msgstr "Vider les logs"
-
-msgid "filter: %s"
-msgstr "filtre : %s"
-
-msgid "Auto-retention: 30 days"
-msgstr "Rétention automatique : 30 jours"
-
-msgid "No logs found."
-msgstr "Aucun log trouvé."
-
-msgid "No logs found for this filter."
-msgstr "Aucun log trouvé pour ce filtre."
-
-msgid "Date"
-msgstr "Date"
-
-msgid "Level"
-msgstr "Niveau"
-
-msgid "Language"
-msgstr "Langue"
-
-msgid "Message"
-msgstr "Message"
-
-msgid "Post"
-msgstr "Post"
-
-msgid "Details"
-msgstr "Détails"
-
-msgid "Filter by this post"
-msgstr "Filtrer par ce post"
-
-msgid "Edit →"
-msgstr "Modifier →"
-
-msgid "Previous"
-msgstr "Précédent"
-
-msgid "Page %1$s / %2$s"
-msgstr "Page %1$s / %2$s"
-
-msgid "Next"
-msgstr "Suivant"
-
-msgid "Upgrade to a premium licence to enable these modules."
-msgstr "Passez à une licence Premium pour activer ces modules."
-
-msgid "Translation Memory"
-msgstr "Mémoire de traduction"
-
-msgid "Cached Segments"
-msgstr "Segments en cache"
-
-msgid "%1$s segment(s) cached — an estimated %2$s characters have not needed a second API call."
-msgstr "%1$s segment(s) en cache — environ %2$s caractères n'ont pas eu besoin d'un second appel API."
-
-msgid "Paragraphs repeated across multiple posts or products (e.g. boilerplate terms) are translated once per language pair and reused everywhere else."
-msgstr "Les paragraphes répétés sur plusieurs articles ou produits (ex. conditions générales) ne sont traduits qu'une fois par paire de langues, puis réutilisés partout ailleurs."
-
-msgid "Clear all cached translation segments? Nothing manually translated is affected — only cached API results."
-msgstr "Vider tous les segments de traduction en cache ? Aucun contenu traduit manuellement n'est affecté — seuls les résultats API mis en cache le sont."
-
-msgid "Clear translation memory"
-msgstr "Vider la mémoire de traduction"
-
-#: admin/settings.php
-msgid "Microsoft Translator Key"
-msgstr "Clé Microsoft Translator"
-
-#: admin/settings.php
-msgid "Azure AI Translator resource key. The free tier (F0) includes 2,000,000 characters a month."
-msgstr "Clé de la ressource Azure AI Translator. L’offre gratuite (F0) inclut 2 000 000 de caractères par mois."
-
-#: admin/settings.php
-msgid "Region"
-msgstr "Région"
-
-#: admin/settings.php
-msgid "The region of your Azure resource. Leave empty for a global resource."
-msgstr "La région de votre ressource Azure. Laissez vide pour une ressource globale."
-
-#: admin/settings.php
-msgid "When a quota runs out"
-msgstr "Quand un quota est épuisé"
-
-#: admin/settings.php
-msgid "Use the other providers that have a key"
-msgstr "Utiliser les autres fournisseurs qui ont une clé"
-
-#: admin/settings.php
-msgid "When the selected provider has used up its quota, translate with the next one that has a key: DeepL, Microsoft, Google, then OpenAI and DeepSeek. With free DeepL, Microsoft and Google accounts, that is about 3,000,000 free characters a month."
-msgstr "Quand le fournisseur choisi a épuisé son quota, traduire avec le suivant qui a une clé : DeepL, Microsoft, Google, puis OpenAI et DeepSeek. Avec des comptes gratuits DeepL, Microsoft et Google, cela fait environ 3 000 000 de caractères gratuits par mois."
-
-msgid "AutoLingo AI works with an activated AutoLingo Premium licence."
-msgstr "L'IA AutoLingo fonctionne avec une licence AutoLingo Premium activée."
-
-msgid "AutoLingo AI: your Premium licence is not valid or has expired."
-msgstr "IA AutoLingo : votre licence Premium n'est pas valide ou a expiré."
-
-msgid "AutoLingo AI: your licence already uses the AI on 3 other sites."
-msgstr "IA AutoLingo : votre licence utilise déjà l'IA sur 3 autres sites."
-
-msgid "AutoLingo AI: this month's characters are used up. Buy a pack in Settings → AutoLingo, or wait until next month."
-msgstr "IA AutoLingo : les caractères de ce mois sont épuisés. Achetez un pack dans Réglages → AutoLingo, ou attendez le mois prochain."
-
-msgid "AutoLingo AI is busy for now. Try again in a minute."
-msgstr "L'IA AutoLingo est occupée pour le moment. Réessayez dans une minute."
-
-#, php-format
-msgid "AutoLingo AI returned HTTP %d."
-msgstr "L'IA AutoLingo a répondu HTTP %d."
-
-msgid "The payment page could not be opened. Try again in a minute."
-msgstr "La page de paiement n'a pas pu s'ouvrir. Réessayez dans une minute."
-
-msgid "Sorry, you are not allowed to do that."
-msgstr "Désolé, vous n'avez pas l'autorisation de faire cela."
-
-msgid "AutoLingo AI"
-msgstr "IA AutoLingo"
-
-#, php-format
-msgid "Included with Premium, no API key: %s characters a month."
-msgstr "Incluse avec Premium, sans clé d'API : %s caractères par mois."
-
-#, php-format
-msgid "This month: %1$s of %2$s used."
-msgstr "Ce mois-ci : %1$s utilisés sur %2$s."
-
-#, php-format
-msgid "Bought characters left: %s."
-msgstr "Caractères achetés restants : %s."
-
-#, php-format
-msgid "Buy %1$s characters (%2$s)"
-msgstr "Acheter %1$s caractères (%2$s)"
-
-msgid "One payment, through Stripe. Bought characters never expire: they are used once the month's are."
-msgstr "Un seul paiement, par Stripe. Les caractères achetés n'expirent jamais : ils servent une fois ceux du mois épuisés."
-
-msgid "AutoLingo AI (included, no key)"
-msgstr "IA AutoLingo (incluse, sans clé)"
-
-msgid "AutoLingo AI — this month"
-msgstr "IA AutoLingo — ce mois-ci"
-
-msgid "Included with Premium · monthly"
-msgstr "Incluse avec Premium · mensuel"
-
-#: admin/settings.php
-msgid "AutoLingo — Translation for Polylang & WPML"
-msgstr "AutoLingo — Traduction pour Polylang et WPML"
-
-#: admin/settings.php
-msgid "%d menu(s) translated successfully. WPML links each one to its source menu."
-msgstr "%d menu(s) traduit(s). WPML relie chacun à son menu source."
-
-#: admin/settings.php
-msgid "WPML links each translated menu to its source menu: it is shown in its own language automatically."
-msgstr "WPML relie chaque menu traduit à son menu source : il s'affiche automatiquement dans sa langue."
-
-#. translators: %1$s: page builder name, e.g. "Elementor"
-msgid "This page is built with %1$s. The free version translates its title and WordPress content, not the %1$s layout."
-msgstr "Cette page est construite avec %1$s. La version gratuite traduit son titre et son contenu WordPress, pas la mise en page %1$s."
-
-msgid "Page builders are translated by AutoLingo Pro."
-msgstr "Les page builders sont traduits par AutoLingo Pro."
-
-#. translators: %s: plugin names, e.g. "Elementor, Yoast SEO"
-msgid "Active on this site: %s. The free version does not translate their content."
-msgstr "Actifs sur ce site : %s. La version gratuite ne traduit pas leur contenu."
-
-msgid "Watch the 90-second demo"
-msgstr "Voir la démo de 90 secondes"
-
-msgid "Theme and plugin strings"
-msgstr "Textes du thème et des extensions"
-
-msgid "Translate the strings of Languages → Translations (site title, widgets, cookie banner and other plugin texts) with <a href=\"%s\" target=\"_blank\">AutoLingo Pro</a>."
-msgstr "Traduisez les textes de Langues → Traductions (titre du site, widgets, bannière de cookies et autres textes d’extensions) avec <a href=\"%s\" target=\"_blank\">AutoLingo Pro</a>."
-
-msgid "Counts the Languages → Translations strings still to translate (Polylang)"
-msgstr "Compte les textes de Langues → Traductions encore à traduire (Polylang)"
-
-msgid "Translates the missing strings, for every target language or the ones given"
-msgstr "Traduit les textes manquants, pour toutes les langues cibles ou celles indiquées"
-
-msgid "String translation is included in AutoLingo Pro."
-msgstr "La traduction des textes est incluse dans AutoLingo Pro."
-
-msgid "String translation needs Polylang."
-msgstr "La traduction des textes nécessite Polylang."
-
-msgid "This language is not a target language in the AutoLingo settings."
-msgstr "Cette langue n’est pas une langue cible dans les réglages d’AutoLingo."
-
-msgid "This language does not exist in Polylang."
-msgstr "Cette langue n’existe pas dans Polylang."
-
-msgid "The translation credit is used up."
-msgstr "Le crédit de traduction est épuisé."
-
-msgid "The translation service returned no text."
-msgstr "Le service de traduction n’a renvoyé aucun texte."
-
-msgid "Available with Polylang: translates the strings of Languages → Translations (site title, widgets, plugin texts such as the cookie banner)."
-msgstr "Disponible avec Polylang : traduit les textes de Langues → Traductions (titre du site, widgets, textes d’extensions comme la bannière de cookies)."
-
-msgid "%d string(s) are registered by your theme and plugins in Languages → Translations. Missing translations are filled in; translations already entered are never changed."
-msgstr "%d texte(s) sont déclarés par votre thème et vos extensions dans Langues → Traductions. Les traductions manquantes sont complétées ; celles déjà saisies ne sont jamais modifiées."
-
-msgid "🌍 Translate missing strings"
-msgstr "🌍 Traduire les textes manquants"
-
-msgid "Date and time formats, addresses and placeholders (such as {title}) are kept as they are."
-msgstr "Les formats de date et d’heure, les adresses et les variables (comme {title}) sont conservés tels quels."
-
-msgid "✓ %d translated"
-msgstr "✓ %d traduit(s)"
-
-msgid "%d left as they were (placeholders changed by the provider)"
-msgstr "%d laissé(s) tel(s) quel(s) (variables modifiées par le service)"
-
-msgid "%d string to translate"
-msgid_plural "%d strings to translate"
-msgstr[0] "%d texte à traduire"
-msgstr[1] "%d textes à traduire"
-
-msgid "✓ Up to date"
-msgstr "✓ À jour"
-
-msgid "Translating… %1$d / %2$d"
-msgstr "Traduction en cours… %1$d / %2$d"
-
-msgid "The server cut the request short (a time limit of the host or its cache). What was translated is saved: click the button again to carry on."
-msgstr "Le serveur a interrompu la requête (une limite de temps de l’hébergeur ou de son cache). Ce qui a été traduit est enregistré : cliquez de nouveau sur le bouton pour continuer."
-
-msgid "Some strings could not be saved. Check them in Languages → Translations."
-msgstr "Certains textes n’ont pas pu être enregistrés. Vérifiez-les dans Langues → Traductions."
-
-msgid "Provider"
-msgstr "Fournisseur"
-
-msgid "Languages & content"
-msgstr "Langues et contenus"
-
-msgid "Modules"
-msgstr "Modules"
-
-msgid "Glossary & memory"
-msgstr "Glossaire et mémoire"
-
-msgid "Menus & strings"
-msgstr "Menus et textes"
-
-msgid "WP-CLI"
-msgstr "WP-CLI"
-
-msgid "AutoLingo settings"
-msgstr "Réglages d’AutoLingo"
-
-msgid "String translation needs Polylang, or WPML with String Translation."
-msgstr "La traduction des textes nécessite Polylang, ou WPML avec String Translation."
-
-msgid "This language is not active in the multilingual plugin."
-msgstr "Cette langue n’est pas active dans l’extension multilingue."
-
-msgid "Domains to translate: %1$d of %2$d"
-msgstr "Domaines à traduire : %1$d sur %2$d"
-
-msgid "WPML String Translation also lists the texts of plugins and themes, which their own translation files (.mo) usually translate already. Those domains are left out by default."
-msgstr "WPML String Translation liste aussi les textes des extensions et des thèmes, que leurs propres fichiers de traduction (.mo) traduisent en général déjà. Ces domaines sont exclus par défaut."
-
-msgid "translation files"
-msgstr "fichiers de traduction"
-
-msgid "Save the domains"
-msgstr "Enregistrer les domaines"
-
-msgid "Needs WPML String Translation (version 5 or later with WPML 5): it keeps the strings of your theme and plugins."
-msgstr "Nécessite WPML String Translation (version 5 ou plus avec WPML 5) : c’est lui qui garde les textes de votre thème et de vos extensions."
-
-msgid "%d string(s) to consider in WPML String Translation, in the domains picked below. Missing translations are filled in, from the language each string is written in, and marked complete; translations already entered are never changed."
-msgstr "%d texte(s) à examiner dans WPML String Translation, dans les domaines choisis ci-dessous. Les traductions manquantes sont complétées, depuis la langue dans laquelle chaque texte est écrit, et marquées terminées ; celles déjà saisies ne sont jamais modifiées."
-
-msgid "Translate the strings of your theme and plugins (Polylang's Languages → Translations, or WPML String Translation): site title, widgets, cookie banner… with <a href=\"%s\" target=\"_blank\">AutoLingo Pro</a>."
-msgstr "Traduisez les textes de votre thème et de vos extensions (Langues → Traductions de Polylang, ou WPML String Translation) : titre du site, widgets, bannière de cookies… avec <a href=\"%s\" target=\"_blank\">AutoLingo Pro</a>."
-
-msgid "Counts the theme and plugin strings still to translate (Polylang, WPML String Translation)"
-msgstr "Compte les textes du thème et des extensions encore à traduire (Polylang, WPML String Translation)"
-
+#: admin/settings.php:233
+msgid "Page builders"
+msgstr "Constructeurs de pages"
+
+#: admin/settings.php:234
+msgid "Elementor, Beaver Builder, Bricks Builder"
+msgstr "Elementor, Beaver Builder, Bricks Builder"
+
+#: admin/settings.php:237
+msgid "SEO plugins"
+msgstr "Extensions SEO"
+
+#: admin/settings.php:238
+msgid "Yoast SEO, RankMath, SEOPress, The SEO Framework"
+msgstr "Yoast SEO, RankMath, SEOPress, The SEO Framework"
+
+#: admin/settings.php:241
+msgid "ACF fields"
+msgstr "Champs ACF"
+
+#: admin/settings.php:242
+msgid "Text, textarea, wysiwyg, link title, repeater, flexible content"
+msgstr "Texte, zone de texte, WYSIWYG, titre de lien, répéteur, contenu flexible"
+
+#: admin/settings.php:245
+msgid "WooCommerce"
+msgstr "WooCommerce"
+
+#: admin/settings.php:246
 msgid "Product attributes, variations and purchase note. Without Polylang for WooCommerce or WooCommerce Multilingual, translations also get the type, prices, variations and linked products of their source, and share its stock. The SKU is never copied."
 msgstr "Attributs produit, variations et note d’achat. Sans Polylang for WooCommerce ni WooCommerce Multilingual, les traductions reçoivent aussi le type, les prix, les variations et les produits liés de leur source, et partagent son stock. Le SKU n’est jamais copié."
 
-msgid "WooCommerce: gives existing product translations the prices, stock, variations and linked products of their source"
-msgstr "WooCommerce : donne aux traductions existantes les prix, le stock, les variations et les produits liés de leur produit source"
+#. translators: %s: link to AutoLingo website
+#: admin/settings.php:267
+#, php-format
+msgid "These modules are included in <a href=\"%s\" target=\"_blank\">AutoLingo Pro</a>. Install the Pro version to enable them."
+msgstr "Ces modules sont inclus dans <a href=\"%s\" target=\"_blank\">AutoLingo Pro</a>. Installez la version Pro pour les activer."
 
-msgid "New translations"
-msgstr "Nouvelles traductions"
+#. translators: %s: plugin names, e.g. "Elementor, Yoast SEO"
+#: admin/settings.php:276
+#, php-format
+msgid "Active on this site: %s. The free version does not translate their content."
+msgstr "Actifs sur ce site : %s. La version gratuite ne traduit pas leur contenu."
 
+#: admin/settings.php:281
+msgid "Uncheck a module to skip it during translation and reduce API usage."
+msgstr "Décochez un module pour l’ignorer pendant la traduction et économiser l’API."
+
+#: admin/settings.php:294
+msgid "Content types to include in automatic translation."
+msgstr "Types de contenu à inclure dans la traduction automatique."
+
+#: admin/settings.php:300
+msgid "Automatically translate on each publish"
+msgstr "Traduire automatiquement à chaque publication"
+
+#: admin/settings.php:301
+msgid "If disabled, translation only happens via the manual button or WP-CLI."
+msgstr "Si désactivé, la traduction n'a lieu que via le bouton manuel ou WP-CLI."
+
+#: admin/settings.php:312
 msgid "Published right away"
 msgstr "Publiées tout de suite"
 
+#: admin/settings.php:313
 msgid "Saved as drafts, to review before publishing"
 msgstr "Enregistrées en brouillon, à relire avant publication"
 
+#: admin/settings.php:314
 msgid "Pending review (an editor publishes them)"
 msgstr "En attente de relecture (un éditeur les publie)"
 
+#: admin/settings.php:319
 msgid "Updates keep the status a translation has: one you unpublished, or one still under review, stays that way."
 msgstr "Les mises à jour gardent le statut de la traduction : celle que vous avez dépubliée, ou qui attend encore sa relecture, le reste."
 
-msgid "Tools"
-msgstr "Outils"
+#: admin/settings.php:325
+msgid "Default"
+msgstr "Par défaut"
 
+#: admin/settings.php:326
+msgid "More formal"
+msgstr "Plus formel"
+
+#: admin/settings.php:327
+msgid "Less formal"
+msgstr "Moins formel"
+
+#: admin/settings.php:328
+msgid "Prefer formal (fallback to default)"
+msgstr "Formel de préférence (sinon par défaut)"
+
+#: admin/settings.php:329
+msgid "Prefer informal (fallback to default)"
+msgstr "Informel de préférence (sinon par défaut)"
+
+#: admin/settings.php:336
+msgid "DeepL only. Applies to: DE, FR, IT, ES, NL, PL, PT, RU, JA. Ignored for other languages."
+msgstr "DeepL uniquement. S’applique à : DE, FR, IT, ES, NL, PL, PT, RU, JA. Ignoré pour les autres langues."
+
+#: admin/settings.php:346
+msgid "Translate long posts in the background via WP-Cron"
+msgstr "Traduire les longs articles en arrière-plan avec WP-Cron"
+
+#: admin/settings.php:352
+#: admin/settings.php:399
+msgid "characters"
+msgstr "caractères"
+
+#: admin/settings.php:354
+msgid "Posts whose content is longer than this are queued in WP-Cron instead of blocking the editor save."
+msgstr "Les articles dont le contenu dépasse cette longueur passent par WP-Cron au lieu de bloquer l’enregistrement dans l’éditeur."
+
+#: admin/settings.php:362
+msgid "⚠ DISABLE_WP_CRON is set — background translation is disabled and all posts will be translated synchronously. If a server-side cron job calls wp-cron.php, remove this constant to allow async translation."
+msgstr "⚠ DISABLE_WP_CRON est défini : la traduction en arrière-plan est désactivée et tous les articles sont traduits immédiatement. Si une tâche cron du serveur appelle wp-cron.php, retirez cette constante pour permettre la traduction asynchrone."
+
+#: admin/settings.php:366
+msgid "WP-Cron is active. Note: spawn_cron() requires loopback HTTP requests to be allowed by your host. If they are blocked, jobs will run on the next visitor page load instead of immediately."
+msgstr "WP-Cron est actif. À noter : spawn_cron() a besoin que votre hébergeur autorise les requêtes HTTP en boucle locale. Si elles sont bloquées, les tâches s’exécutent au prochain chargement de page d’un visiteur au lieu de tout de suite."
+
+#. translators: %d: number of pending translation jobs
+#: admin/settings.php:376
+#, php-format
+msgid "%d translation job pending in the queue."
+msgid_plural "%d translation jobs pending in the queue."
+msgstr[0] "%d tâche de traduction en attente dans la file."
+msgstr[1] "%d tâches de traduction en attente dans la file."
+
+#: admin/settings.php:400
+msgid "Shows an admin alert when remaining credit falls below this threshold (DeepL only)."
+msgstr "Affiche une alerte dans l’administration quand le crédit restant passe sous ce seuil (DeepL uniquement)."
+
+#: admin/settings.php:405
+msgid "Arabic"
+msgstr "Arabe"
+
+#: admin/settings.php:406
+msgid "Bulgarian"
+msgstr "Bulgare"
+
+#: admin/settings.php:407
+msgid "Czech"
+msgstr "Tchèque"
+
+#: admin/settings.php:408
+msgid "Danish"
+msgstr "Danois"
+
+#: admin/settings.php:409
+msgid "German"
+msgstr "Allemand"
+
+#: admin/settings.php:410
+msgid "Greek"
+msgstr "Grec"
+
+#: admin/settings.php:411
+msgid "English"
+msgstr "Anglais"
+
+#: admin/settings.php:412
+msgid "Spanish"
+msgstr "Espagnol"
+
+#: admin/settings.php:413
+msgid "Estonian"
+msgstr "Estonien"
+
+#: admin/settings.php:414
+msgid "Finnish"
+msgstr "Finnois"
+
+#: admin/settings.php:415
+msgid "French"
+msgstr "Français"
+
+#: admin/settings.php:416
+msgid "Hungarian"
+msgstr "Hongrois"
+
+#: admin/settings.php:417
+msgid "Indonesian"
+msgstr "Indonésien"
+
+#: admin/settings.php:418
+msgid "Italian"
+msgstr "Italien"
+
+#: admin/settings.php:419
+msgid "Japanese"
+msgstr "Japonais"
+
+#: admin/settings.php:420
+msgid "Korean"
+msgstr "Coréen"
+
+#: admin/settings.php:421
+msgid "Lithuanian"
+msgstr "Lituanien"
+
+#: admin/settings.php:422
+msgid "Latvian"
+msgstr "Letton"
+
+#: admin/settings.php:423
+msgid "Norwegian"
+msgstr "Norvégien"
+
+#: admin/settings.php:424
+msgid "Dutch"
+msgstr "Néerlandais"
+
+#: admin/settings.php:425
+msgid "Polish"
+msgstr "Polonais"
+
+#: admin/settings.php:426
+msgid "Portuguese"
+msgstr "Portugais"
+
+#: admin/settings.php:427
+msgid "Romanian"
+msgstr "Roumain"
+
+#: admin/settings.php:428
+msgid "Russian"
+msgstr "Russe"
+
+#: admin/settings.php:429
+msgid "Slovak"
+msgstr "Slovaque"
+
+#: admin/settings.php:430
+msgid "Slovenian"
+msgstr "Slovène"
+
+#: admin/settings.php:431
+msgid "Swedish"
+msgstr "Suédois"
+
+#: admin/settings.php:432
+msgid "Turkish"
+msgstr "Turc"
+
+#: admin/settings.php:433
+msgid "Ukrainian"
+msgstr "Ukrainien"
+
+#: admin/settings.php:434
+msgid "Chinese"
+msgstr "Chinois"
+
+#. translators: 1: remaining characters, 2: total characters
+#: admin/settings.php:456
+#, php-format
+msgid "Connection OK — %1$s characters remaining out of %2$s."
+msgstr "Connexion OK — %1$s caractères restants sur %2$s."
+
+#: admin/settings.php:464
+msgid "Unable to reach the DeepL API. Please check your API key."
+msgstr "Impossible de contacter l'API DeepL. Vérifiez votre clé API."
+
+#: admin/settings.php:484
+msgid "Watch the 90-second demo"
+msgstr "Voir la démo de 90 secondes"
+
+#. translators: %d: number of translated menus
+#: admin/settings.php:498
+#, php-format
+msgid "%d menu(s) translated successfully. WPML links each one to its source menu."
+msgstr "%d menu(s) traduit(s). WPML relie chacun à son menu source."
+
+#. translators: %d: number of translated menus
+#: admin/settings.php:500
+#, php-format
+msgid "%d menu(s) translated successfully. Assign them in Appearance → Menus or Polylang settings."
+msgstr "%d menu(s) traduit(s). Attribuez-les dans Apparence → Menus ou dans les réglages de Polylang."
+
+#. translators: 1: done count, 2: error count
+#: admin/settings.php:508
+#, php-format
+msgid "%1$d menu(s) translated, %2$d skipped (empty or error)."
+msgstr "%1$d menu(s) traduit(s), %2$d ignoré(s) (vides ou en erreur)."
+
+#: admin/settings.php:527
+msgid "Free plan · one-time credit"
+msgstr "Plan gratuit · crédit unique"
+
+#: admin/settings.php:528
+msgid "Pro plan · monthly"
+msgstr "Plan Pro · mensuel"
+
+#: admin/settings.php:534
+msgid "remaining"
+msgstr "restants"
+
+#: admin/settings.php:535
+msgid "total"
+msgstr "total"
+
+#: admin/settings.php:536
+msgid "Refresh"
+msgstr "Actualiser"
+
+#: admin/settings.php:539
+msgid "Test connection"
+msgstr "Tester la connexion"
+
+#: admin/settings.php:549
+msgid "Translation Provider"
+msgstr "Fournisseur de traduction"
+
+#: admin/settings.php:552
+#: admin/settings.php:792
+msgid "Provider"
+msgstr "Fournisseur"
+
+#: admin/settings.php:561
+msgid "AutoLingo AI (included, no key)"
+msgstr "IA AutoLingo (incluse, sans clé)"
+
+#: admin/settings.php:567
+msgid "DeepL API Key"
+msgstr "Clé API DeepL"
+
+#. translators: %s: code suffix :fx
+#: admin/settings.php:581
+#, php-format
+msgid "Ends with %s for the Free plan."
+msgstr "Se termine par %s pour l’offre Free."
+
+#: admin/settings.php:584
+#: admin/settings.php:594
+#: admin/settings.php:614
+#: admin/settings.php:624
+msgid "Get a key →"
+msgstr "Obtenir une clé →"
+
+#: admin/settings.php:589
+msgid "OpenAI API Key"
+msgstr "Clé d’API OpenAI"
+
+#: admin/settings.php:593
+msgid "Uses gpt-4o-mini. Billed per token on your OpenAI account."
+msgstr "Utilise gpt-4o-mini. Facturé au jeton sur votre compte OpenAI."
+
+#: admin/settings.php:599
+msgid "Google API Key"
+msgstr "Clé d’API Google"
+
+#: admin/settings.php:603
+msgid "Cloud Translation API v2 (Basic). Enable it in your Google Cloud project."
+msgstr "Cloud Translation API v2 (Basic). Activez-la dans votre projet Google Cloud."
+
+#: admin/settings.php:604
+msgid "Enable API →"
+msgstr "Activer l’API →"
+
+#: admin/settings.php:609
+msgid "DeepSeek API Key"
+msgstr "Clé d’API DeepSeek"
+
+#: admin/settings.php:613
+msgid "Uses deepseek-chat. Billed per token on your DeepSeek account."
+msgstr "Utilise deepseek-chat. Facturé au jeton sur votre compte DeepSeek."
+
+#: admin/settings.php:619
+msgid "Microsoft Translator Key"
+msgstr "Clé Microsoft Translator"
+
+#: admin/settings.php:623
+msgid "Azure AI Translator resource key. The free tier (F0) includes 2,000,000 characters a month."
+msgstr "Clé de la ressource Azure AI Translator. L’offre gratuite (F0) inclut 2 000 000 de caractères par mois."
+
+#: admin/settings.php:627
+msgid "Region"
+msgstr "Région"
+
+#: admin/settings.php:630
+msgid "The region of your Azure resource. Leave empty for a global resource."
+msgstr "La région de votre ressource Azure. Laissez vide pour une ressource globale."
+
+#: admin/settings.php:635
+msgid "When a quota runs out"
+msgstr "Quand un quota est épuisé"
+
+#: admin/settings.php:640
+msgid "Use the other providers that have a key"
+msgstr "Utiliser les autres fournisseurs qui ont une clé"
+
+#: admin/settings.php:642
+msgid "When the selected provider has used up its quota, translate with the next one that has a key: DeepL, Microsoft, Google, then OpenAI and DeepSeek. With free DeepL, Microsoft and Google accounts, that is about 3,000,000 free characters a month."
+msgstr "Quand le fournisseur choisi a épuisé son quota, traduire avec le suivant qui a une clé : DeepL, Microsoft, Google, puis OpenAI et DeepSeek. Avec des comptes gratuits DeepL, Microsoft et Google, cela fait environ 3 000 000 de caractères gratuits par mois."
+
+#: admin/settings.php:662
+msgid "Save Settings"
+msgstr "Enregistrer les réglages"
+
+#: admin/settings.php:666
 msgid "Whole site"
 msgstr "Site entier"
 
-msgid "Needs Polylang or WPML."
-msgstr "Nécessite Polylang ou WPML."
+#: admin/settings.php:670
+msgid "Navigation Menus"
+msgstr "Menus de navigation"
 
-msgid "%1$d translation missing, for %2$d post or page."
-msgid_plural "%1$d translations missing, for %2$d posts and pages."
-msgstr[0] "%1$d traduction manquante, pour %2$d article ou page."
-msgstr[1] "%1$d traductions manquantes, pour %2$d articles et pages."
+#: admin/settings.php:675
+msgid "No navigation menus found. Create menus in Appearance → Menus first."
+msgstr "Aucun menu de navigation trouvé. Créez d’abord des menus dans Apparence → Menus."
 
-msgid "Translate what is missing"
-msgstr "Traduire ce qui manque"
+#. translators: 1: menu names, 2: language codes
+#: admin/settings.php:680
+#, php-format
+msgid "Found %1$d menu(s): %2$s. Clicking the button will create a translated copy per target language, with item labels translated and internal links re-pointed to their translated page."
+msgstr "%1$d menu(s) trouvé(s) : %2$s. Le bouton crée une copie traduite par langue cible, avec les libellés traduits et les liens internes dirigés vers la page traduite."
 
-msgid "Translations to repair: %1$d with SEO fields left in the source language, %2$d with an address to fix, the original’s or a -2 left by a duplicate (the old address redirects to the new one)."
-msgstr "Traductions à réparer : %1$d avec des champs SEO restés dans la langue source, %2$d avec une adresse à corriger, celle de l’original ou un -2 laissé par un doublon (l’ancienne adresse redirige vers la nouvelle)."
+#: admin/settings.php:688
+msgid "🌍 Translate All Menus"
+msgstr "🌍 Traduire tous les menus"
 
-msgid "Repair them"
-msgstr "Les réparer"
+#: admin/settings.php:692
+msgid "WPML links each translated menu to its source menu: it is shown in its own language automatically."
+msgstr "WPML relie chaque menu traduit à son menu source : il s'affiche automatiquement dans sa langue."
 
-msgid "%d duplicate linked to no original (same title as a translation of the same language)."
-msgid_plural "%d duplicates linked to no original (same title as a translation of the same language)."
-msgstr[0] "%d doublon lié à aucun original (même titre qu’une traduction de la même langue)."
-msgstr[1] "%d doublons liés à aucun original (même titre qu’une traduction de la même langue)."
+#: admin/settings.php:694
+msgid "After translation, assign the new menus to their language locations in Appearance → Menus or the Polylang settings."
+msgstr "Après la traduction, attribuez les nouveaux menus à leurs emplacements de langue dans Apparence → Menus ou dans les réglages de Polylang."
 
-msgid "Move them to the trash"
-msgstr "Les mettre à la corbeille"
+#: admin/settings.php:700
+msgid "Theme and plugin strings"
+msgstr "Textes du thème et des extensions"
 
-msgid "✓ Nothing to do"
-msgstr "✓ Rien à faire"
+#. translators: %s: link to AutoLingo website
+#: admin/settings.php:712
+#, php-format
+msgid "Translate the strings of your theme and plugins (Polylang's Languages → Translations, or WPML String Translation): site title, widgets, cookie banner… with <a href=\"%s\" target=\"_blank\">AutoLingo Pro</a>."
+msgstr "Traduisez les textes de votre thème et de vos extensions (Langues → Traductions de Polylang, ou WPML String Translation) : titre du site, widgets, bannière de cookies… avec <a href=\"%s\" target=\"_blank\">AutoLingo Pro</a>."
 
-msgid "See them"
-msgstr "Les voir"
+#: admin/settings.php:724
+msgid "WP-CLI Commands"
+msgstr "Commandes WP-CLI"
 
-msgid "kept:"
-msgstr "gardé :"
+#: admin/settings.php:727
+msgid "Command"
+msgstr "Commande"
 
-msgid "Move these duplicates to the trash? You can restore them from the trash."
-msgstr "Mettre ces doublons à la corbeille ? Vous pourrez les restaurer depuis la corbeille."
+#: admin/settings.php:728
+msgid "Description"
+msgstr "Description"
 
-msgid "Each step works for a few seconds at a time, so that no host or cache time limit stops it. You can leave this page open and come back."
-msgstr "Chaque étape travaille quelques secondes à la fois, pour qu’aucune limite de temps de l’hébergeur ou du cache ne l’arrête. Vous pouvez laisser cette page ouverte et revenir plus tard."
+#: admin/settings.php:731
+msgid "Lists all source posts with translation status per language"
+msgstr "Liste tous les posts sources avec le statut de traduction par langue"
 
-msgid "Working… %1$d / %2$d"
-msgstr "En cours… %1$d / %2$d"
+#: admin/settings.php:732
+msgid "Same output in CSV format (export)"
+msgstr "Même résultat au format CSV (export)"
 
-msgid "✓ Done: %d"
-msgstr "✓ Fait : %d"
+#: admin/settings.php:733
+msgid "Simulates without creating anything"
+msgstr "Simule sans rien créer"
 
-msgid "%d could not be done"
-msgstr "%d n’ont pas pu être faits"
+#: admin/settings.php:734
+msgid "Translates only missing translations"
+msgstr "Traduit uniquement les traductions manquantes"
 
-msgid "The server cut the request short. What was done is saved: click the button again to carry on."
-msgstr "Le serveur a interrompu la requête. Ce qui a été fait est enregistré : cliquez de nouveau sur le bouton pour continuer."
+#: admin/settings.php:735
+msgid "Translates or updates all source posts"
+msgstr "Traduit ou met à jour tous les posts sources"
 
+#: admin/settings.php:736
+msgid "Translates all nav menus (same as the button above)"
+msgstr "Traduit tous les menus de navigation (comme le bouton ci-dessus)"
+
+#: admin/settings.php:737
+msgid "Translates one specific menu by slug"
+msgstr "Traduit un menu précis, par son identifiant"
+
+#: admin/settings.php:738
 msgid "Lists the translations with SEO fields or an address left in the source language; without --dry-run, translates them (the old address redirects)"
 msgstr "Liste les traductions dont les champs SEO ou l’adresse sont restés dans la langue source ; sans --dry-run, les traduit (l’ancienne adresse redirige)"
 
+#: admin/settings.php:739
 msgid "Lists the duplicates linked to no original; --trash moves them to the trash"
 msgstr "Liste les doublons liés à aucun original ; --trash les met à la corbeille"
 
-msgid "The review needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key."
-msgstr "La relecture nécessite l’IA AutoLingo (licence Premium), ou une clé OpenAI ou DeepSeek."
+#: admin/settings.php:741
+msgid "Asks Lingo, the assistant, in plain words: it answers and lists the actions it proposes, without running them"
+msgstr "Pose une question à Lingo, l’assistant, avec vos mots : il répond et liste les actions qu’il propose, sans les exécuter"
 
-msgid "The AI did not answer."
-msgstr "L’IA n’a pas répondu."
-
-msgid "The AI gave an answer that could not be read."
-msgstr "L’IA a donné une réponse illisible."
-
-msgid "%1$s returned HTTP %2$d."
-msgstr "%1$s a renvoyé une erreur HTTP %2$d."
-
-msgid "Title"
-msgstr "Titre"
-
-msgid "Excerpt"
-msgstr "Extrait"
-
-msgid "Content"
-msgstr "Contenu"
-
-msgid "SEO"
-msgstr "SEO"
-
-msgid "This passage is still in the source language."
-msgstr "Ce passage est encore dans la langue source."
-
-msgid "%s, the review agent, needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key in the Provider tab."
-msgstr "%s, l’agent de relecture, a besoin de l’IA AutoLingo (licence Premium), ou d’une clé OpenAI ou DeepSeek dans l’onglet Fournisseur."
-
-msgid "Have them reread"
-msgstr "Les faire relire"
-
-msgid "%s, review agent"
-msgstr "%s, agent de relecture"
-
-msgid "Meaning"
-msgstr "Sens"
-
-msgid "Number or name"
-msgstr "Nombre ou nom"
-
-msgid "Not translated"
-msgstr "Non traduit"
-
-msgid "Glossary"
-msgstr "Glossaire"
-
-msgid "Grammar"
-msgstr "Grammaire"
-
-msgid "Fluency"
-msgstr "Fluidité"
-
-msgid "Tone"
-msgstr "Ton"
-
-msgid "Other"
-msgstr "Autre"
-
-msgid "%s has not reread this translation yet."
-msgstr "%s n’a pas encore relu cette traduction."
-
-msgid "%1$s reread this translation on %2$s: nothing to check."
-msgstr "%1$s a relu cette traduction le %2$s : rien à vérifier."
-
-msgid "Original"
-msgstr "Original"
-
-msgid "Apply"
-msgstr "Appliquer"
-
-msgid "Ignore"
-msgstr "Ignorer"
-
-msgid "Ask %s to reread it"
-msgstr "Demander à %s de la relire"
-
-msgid "Working…"
-msgstr "En cours…"
-
-msgid "Done. The page reloads to show the change (save your other edits first)."
-msgstr "C’est fait. La page se recharge pour afficher la modification (enregistrez d’abord vos autres changements)."
-
-msgid "Applying a fix reloads the page: unsaved changes in the editor would be lost. Continue?"
-msgstr "Appliquer une correction recharge la page : les modifications non enregistrées dans l’éditeur seraient perdues. Continuer ?"
-
-msgid "This passage changed since the review: review again."
-msgstr "Ce passage a changé depuis la relecture : relancez la relecture."
-
-msgid "Off"
-msgstr "Désactivé"
-
-msgid "List the points for me to check"
-msgstr "Lister les points à vérifier"
-
-msgid "Fix the sure ones, list the others"
-msgstr "Corriger les points sûrs, lister les autres"
-
-msgid "After each translation, %s rereads it next to the original, like a proofreader: meaning, numbers and names, passages left untranslated, glossary, grammar, tone. The points to check are listed in the editor and in the Tools tab."
-msgstr "Après chaque traduction, %s la relit à côté de l’original, comme un correcteur : sens, nombres et noms, passages non traduits, glossaire, grammaire, ton. Les points à vérifier sont listés dans l’éditeur et dans l’onglet Outils."
-
-msgid "Reviews with %s. It costs about as many characters as the translation itself."
-msgstr "Relit avec %s. Cela coûte à peu près autant de caractères que la traduction elle-même."
-
-msgid "Needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key in the Provider tab."
-msgstr "Nécessite l’IA AutoLingo (licence Premium), ou une clé OpenAI ou DeepSeek dans l’onglet Fournisseur."
-
-msgid "Publish a translation created as a draft once the review finds nothing to check"
-msgstr "Publier une traduction créée en brouillon dès que la relecture ne trouve rien à vérifier"
-
-msgid "%d translation has points to check"
-msgid_plural "%d translations have points to check"
-msgstr[0] "%d traduction a des points à vérifier"
-msgstr[1] "%d traductions ont des points à vérifier"
-
-msgid "%d point"
-msgid_plural "%d points"
-msgstr[0] "%d point"
-msgstr[1] "%d points"
-
-msgid "%1$s, the review agent: %2$d translation not reread yet (or changed since), with %3$s."
-msgid_plural "%1$s, the review agent: %2$d translations not reread yet (or changed since), with %3$s."
-msgstr[0] "%1$s, l’agent de relecture : %2$d traduction pas encore relue (ou modifiée depuis), avec %3$s."
-msgstr[1] "%1$s, l’agent de relecture : %2$d traductions pas encore relues (ou modifiées depuis), avec %3$s."
-
-msgid "%1$s reread this translation on %2$s: %3$d point to check."
-msgid_plural "%1$s reread this translation on %2$s: %3$d points to check."
-msgstr[0] "%1$s a relu cette traduction le %2$s : %3$d point à vérifier."
-msgstr[1] "%1$s a relu cette traduction le %2$s : %3$d points à vérifier."
-
-msgid "%d correction made"
-msgid_plural "%d corrections made"
-msgstr[0] "%d correction faite"
-msgstr[1] "%d corrections faites"
-
+#: admin/settings.php:744
 msgid "Lingo, the review agent: counts the translations not reread yet; without --dry-run, rereads them and lists or fixes what it finds"
 msgstr "Lingo, l’agent de relecture : compte les traductions pas encore relues ; sans --dry-run, les relit et liste ou corrige ce qu’il trouve"
 
-msgid "Lingo needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key."
-msgstr "Lingo a besoin de l’IA AutoLingo (licence Premium), ou d’une clé OpenAI ou DeepSeek."
+#: admin/settings.php:747
+msgid "WooCommerce: gives existing product translations the prices, stock, variations and linked products of their source"
+msgstr "WooCommerce : donne aux traductions existantes les prix, le stock, les variations et les produits liés de leur produit source"
 
-msgid "Lingo could not finish looking: ask again more precisely."
-msgstr "Lingo n’a pas pu terminer ses recherches : reformulez votre demande plus précisément."
+#: admin/settings.php:750
+msgid "Counts the theme and plugin strings still to translate (Polylang, WPML String Translation)"
+msgstr "Compte les textes du thème et des extensions encore à traduire (Polylang, WPML String Translation)"
 
-msgid "This proposal has expired: ask Lingo again."
-msgstr "Cette proposition a expiré : redemandez à Lingo."
+#: admin/settings.php:751
+msgid "Translates the missing strings, for every target language or the ones given"
+msgstr "Traduit les textes manquants, pour toutes les langues cibles ou celles indiquées"
 
-msgid "Ask %s"
-msgstr "Demander à %s"
+#: admin/settings.php:793
+msgid "Languages & content"
+msgstr "Langues et contenus"
 
-msgid "Say what you want in your own words. Lingo looks at the site and proposes the actions; nothing changes until you confirm each one."
-msgstr "Dites ce que vous voulez avec vos mots. Lingo regarde le site et propose les actions ; rien ne change tant que vous ne les confirmez pas une par une."
+#: admin/settings.php:798
+msgid "Glossary & memory"
+msgstr "Glossaire et mémoire"
 
-msgid "Lingo needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key in the Provider tab."
-msgstr "Lingo a besoin de l’IA AutoLingo (licence Premium), ou d’une clé OpenAI ou DeepSeek dans l’onglet Fournisseur."
+#: admin/settings.php:799
+msgid "Tools"
+msgstr "Outils"
 
-msgid "What is left to translate?"
-msgstr "Que reste-t-il à traduire ?"
+#: admin/settings.php:803
+msgid "WP-CLI"
+msgstr "WP-CLI"
 
-msgid "Translate all my products into Spanish, as drafts"
-msgstr "Traduis tous mes produits en espagnol, en brouillon"
+#: admin/settings.php:805
+msgid "AutoLingo settings"
+msgstr "Réglages d’AutoLingo"
 
-msgid "Never translate the name of my brand"
-msgstr "Ne traduis jamais le nom de ma marque"
+#: admin/settings.php:816
+msgid "One term per line: Source Term | Target Term. Lines starting with # are ignored."
+msgstr "Un terme par ligne : Terme source | Terme cible. Les lignes qui commencent par # sont ignorées."
 
-msgid "For example: translate my new pages into German"
-msgstr "Par exemple : traduis mes nouvelles pages en allemand"
+#: admin/settings.php:817
+msgid "Sync to DeepL"
+msgstr "Synchroniser avec DeepL"
 
-msgid "Send"
-msgstr "Envoyer"
+#: admin/settings.php:820
+msgid "Synced glossaries:"
+msgstr "Glossaires synchronisés :"
 
-msgid "With AutoLingo AI, on the same credit as translation. The conversation is kept while this tab stays open."
-msgstr "Avec l’IA AutoLingo, sur le même crédit que la traduction. La conversation est gardée tant que cet onglet reste ouvert."
+#. translators: 1: number of cached segments, 2: characters saved
+#: admin/settings.php:830
+#, php-format
+msgid "%1$s segment(s) cached — an estimated %2$s characters have not needed a second API call."
+msgstr "%1$s segment(s) en cache — environ %2$s caractères n'ont pas eu besoin d'un second appel API."
 
-msgid "With your %s key. The conversation is kept while this tab stays open."
-msgstr "Avec votre clé %s. La conversation est gardée tant que cet onglet reste ouvert."
+#: admin/settings.php:834
+msgid "Paragraphs repeated across multiple posts or products (e.g. boilerplate terms) are translated once per language pair and reused everywhere else."
+msgstr "Les paragraphes répétés sur plusieurs articles ou produits (ex. conditions générales) ne sont traduits qu'une fois par paire de langues, puis réutilisés partout ailleurs."
 
-msgid "You"
-msgstr "Vous"
+#: admin/settings.php:837
+msgid "Clear all cached translation segments? Nothing manually translated is affected — only cached API results."
+msgstr "Vider tous les segments de traduction en cache ? Aucun contenu traduit manuellement n'est affecté — seuls les résultats API mis en cache le sont."
 
-msgid "Lingo is looking…"
-msgstr "Lingo regarde…"
+#: admin/settings.php:837
+msgid "Clear translation memory"
+msgstr "Vider la mémoire de traduction"
 
-msgid "Confirm"
-msgstr "Confirmer"
+#: admin/settings.php:862
+msgid "Glossary is only available with the DeepL provider."
+msgstr "Le glossaire n’est disponible qu’avec le fournisseur DeepL."
 
-msgid "Cancel"
-msgstr "Annuler"
+#. translators: %1$d synced, %2$d total
+#: admin/settings.php:871
+#, php-format
+msgid "✓ %1$d/%2$d glossaries synced."
+msgstr "✓ %1$d/%2$d glossaires synchronisés."
 
-msgid "Cancelled."
-msgstr "Annulé."
-
-msgid "Working… %d done"
-msgstr "En cours… %d fait(s)"
-
-msgid "The server cut the request short. What was done is saved: confirm again to carry on."
-msgstr "Le serveur a interrompu la requête. Ce qui a été fait est enregistré : confirmez de nouveau pour continuer."
-
+#: includes/assistant.php:360
 msgid "every target language"
 msgstr "toutes les langues cibles"
 
+#: includes/assistant.php:361
 msgid "published"
 msgstr "publiées"
 
+#: includes/assistant.php:361
 msgid "as drafts"
 msgstr "en brouillon"
 
+#: includes/assistant.php:361
 msgid "pending review"
 msgstr "en attente de relecture"
 
+#: includes/assistant.php:369
 msgid "all content types"
 msgstr "tous les types de contenu"
 
-msgid "Repair %d translations (SEO fields and addresses left in the source language; old addresses redirect)"
-msgstr "Réparer %d traductions (champs SEO et adresses restés dans la langue source ; les anciennes adresses redirigent)"
-
-msgid "Move %1$d duplicates to the trash: %2$s"
-msgstr "Mettre %1$d doublons à la corbeille : %2$s"
-
-msgid "Have up to %1$d translations reread by Lingo (%2$s)"
-msgstr "Faire relire jusqu’à %1$d traductions par Lingo (%2$s)"
-
-msgid "Translate %1$d menu(s) into %2$d language(s)"
-msgstr "Traduire %1$d menu(s) dans %2$d langue(s)"
-
-msgid "Translate the missing theme and plugin strings (%s)"
-msgstr "Traduire les textes manquants du thème et des extensions (%s)"
-
-msgid "Review agent"
-msgstr "Agent de relecture"
-
-msgid "Formality"
-msgstr "Formalité"
-
-msgid "Change the setting “%1$s” to “%2$s”"
-msgstr "Passer le réglage « %1$s » à « %2$s »"
-
-msgid "Add to the glossary: “%1$s” is always translated as “%2$s”"
-msgstr "Ajouter au glossaire : « %1$s » se traduit toujours par « %2$s »"
-
-msgid "Lingo read site content that contains instructions addressed to an AI. Actions that delete or change settings were not proposed. Check the others carefully."
-msgstr "Lingo a lu sur le site un contenu qui contient des instructions adressées à une IA. Les actions qui suppriment ou changent les réglages n’ont pas été proposées. Vérifiez bien les autres."
-
-msgid "Lingo read site content that contains instructions addressed to an AI. Check the proposals carefully."
-msgstr "Lingo a lu sur le site un contenu qui contient des instructions adressées à une IA. Vérifiez bien les propositions."
-
-msgid "Lingo has answered many messages this hour: try again in a little while."
-msgstr "Lingo a déjà répondu à beaucoup de messages cette heure-ci : réessayez dans un moment."
-
+#. translators: 1: number, 2: content type, 3: language, 4: status
+#: includes/assistant.php:371
+#, php-format
 msgid "Create %1$d missing translation (%2$s, %3$s), %4$s"
 msgid_plural "Create %1$d missing translations (%2$s, %3$s), %4$s"
 msgstr[0] "Créer %1$d traduction manquante (%2$s, %3$s), %4$s"
 msgstr[1] "Créer %1$d traductions manquantes (%2$s, %3$s), %4$s"
 
+#. translators: 1: number of posts, 2: their titles, 3: language, 4: status
+#: includes/assistant.php:375
+#, php-format
 msgid "Translate %1$d post again (%2$s) into %3$s; new translations %4$s"
 msgid_plural "Translate %1$d posts again (%2$s) into %3$s; new translations %4$s"
 msgstr[0] "Retraduire %1$d contenu (%2$s) en %3$s ; nouvelles traductions %4$s"
 msgstr[1] "Retraduire %1$d contenus (%2$s) en %3$s ; nouvelles traductions %4$s"
 
-msgid "Asks Lingo, the assistant, in plain words: it answers and lists the actions it proposes, without running them"
-msgstr "Pose une question à Lingo, l’assistant, avec vos mots : il répond et liste les actions qu’il propose, sans les exécuter"
+#. translators: %d: number of translations
+#: includes/assistant.php:378
+#, php-format
+msgid "Repair %d translations (SEO fields and addresses left in the source language; old addresses redirect)"
+msgstr "Réparer %d traductions (champs SEO et adresses restés dans la langue source ; les anciennes adresses redirigent)"
+
+#. translators: 1: number, 2: titles
+#: includes/assistant.php:382
+#, php-format
+msgid "Move %1$d duplicates to the trash: %2$s"
+msgstr "Mettre %1$d doublons à la corbeille : %2$s"
+
+#. translators: 1: number at most, 2: language
+#: includes/assistant.php:386
+#, php-format
+msgid "Have up to %1$d translations reread by Lingo (%2$s)"
+msgstr "Faire relire jusqu’à %1$d traductions par Lingo (%2$s)"
+
+#. translators: 1: number of menus, 2: number of languages
+#: includes/assistant.php:389
+#, php-format
+msgid "Translate %1$d menu(s) into %2$d language(s)"
+msgstr "Traduire %1$d menu(s) dans %2$d langue(s)"
+
+#. translators: %s: language
+#: includes/assistant.php:392
+#, php-format
+msgid "Translate the missing theme and plugin strings (%s)"
+msgstr "Traduire les textes manquants du thème et des extensions (%s)"
+
+#: includes/assistant.php:394
+msgid "Review agent"
+msgstr "Agent de relecture"
+
+#: includes/assistant.php:394
+msgid "Formality"
+msgstr "Formalité"
+
+#. translators: 1: setting, 2: value
+#: includes/assistant.php:396
+#, php-format
+msgid "Change the setting “%1$s” to “%2$s”"
+msgstr "Passer le réglage « %1$s » à « %2$s »"
+
+#. translators: 1: term, 2: its translation
+#: includes/assistant.php:399
+#, php-format
+msgid "Add to the glossary: “%1$s” is always translated as “%2$s”"
+msgstr "Ajouter au glossaire : « %1$s » se traduit toujours par « %2$s »"
+
+#: includes/assistant.php:437
+msgid "Lingo needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key."
+msgstr "Lingo a besoin de l’IA AutoLingo (licence Premium), ou d’une clé OpenAI ou DeepSeek."
+
+#: includes/assistant.php:447
+#: includes/review.php:88
+msgid "The AI did not answer."
+msgstr "L’IA n’a pas répondu."
+
+#: includes/assistant.php:452
+#: includes/review.php:94
+msgid "The AI gave an answer that could not be read."
+msgstr "L’IA a donné une réponse illisible."
+
+#. translators: 1: provider, 2: HTTP status
+#: includes/assistant.php:473
+#: includes/review.php:124
+#, php-format
+msgid "%1$s returned HTTP %2$d."
+msgstr "%1$s a renvoyé une erreur HTTP %2$d."
+
+#: includes/assistant.php:535
+msgid "Lingo read site content that contains instructions addressed to an AI. Actions that delete or change settings were not proposed. Check the others carefully."
+msgstr "Lingo a lu sur le site un contenu qui contient des instructions adressées à une IA. Les actions qui suppriment ou changent les réglages n’ont pas été proposées. Vérifiez bien les autres."
+
+#: includes/assistant.php:536
+msgid "Lingo read site content that contains instructions addressed to an AI. Check the proposals carefully."
+msgstr "Lingo a lu sur le site un contenu qui contient des instructions adressées à une IA. Vérifiez bien les propositions."
+
+#: includes/assistant.php:540
+msgid "Lingo could not finish looking: ask again more precisely."
+msgstr "Lingo n’a pas pu terminer ses recherches : reformulez votre demande plus précisément."
+
+#: includes/assistant.php:596
+msgid "Lingo has answered many messages this hour: try again in a little while."
+msgstr "Lingo a déjà répondu à beaucoup de messages cette heure-ci : réessayez dans un moment."
+
+#: includes/assistant.php:605
+msgid "This proposal has expired: ask Lingo again."
+msgstr "Cette proposition a expiré : redemandez à Lingo."
+
+#. translators: %s: Lingo
+#: includes/assistant.php:634
+#, php-format
+msgid "Ask %s"
+msgstr "Demander à %s"
+
+#. translators: %s: Lingo
+#: includes/assistant.php:635
+msgid "Say what you want in your own words. Lingo looks at the site and proposes the actions; nothing changes until you confirm each one."
+msgstr "Dites ce que vous voulez avec vos mots. Lingo regarde le site et propose les actions ; rien ne change tant que vous ne les confirmez pas une par une."
+
+#: includes/assistant.php:637
+msgid "Lingo needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key in the Provider tab."
+msgstr "Lingo a besoin de l’IA AutoLingo (licence Premium), ou d’une clé OpenAI ou DeepSeek dans l’onglet Fournisseur."
+
+#: includes/assistant.php:641
+msgid "What is left to translate?"
+msgstr "Que reste-t-il à traduire ?"
+
+#: includes/assistant.php:642
+msgid "Translate all my products into Spanish, as drafts"
+msgstr "Traduis tous mes produits en espagnol, en brouillon"
+
+#: includes/assistant.php:643
+msgid "Never translate the name of my brand"
+msgstr "Ne traduis jamais le nom de ma marque"
+
+#: includes/assistant.php:650
+msgid "For example: translate my new pages into German"
+msgstr "Par exemple : traduis mes nouvelles pages en allemand"
+
+#: includes/assistant.php:650
+msgid "Send"
+msgstr "Envoyer"
+
+#: includes/assistant.php:653
+msgid "With AutoLingo AI, on the same credit as translation. The conversation is kept while this tab stays open."
+msgstr "Avec l’IA AutoLingo, sur le même crédit que la traduction. La conversation est gardée tant que cet onglet reste ouvert."
+
+#. translators: %s: AI name
+#: includes/assistant.php:655
+#, php-format
+msgid "With your %s key. The conversation is kept while this tab stays open."
+msgstr "Avec votre clé %s. La conversation est gardée tant que cet onglet reste ouvert."
+
+#: includes/assistant.php:660
+msgid "You"
+msgstr "Vous"
+
+#: includes/assistant.php:661
+msgid "Lingo is looking…"
+msgstr "Lingo regarde…"
+
+#: includes/assistant.php:662
+msgid "Confirm"
+msgstr "Confirmer"
+
+#: includes/assistant.php:663
+msgid "Cancel"
+msgstr "Annuler"
+
+#: includes/assistant.php:664
+msgid "Cancelled."
+msgstr "Annulé."
+
+#. translators: %d: number done
+#: includes/assistant.php:666
+#, php-format
+msgid "Working… %d done"
+msgstr "En cours… %d fait(s)"
+
+#. translators: %d: number done
+#: includes/assistant.php:668
+#: includes/bulk.php:524
+#, php-format
+msgid "✓ Done: %d"
+msgstr "✓ Fait : %d"
+
+#. translators: %d: number of failures
+#: includes/assistant.php:670
+#: includes/bulk.php:526
+#, php-format
+msgid "%d could not be done"
+msgstr "%d n’ont pas pu être faits"
+
+#: includes/assistant.php:671
+msgid "The server cut the request short. What was done is saved: confirm again to carry on."
+msgstr "Le serveur a interrompu la requête. Ce qui a été fait est enregistré : confirmez de nouveau pour continuer."
+
+#: includes/bulk.php:58
+#: includes/bulk.php:285
+#: includes/strings.php:412
+msgid "The translation credit is used up."
+msgstr "Le crédit de traduction est épuisé."
+
+#: includes/bulk.php:444
+msgid "Needs Polylang or WPML."
+msgstr "Nécessite Polylang ou WPML."
+
+#. translators: 1: translations to create, 2: posts
+#: includes/bulk.php:459
+#, php-format
+msgid "%1$d translation missing, for %2$d post or page."
+msgid_plural "%1$d translations missing, for %2$d posts and pages."
+msgstr[0] "%1$d traduction manquante, pour %2$d article ou page."
+msgstr[1] "%1$d traductions manquantes, pour %2$d articles et pages."
+
+#: includes/bulk.php:463
+msgid "Translate what is missing"
+msgstr "Traduire ce qui manque"
+
+#. translators: 1: translations with SEO fields left in the source language, 2: translations with the source's address
+#: includes/bulk.php:469
+#, php-format
+msgid "Translations to repair: %1$d with SEO fields left in the source language, %2$d with an address to fix, the original’s or a -2 left by a duplicate (the old address redirects to the new one)."
+msgstr "Traductions à réparer : %1$d avec des champs SEO restés dans la langue source, %2$d avec une adresse à corriger, celle de l’original ou un -2 laissé par un doublon (l’ancienne adresse redirige vers la nouvelle)."
+
+#: includes/bulk.php:473
+msgid "Repair them"
+msgstr "Les réparer"
+
+#. translators: %d: number of posts
+#: includes/bulk.php:479
+#, php-format
+msgid "%d duplicate linked to no original (same title as a translation of the same language)."
+msgid_plural "%d duplicates linked to no original (same title as a translation of the same language)."
+msgstr[0] "%d doublon lié à aucun original (même titre qu’une traduction de la même langue)."
+msgstr[1] "%d doublons liés à aucun original (même titre qu’une traduction de la même langue)."
+
+#: includes/bulk.php:482
+msgid "Move them to the trash"
+msgstr "Les mettre à la corbeille"
+
+#: includes/bulk.php:496
+msgid "✓ Nothing to do"
+msgstr "✓ Rien à faire"
+
+#: includes/bulk.php:498
+msgid "See them"
+msgstr "Les voir"
+
+#: includes/bulk.php:500
+msgid "kept:"
+msgstr "gardé :"
+
+#: includes/bulk.php:512
+msgid "Move these duplicates to the trash? You can restore them from the trash."
+msgstr "Mettre ces doublons à la corbeille ? Vous pourrez les restaurer depuis la corbeille."
+
+#: includes/bulk.php:518
+msgid "Each step works for a few seconds at a time, so that no host or cache time limit stops it. You can leave this page open and come back."
+msgstr "Chaque étape travaille quelques secondes à la fois, pour qu’aucune limite de temps de l’hébergeur ou du cache ne l’arrête. Vous pouvez laisser cette page ouverte et revenir plus tard."
+
+#. translators: 1: done, 2: to do
+#: includes/bulk.php:522
+#, php-format
+msgid "Working… %1$d / %2$d"
+msgstr "En cours… %1$d / %2$d"
+
+#: includes/bulk.php:527
+msgid "The server cut the request short. What was done is saved: click the button again to carry on."
+msgstr "Le serveur a interrompu la requête. Ce qui a été fait est enregistré : cliquez de nouveau sur le bouton pour continuer."
+
+#. translators: %s: target language codes, e.g. "EN/DE"
+#: includes/hooks.php:181
+#, php-format
+msgid "Translate %s"
+msgstr "Traduire %s"
+
+#: includes/hooks.php:195
+msgid "Missing post ID."
+msgstr "ID de post manquant."
+
+#: includes/hooks.php:202
+msgid "No multilingual plugin detected (Polylang or WPML required)."
+msgstr "Aucune extension multilingue détectée (Polylang ou WPML requis)."
+
+#: includes/hooks.php:271
+msgid "Translations created successfully."
+msgstr "Traductions créées avec succès."
+
+#. translators: %s: link to settings page
+#: includes/hooks.php:277
+#, php-format
+msgid "Translation error. Check your %s and the logs."
+msgstr "Erreur lors de la traduction. Vérifiez votre %s et les logs."
+
+#: includes/hooks.php:279
+msgid "API key"
+msgstr "clé API"
+
+#. translators: 1: formatted remaining characters, 2: percentage
+#: includes/hooks.php:292
+#, php-format
+msgid "Low DeepL credit: %1$s characters remaining (%2$s%%)."
+msgstr "Crédit DeepL faible : %1$s caractères restants (%2$s%%)."
+
+#. translators: %d: number of posts translated so far
+#: includes/hooks.php:322
+#, php-format
+msgid "AutoLingo has translated %d posts for you so far. If it&#8217;s saving you time, a quick review helps other WordPress users find it."
+msgstr "AutoLingo a traduit %d articles pour vous jusqu’ici. Si ça vous fait gagner du temps, un avis rapide aide d’autres utilisateurs WordPress à trouver le plugin."
+
+#: includes/hooks.php:326
+msgid "Leave a review"
+msgstr "Laisser un avis"
+
+#: includes/hooks.php:328
+msgid "No thanks"
+msgstr "Non merci"
+
+#: includes/licensing.php:85
+msgid "Activate your licence"
+msgstr "Activer votre licence"
+
+#: includes/logger.php:238
+#: includes/logger.php:288
+msgid "Translation Log — AutoLingo"
+msgstr "Journal des traductions — AutoLingo"
+
+#: includes/logger.php:239
+msgid "DeepL Log"
+msgstr "Journal DeepL"
+
+#. translators: %d: number of deleted log entries
+#: includes/logger.php:255
+#, php-format
+msgid "%d entry deleted."
+msgid_plural "%d entries deleted."
+msgstr[0] "%d entrée supprimée."
+msgstr[1] "%d entrées supprimées."
+
+#: includes/logger.php:279
+msgid "Success"
+msgstr "Succès"
+
+#: includes/logger.php:280
+msgid "Error"
+msgstr "Erreur"
+
+#: includes/logger.php:281
+msgid "Warning"
+msgstr "Avertissement"
+
+#: includes/logger.php:282
+msgid "Info"
+msgstr "Info"
+
+#: includes/logger.php:308
+msgid "Reset filters"
+msgstr "Réinitialiser les filtres"
+
+#: includes/logger.php:313
+msgid "Clear all logs?"
+msgstr "Vider tous les logs ?"
+
+#: includes/logger.php:315
+msgid "Clear logs"
+msgstr "Vider les logs"
+
+#. translators: %d: total number of log entries
+#: includes/logger.php:324
+#, php-format
+msgid "%d entry"
+msgid_plural "%d entries"
+msgstr[0] "%d entrée"
+msgstr[1] "%d entrées"
+
+#. translators: %s: filter level label
+#: includes/logger.php:330
+#, php-format
+msgid "filter: %s"
+msgstr "filtre : %s"
+
+#: includes/logger.php:335
+msgid "Auto-retention: 30 days"
+msgstr "Rétention automatique : 30 jours"
+
+#: includes/logger.php:342
+msgid "No logs found for this filter."
+msgstr "Aucun log trouvé pour ce filtre."
+
+#: includes/logger.php:343
+msgid "No logs found."
+msgstr "Aucun log trouvé."
+
+#: includes/logger.php:351
+msgid "Date"
+msgstr "Date"
+
+#: includes/logger.php:352
+msgid "Level"
+msgstr "Niveau"
+
+#: includes/logger.php:353
+msgid "Language"
+msgstr "Langue"
+
+#: includes/logger.php:354
+msgid "Message"
+msgstr "Message"
+
+#: includes/logger.php:355
+msgid "Post"
+msgstr "Post"
+
+#: includes/logger.php:381
+msgid "Details"
+msgstr "Détails"
+
+#: includes/logger.php:389
+msgid "Filter by this post"
+msgstr "Filtrer par ce post"
+
+#: includes/logger.php:396
+msgid "Edit →"
+msgstr "Modifier →"
+
+#: includes/logger.php:409
+msgid "Previous"
+msgstr "Précédent"
+
+#. translators: 1: current page number, 2: total pages
+#: includes/logger.php:413
+#, php-format
+msgid "Page %1$s / %2$s"
+msgstr "Page %1$s / %2$s"
+
+#: includes/logger.php:417
+msgid "Next"
+msgstr "Suivant"
+
+#: includes/providers/class-autolingo-ai.php:184
+#: includes/providers/class-autolingo-ai.php:332
+msgid "AutoLingo AI works with an activated AutoLingo Premium licence."
+msgstr "L'IA AutoLingo fonctionne avec une licence AutoLingo Premium activée."
+
+#: includes/providers/class-autolingo-ai.php:215
+msgid "AutoLingo AI: your Premium licence is not valid or has expired."
+msgstr "IA AutoLingo : votre licence Premium n'est pas valide ou a expiré."
+
+#: includes/providers/class-autolingo-ai.php:216
+msgid "AutoLingo AI: your licence already uses the AI on 3 other sites."
+msgstr "IA AutoLingo : votre licence utilise déjà l'IA sur 3 autres sites."
+
+#: includes/providers/class-autolingo-ai.php:217
+msgid "AutoLingo AI: this month's characters are used up. Buy a pack in Settings → AutoLingo, or wait until next month."
+msgstr "IA AutoLingo : les caractères de ce mois sont épuisés. Achetez un pack dans Réglages → AutoLingo, ou attendez le mois prochain."
+
+#: includes/providers/class-autolingo-ai.php:218
+msgid "AutoLingo AI is busy for now. Try again in a minute."
+msgstr "L'IA AutoLingo est occupée pour le moment. Réessayez dans une minute."
+
+#. translators: %d: HTTP status code
+#: includes/providers/class-autolingo-ai.php:220
+#, php-format
+msgid "AutoLingo AI returned HTTP %d."
+msgstr "L'IA AutoLingo a répondu HTTP %d."
+
+#: includes/providers/class-autolingo-ai.php:270
+msgid "The payment page could not be opened. Try again in a minute."
+msgstr "La page de paiement n'a pas pu s'ouvrir. Réessayez dans une minute."
+
+#: includes/providers/class-autolingo-ai.php:301
+msgid "Sorry, you are not allowed to do that."
+msgstr "Désolé, vous n'avez pas l'autorisation de faire cela."
+
+#: includes/providers/class-autolingo-ai.php:326
+msgid "AutoLingo AI"
+msgstr "IA AutoLingo"
+
+#. translators: %s: number of characters
+#: includes/providers/class-autolingo-ai.php:338
+#, php-format
+msgid "Included with Premium, no API key: %s characters a month."
+msgstr "Incluse avec Premium, sans clé d'API : %s caractères par mois."
+
+#. translators: 1: characters used this month, 2: characters included each month
+#: includes/providers/class-autolingo-ai.php:345
+#, php-format
+msgid "This month: %1$s of %2$s used."
+msgstr "Ce mois-ci : %1$s utilisés sur %2$s."
+
+#. translators: %s: number of characters
+#: includes/providers/class-autolingo-ai.php:353
+#, php-format
+msgid "Bought characters left: %s."
+msgstr "Caractères achetés restants : %s."
+
+#. translators: 1: number of characters, 2: price
+#: includes/providers/class-autolingo-ai.php:365
+#, php-format
+msgid "Buy %1$s characters (%2$s)"
+msgstr "Acheter %1$s caractères (%2$s)"
+
+#: includes/providers/class-autolingo-ai.php:372
+msgid "One payment, through Stripe. Bought characters never expire: they are used once the month's are."
+msgstr "Un seul paiement, par Stripe. Les caractères achetés n'expirent jamais : ils servent une fois ceux du mois épuisés."
+
+#: includes/providers/class-deepl.php:241
+msgid "DeepL API key not configured."
+msgstr "Clé d’API DeepL non configurée."
+
+#: includes/providers/class-deepl.php:247
+msgid "No glossary terms to sync."
+msgstr "Aucun terme de glossaire à synchroniser."
+
+#: includes/review.php:78
+#: includes/review.php:867
+msgid "The review needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key."
+msgstr "La relecture nécessite l’IA AutoLingo (licence Premium), ou une clé OpenAI ou DeepSeek."
+
+#: includes/review.php:167
+msgid "Title"
+msgstr "Titre"
+
+#: includes/review.php:168
+msgid "Excerpt"
+msgstr "Extrait"
+
+#: includes/review.php:169
+msgid "Content"
+msgstr "Contenu"
+
+#: includes/review.php:176
+msgid "SEO"
+msgstr "SEO"
+
+#: includes/review.php:361
+msgid "This passage is still in the source language."
+msgstr "Ce passage est encore dans la langue source."
+
+#. translators: %d: number of translations
+#: includes/review.php:718
+#, php-format
+msgid "%d translation has points to check"
+msgid_plural "%d translations have points to check"
+msgstr[0] "%d traduction a des points à vérifier"
+msgstr[1] "%d traductions ont des points à vérifier"
+
+#. translators: %d: number of points
+#: includes/review.php:725
+#, php-format
+msgid "%d point"
+msgid_plural "%d points"
+msgstr[0] "%d point"
+msgstr[1] "%d points"
+
+#. translators: %s: the review agent's name (Lingo)
+#: includes/review.php:734
+#, php-format
+msgid "%s, the review agent, needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key in the Provider tab."
+msgstr "%s, l’agent de relecture, a besoin de l’IA AutoLingo (licence Premium), ou d’une clé OpenAI ou DeepSeek dans l’onglet Fournisseur."
+
+#. translators: %s: the review agent's name (Lingo)
+#: includes/review.php:734
+#: includes/review.php:745
+msgid "Have them reread"
+msgstr "Les faire relire"
+
+#. translators: 1: the review agent's name (Lingo), 2: translations to reread, 3: AI name
+#: includes/review.php:740
+#, php-format
+msgid "%1$s, the review agent: %2$d translation not reread yet (or changed since), with %3$s."
+msgid_plural "%1$s, the review agent: %2$d translations not reread yet (or changed since), with %3$s."
+msgstr[0] "%1$s, l’agent de relecture : %2$d traduction pas encore relue (ou modifiée depuis), avec %3$s."
+msgstr[1] "%1$s, l’agent de relecture : %2$d traductions pas encore relues (ou modifiées depuis), avec %3$s."
+
+#. translators: %s: the review agent's name (Lingo)
+#: includes/review.php:789
+#: includes/review.php:932
+#, php-format
+msgid "%s, review agent"
+msgstr "%s, agent de relecture"
+
+#: includes/review.php:795
+msgid "Meaning"
+msgstr "Sens"
+
+#: includes/review.php:796
+msgid "Number or name"
+msgstr "Nombre ou nom"
+
+#: includes/review.php:797
+msgid "Not translated"
+msgstr "Non traduit"
+
+#: includes/review.php:798
+msgid "Glossary"
+msgstr "Glossaire"
+
+#: includes/review.php:799
+msgid "Grammar"
+msgstr "Grammaire"
+
+#: includes/review.php:800
+msgid "Fluency"
+msgstr "Fluidité"
+
+#: includes/review.php:801
+msgid "Tone"
+msgstr "Ton"
+
+#: includes/review.php:802
+msgid "Other"
+msgstr "Autre"
+
+#. translators: %s: the review agent's name (Lingo)
+#: includes/review.php:815
+#, php-format
+msgid "%s has not reread this translation yet."
+msgstr "%s n’a pas encore relu cette traduction."
+
+#. translators: 1: the review agent's name (Lingo), 2: date, 3: number of points
+#: includes/review.php:823
+#, php-format
+msgid "%1$s reread this translation on %2$s: %3$d point to check."
+msgid_plural "%1$s reread this translation on %2$s: %3$d points to check."
+msgstr[0] "%1$s a relu cette traduction le %2$s : %3$d point à vérifier."
+msgstr[1] "%1$s a relu cette traduction le %2$s : %3$d points à vérifier."
+
+#. translators: 1: the review agent's name (Lingo), 2: date
+#: includes/review.php:828
+#, php-format
+msgid "%1$s reread this translation on %2$s: nothing to check."
+msgstr "%1$s a relu cette traduction le %2$s : rien à vérifier."
+
+#: includes/review.php:838
+msgid "Original"
+msgstr "Original"
+
+#: includes/review.php:841
+msgid "Apply"
+msgstr "Appliquer"
+
+#: includes/review.php:843
+msgid "Ignore"
+msgstr "Ignorer"
+
+#. translators: %d: number of fixes
+#: includes/review.php:849
+#, php-format
+msgid "%d correction made"
+msgid_plural "%d corrections made"
+msgstr[0] "%d correction faite"
+msgstr[1] "%d corrections faites"
+
+#. translators: %s: the review agent's name (Lingo)
+#: includes/review.php:861
+#, php-format
+msgid "Ask %s to reread it"
+msgstr "Demander à %s de la relire"
+
+#: includes/review.php:872
+msgid "Working…"
+msgstr "En cours…"
+
+#: includes/review.php:873
+msgid "Done. The page reloads to show the change (save your other edits first)."
+msgstr "C’est fait. La page se recharge pour afficher la modification (enregistrez d’abord vos autres changements)."
+
+#: includes/review.php:874
+msgid "Applying a fix reloads the page: unsaved changes in the editor would be lost. Continue?"
+msgstr "Appliquer une correction recharge la page : les modifications non enregistrées dans l’éditeur seraient perdues. Continuer ?"
+
+#: includes/review.php:918
+msgid "This passage changed since the review: review again."
+msgstr "Ce passage a changé depuis la relecture : relancez la relecture."
+
+#: includes/review.php:940
+msgid "Off"
+msgstr "Désactivé"
+
+#: includes/review.php:941
+msgid "List the points for me to check"
+msgstr "Lister les points à vérifier"
+
+#: includes/review.php:942
+msgid "Fix the sure ones, list the others"
+msgstr "Corriger les points sûrs, lister les autres"
+
+#. translators: %s: the review agent's name (Lingo)
+#: includes/review.php:949
+#, php-format
+msgid "After each translation, %s rereads it next to the original, like a proofreader: meaning, numbers and names, passages left untranslated, glossary, grammar, tone. The points to check are listed in the editor and in the Tools tab."
+msgstr "Après chaque traduction, %s la relit à côté de l’original, comme un correcteur : sens, nombres et noms, passages non traduits, glossaire, grammaire, ton. Les points à vérifier sont listés dans l’éditeur et dans l’onglet Outils."
+
+#. translators: %s: AI name
+#: includes/review.php:955
+#, php-format
+msgid "Reviews with %s. It costs about as many characters as the translation itself."
+msgstr "Relit avec %s. Cela coûte à peu près autant de caractères que la traduction elle-même."
+
+#: includes/review.php:956
+msgid "Needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key in the Provider tab."
+msgstr "Nécessite l’IA AutoLingo (licence Premium), ou une clé OpenAI ou DeepSeek dans l’onglet Fournisseur."
+
+#: includes/review.php:959
+msgid "Publish a translation created as a draft once the review finds nothing to check"
+msgstr "Publier une traduction créée en brouillon dès que la relecture ne trouve rien à vérifier"
+
+#: includes/strings.php:375
+msgid "String translation is included in AutoLingo Pro."
+msgstr "La traduction des textes est incluse dans AutoLingo Pro."
+
+#: includes/strings.php:379
+msgid "String translation needs Polylang, or WPML with String Translation."
+msgstr "La traduction des textes nécessite Polylang, ou WPML avec String Translation."
+
+#: includes/strings.php:383
+msgid "This language is not a target language in the AutoLingo settings."
+msgstr "Cette langue n’est pas une langue cible dans les réglages d’AutoLingo."
+
+#: includes/strings.php:387
+msgid "This language is not active in the multilingual plugin."
+msgstr "Cette langue n’est pas active dans l’extension multilingue."
+
+#: includes/strings.php:420
+msgid "The translation service returned no text."
+msgstr "Le service de traduction n’a renvoyé aucun texte."
+
+#. translators: 1: domains picked, 2: all domains
+#: includes/strings.php:538
+#, php-format
+msgid "Domains to translate: %1$d of %2$d"
+msgstr "Domaines à traduire : %1$d sur %2$d"
+
+#: includes/strings.php:542
+msgid "WPML String Translation also lists the texts of plugins and themes, which their own translation files (.mo) usually translate already. Those domains are left out by default."
+msgstr "WPML String Translation liste aussi les textes des extensions et des thèmes, que leurs propres fichiers de traduction (.mo) traduisent en général déjà. Ces domaines sont exclus par défaut."
+
+#: includes/strings.php:545
+msgid "translation files"
+msgstr "fichiers de traduction"
+
+#: includes/strings.php:547
+msgid "Save the domains"
+msgstr "Enregistrer les domaines"
+
+#: includes/strings.php:555
+msgid "Needs WPML String Translation (version 5 or later with WPML 5): it keeps the strings of your theme and plugins."
+msgstr "Nécessite WPML String Translation (version 5 ou plus avec WPML 5) : c’est lui qui garde les textes de votre thème et de vos extensions."
+
+#: includes/strings.php:556
+msgid "Available with Polylang: translates the strings of Languages → Translations (site title, widgets, plugin texts such as the cookie banner)."
+msgstr "Disponible avec Polylang : traduit les textes de Langues → Traductions (titre du site, widgets, textes d’extensions comme la bannière de cookies)."
+
+#. translators: %d: number of strings
+#: includes/strings.php:571
+#, php-format
+msgid "%d string(s) to consider in WPML String Translation, in the domains picked below. Missing translations are filled in, from the language each string is written in, and marked complete; translations already entered are never changed."
+msgstr "%d texte(s) à examiner dans WPML String Translation, dans les domaines choisis ci-dessous. Les traductions manquantes sont complétées, depuis la langue dans laquelle chaque texte est écrit, et marquées terminées ; celles déjà saisies ne sont jamais modifiées."
+
+#. translators: %d: number of strings
+#: includes/strings.php:573
+#, php-format
+msgid "%d string(s) are registered by your theme and plugins in Languages → Translations. Missing translations are filled in; translations already entered are never changed."
+msgstr "%d texte(s) sont déclarés par votre thème et vos extensions dans Langues → Traductions. Les traductions manquantes sont complétées ; celles déjà saisies ne sont jamais modifiées."
+
+#: includes/strings.php:584
+#: includes/strings.php:604
+msgid "✓ Up to date"
+msgstr "✓ À jour"
+
+#. translators: %d: number of strings
+#: includes/strings.php:586
+#, php-format
+msgid "%d string to translate"
+msgid_plural "%d strings to translate"
+msgstr[0] "%d texte à traduire"
+msgstr[1] "%d textes à traduire"
+
+#: includes/strings.php:595
+msgid "🌍 Translate missing strings"
+msgstr "🌍 Traduire les textes manquants"
+
+#: includes/strings.php:597
+msgid "Date and time formats, addresses and placeholders (such as {title}) are kept as they are."
+msgstr "Les formats de date et d’heure, les adresses et les variables (comme {title}) sont conservés tels quels."
+
+#. translators: 1: strings done, 2: strings to do
+#: includes/strings.php:601
+#, php-format
+msgid "Translating… %1$d / %2$d"
+msgstr "Traduction en cours… %1$d / %2$d"
+
+#. translators: %d: number of strings
+#: includes/strings.php:603
+#, php-format
+msgid "✓ %d translated"
+msgstr "✓ %d traduit(s)"
+
+#. translators: %d: number of strings
+#: includes/strings.php:606
+#, php-format
+msgid "%d left as they were (placeholders changed by the provider)"
+msgstr "%d laissé(s) tel(s) quel(s) (variables modifiées par le service)"
+
+#: includes/strings.php:607
+msgid "The server cut the request short (a time limit of the host or its cache). What was translated is saved: click the button again to carry on."
+msgstr "Le serveur a interrompu la requête (une limite de temps de l’hébergeur ou de son cache). Ce qui a été traduit est enregistré : cliquez de nouveau sur le bouton pour continuer."
+
+#: includes/strings.php:608
+msgid "Some strings could not be saved. Check them in Languages → Translations."
+msgstr "Certains textes n’ont pas pu être enregistrés. Vérifiez-les dans Langues → Traductions."
