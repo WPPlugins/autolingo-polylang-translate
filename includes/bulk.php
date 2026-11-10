@@ -161,11 +161,62 @@ function autolingo_bulk_fix_slug( int $id, string $wanted = '' ): string {
     $old  = $post->post_name;
     $slug = wp_unique_post_slug( $wanted !== '' ? $wanted : sanitize_title( $post->post_title ), $id, $post->post_status, $post->post_type, $post->post_parent );
     if ( $slug === '' || $slug === $old ) return $old;
+    autolingo_bulk_set_slug( $id, $slug );
+    return $slug;
+}
+
+/**
+ * Changes a translation's address; the old one redirects to it. A redirect rule
+ * of another plugin that sent the new address to the old one would now loop:
+ * it is disabled.
+ */
+function autolingo_bulk_set_slug( int $id, string $slug ): void {
+    $old      = (string) get_post_field( 'post_name', $id );
+    $old_link = (string) get_permalink( $id );
     remove_action( 'save_post', 'autolingo_on_save_post', 20 );
     wp_update_post( [ 'ID' => $id, 'post_name' => $slug ] );
     add_action( 'save_post', 'autolingo_on_save_post', 20, 3 );
     add_post_meta( $id, AUTOLINGO_OLD_SLUG, $old );
-    return $slug;
+    autolingo_bulk_disable_looping_redirects( (string) get_permalink( $id ), $old_link );
+}
+
+/** A URL or path as Redirection compares it: path only, decoded, lower case, no trailing slash. */
+function autolingo_bulk_redirect_key( string $url ): string {
+    $path = (string) wp_parse_url( $url, PHP_URL_PATH );
+    return strtolower( untrailingslashit( rawurldecode( $path ) ) );
+}
+
+/**
+ * Disables the Redirection rules that send $new_url to $old_url (they were made
+ * while the page had the old address, and would now send visitors in a loop).
+ *
+ * @return int Rules disabled.
+ */
+function autolingo_bulk_disable_looping_redirects( string $new_url, string $old_url ): int {
+    global $wpdb;
+    if ( ! class_exists( 'Red_Item' ) || $new_url === '' || $old_url === '' ) return 0;
+    $from = autolingo_bulk_redirect_key( $new_url );
+    $to   = autolingo_bulk_redirect_key( $old_url );
+    if ( $from === '' || $from === $to ) return 0;
+
+    $table = $wpdb->prefix . 'redirection_items';
+    $last  = substr( $to, (int) strrpos( '/' . $to, '/' ) ); // basename() is not multibyte safe
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Redirection's own table, admin tool only.
+    $rows = $wpdb->get_results( $wpdb->prepare(
+        "SELECT id, url, action_data FROM {$table} WHERE status = 'enabled' AND regex = 0 AND action_type = 'url' AND (action_data LIKE %s OR action_data LIKE %s)", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        '%' . $wpdb->esc_like( $last ) . '%',
+        '%' . $wpdb->esc_like( strtolower( rawurlencode( $last ) ) ) . '%'
+    ) );
+    $done = 0;
+    foreach ( (array) $rows as $row ) {
+        if ( autolingo_bulk_redirect_key( (string) $row->url ) !== $from || autolingo_bulk_redirect_key( (string) $row->action_data ) !== $to ) continue;
+        $item = Red_Item::get_by_id( (int) $row->id );
+        if ( $item ) {
+            $item->disable();
+            $done++;
+        }
+    }
+    return $done;
 }
 
 /**
@@ -309,11 +360,7 @@ function autolingo_bulk_trash_duplicate( int $id, int $kept ): bool {
     if ( $slug === '' || ! $post || ! preg_match( '/^' . preg_quote( $slug, '/' ) . '-\d+$/', $post->post_name ) ) return true;
     if ( wp_unique_post_slug( $slug, $kept, $post->post_status, $post->post_type, $post->post_parent ) !== $slug ) return true;
 
-    $old = $post->post_name;
-    remove_action( 'save_post', 'autolingo_on_save_post', 20 );
-    wp_update_post( [ 'ID' => $kept, 'post_name' => $slug ] );
-    add_action( 'save_post', 'autolingo_on_save_post', 20, 3 );
-    add_post_meta( $kept, AUTOLINGO_OLD_SLUG, $old );
+    autolingo_bulk_set_slug( $kept, $slug );
     return true;
 }
 
