@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.10.1
+Stable tag: 1.10.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -270,6 +270,11 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.10.2 =
+* Lingo, the assistant, is sharper: it gives the exact count of what you ask for (Spanish and German products, not the site's total), keeps to one page when you ask about one, answers in your language and with your form of address, says settings in plain words, names only the real tabs of the settings, and explains how to do what no action does (adding a language)
+* A proposal that would do nothing is withdrawn and Lingo corrects its answer
+* The review card counts the translations of the language asked for
 
 = 1.10.1 =
 * German translation of the plugin (de_DE): the whole admin, Lingo and the assistant included
