@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.8.0
+Stable tag: 1.8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,7 +33,7 @@ https://www.youtube.com/watch?v=cZiq3PXC2-w
 * Manual translate button in the post editor and post list
 * Translate the whole site from Settings → AutoLingo → Tools: one button creates every missing translation, a few seconds per request so that no host or cache time limit stops it, with no shell access needed (or `wp pdat translate-missing`, `translate-all`)
 * Review before publishing: new translations can be published right away, saved as drafts, or left pending review; updates keep the status a translation has
-* Repair tools: translations whose address is still the original's get one from their translated title, and the old address redirects to the new one; duplicates linked to no original are listed and can be moved to the trash (`wp pdat repair`, `wp pdat duplicates`)
+* Repair tools: translations whose address is still the original's get one from their translated title, and the old address redirects to the new one; duplicates linked to no original are listed and can be moved to the trash, the translation kept getting its clean address back (`wp pdat repair`, `wp pdat duplicates`)
 * Nav menu translation (Polylang and WPML)
 * Five providers: DeepL (Free and Pro, auto-detected from the `:fx` key suffix), Google Translate, Microsoft Translator, OpenAI and DeepSeek
 * Automatic fallback: when the selected provider runs out of quota, the next one that has a key translates — free DeepL, Google and Microsoft accounts add up to about 3,000,000 characters a month
@@ -245,6 +245,10 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.8.1 =
+* Moving a duplicate to the trash gives the translation kept its clean address back, when it had the duplicate's plus -2, -3…; the -2 address redirects to it
+* The repair tool also finds these addresses when the duplicates were trashed before 1.8.1
 
 = 1.8.0 =
 * Translate the whole site from the admin: Settings → AutoLingo → Tools creates every missing translation with one button, a few seconds per request, so it works on hosts with no WP-CLI and behind caches that cut long requests

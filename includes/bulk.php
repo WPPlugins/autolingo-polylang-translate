@@ -142,9 +142,10 @@ function autolingo_bulk_repairs(): array {
     $out = [];
     foreach ( autolingo_bulk_translation_pairs() as [ $source_id, $lang, $id ] ) {
         $seo  = autolingo_bulk_seo_untranslated( $source_id, $id );
-        $slug = autolingo_bulk_slug_untranslated( $source_id, $id );
+        $freed = autolingo_bulk_slug_freed( $id, $lang );
+        $slug  = $freed !== '' || autolingo_bulk_slug_untranslated( $source_id, $id );
         if ( $seo || $slug ) {
-            $out[] = [ 'source' => $source_id, 'lang' => $lang, 'id' => $id, 'seo' => $seo, 'slug' => $slug ];
+            $out[] = [ 'source' => $source_id, 'lang' => $lang, 'id' => $id, 'seo' => $seo, 'slug' => $slug, 'freed' => $freed ];
         }
     }
     return $out;
@@ -154,17 +155,44 @@ function autolingo_bulk_repairs(): array {
  * Gives a translation an address from its translated title. The old address
  * keeps working: it redirects to the new one (autolingo_bulk_old_slug_redirect()).
  */
-function autolingo_bulk_fix_slug( int $id ): string {
+function autolingo_bulk_fix_slug( int $id, string $wanted = '' ): string {
     $post = get_post( $id );
     if ( ! $post ) return '';
     $old  = $post->post_name;
-    $slug = wp_unique_post_slug( sanitize_title( $post->post_title ), $id, $post->post_status, $post->post_type, $post->post_parent );
+    $slug = wp_unique_post_slug( $wanted !== '' ? $wanted : sanitize_title( $post->post_title ), $id, $post->post_status, $post->post_type, $post->post_parent );
     if ( $slug === '' || $slug === $old ) return $old;
     remove_action( 'save_post', 'autolingo_on_save_post', 20 );
     wp_update_post( [ 'ID' => $id, 'post_name' => $slug ] );
     add_action( 'save_post', 'autolingo_on_save_post', 20, 3 );
     add_post_meta( $id, AUTOLINGO_OLD_SLUG, $old );
     return $slug;
+}
+
+/**
+ * The address a translation should have back: it has "S-2" (or -3…) because a
+ * duplicate with its title held "S", and that duplicate is now in the trash.
+ * '' when there is none, or when "S" is still taken.
+ */
+function autolingo_bulk_slug_freed( int $id, string $lang ): string {
+    $post = get_post( $id );
+    if ( ! $post || ! preg_match( '/^(.+)-\d+$/', $post->post_name, $m ) ) return '';
+    $ml = autolingo_multilingual();
+    foreach ( get_posts( [
+        'post_type'        => $post->post_type,
+        'post_status'      => 'trash',
+        'posts_per_page'   => 10,
+        'fields'           => 'ids',
+        'title'            => $post->post_title,
+        'meta_key'         => '_wp_desired_post_slug', // phpcs:ignore WordPress.DB.SlowDBQuery -- admin tool only.
+        'meta_value'       => $m[1],                   // phpcs:ignore WordPress.DB.SlowDBQuery
+        'lang'             => '',
+        'suppress_filters' => true,
+    ] ) as $trashed ) {
+        if ( $ml && $ml->get_post_language( (int) $trashed ) !== $lang ) continue;
+        $free = wp_unique_post_slug( $m[1], $id, $post->post_status, $post->post_type, $post->post_parent ) === $m[1];
+        return $free ? $m[1] : '';
+    }
+    return '';
 }
 
 /** Translates the SEO fields of one translation that are still in the source language. */
@@ -209,7 +237,7 @@ function autolingo_bulk_repair( float $budget, array $exclude = [] ): array {
             $ok = autolingo_bulk_fix_seo( $r['id'], $r['lang'], $r['seo'] ) > 0;
         }
         if ( $r['slug'] ) {
-            autolingo_bulk_fix_slug( $r['id'] );
+            autolingo_bulk_fix_slug( $r['id'], $r['freed'] ?? '' );
         }
         if ( $ok ) {
             $result['done']++;
@@ -266,6 +294,27 @@ function autolingo_bulk_duplicates(): array {
         }
     }
     return $dupes;
+}
+
+/**
+ * Moves a duplicate to the trash. When the translation kept got the duplicate's
+ * address plus -2, -3… (the duplicate held it), it gets the clean address back,
+ * and its -N address redirects to it.
+ */
+function autolingo_bulk_trash_duplicate( int $id, int $kept ): bool {
+    $slug = (string) get_post_field( 'post_name', $id );
+    if ( ! wp_trash_post( $id ) ) return false;
+
+    $post = get_post( $kept );
+    if ( $slug === '' || ! $post || ! preg_match( '/^' . preg_quote( $slug, '/' ) . '-\d+$/', $post->post_name ) ) return true;
+    if ( wp_unique_post_slug( $slug, $kept, $post->post_status, $post->post_type, $post->post_parent ) !== $slug ) return true;
+
+    $old = $post->post_name;
+    remove_action( 'save_post', 'autolingo_on_save_post', 20 );
+    wp_update_post( [ 'ID' => $kept, 'post_name' => $slug ] );
+    add_action( 'save_post', 'autolingo_on_save_post', 20, 3 );
+    add_post_meta( $kept, AUTOLINGO_OLD_SLUG, $old );
+    return true;
 }
 
 // ── Old addresses keep working ────────────────────────────────────────────────
@@ -330,8 +379,8 @@ function autolingo_handle_bulk(): void {
             break;
         case 'duplicates':
             $done = 0;
-            foreach ( array_keys( autolingo_bulk_duplicates() ) as $id ) {
-                if ( wp_trash_post( $id ) ) $done++;
+            foreach ( autolingo_bulk_duplicates() as $id => $kept ) {
+                if ( autolingo_bulk_trash_duplicate( $id, $kept ) ) $done++;
             }
             wp_send_json_success( [ 'done' => $done, 'remaining' => 0, 'failed' => [], 'error' => '' ] );
             break;
@@ -367,7 +416,7 @@ function autolingo_bulk_settings_section(): void {
         'repair'     => [
             sprintf(
                 /* translators: 1: translations with SEO fields left in the source language, 2: translations with the source's address */
-                __( 'Translations to repair: %1$d with SEO fields left in the source language, %2$d with the address of the original (the old address redirects to the new one).', 'autolingo-polylang-translate' ),
+                __( 'Translations to repair: %1$d with SEO fields left in the source language, %2$d with an address to fix, the original’s or a -2 left by a duplicate (the old address redirects to the new one).', 'autolingo-polylang-translate' ),
                 $seo,
                 $slugs
             ),
@@ -466,7 +515,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
     WP_CLI::add_command( 'pdat repair', function ( array $args, array $assoc_args ): void {
         $repairs = autolingo_bulk_repairs();
         foreach ( $repairs as $r ) {
-            $what = array_merge( $r['seo'] ? [ 'SEO: ' . implode( ', ', array_keys( $r['seo'] ) ) ] : [], $r['slug'] ? [ 'address: ' . get_post_field( 'post_name', $r['id'] ) ] : [] );
+            $what = array_merge( $r['seo'] ? [ 'SEO: ' . implode( ', ', array_keys( $r['seo'] ) ) ] : [], $r['slug'] ? [ 'address: ' . urldecode( get_post_field( 'post_name', $r['id'] ) ) . ( $r['freed'] !== '' ? ' → ' . urldecode( $r['freed'] ) : '' ) ] : [] );
             WP_CLI::line( sprintf( '  #%d %s "%s" — %s', $r['id'], strtoupper( $r['lang'] ), mb_substr( get_the_title( $r['id'] ), 0, 40 ), implode( ' · ', $what ) ) );
         }
         if ( isset( $assoc_args['dry-run'] ) ) {
@@ -491,8 +540,8 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
             return;
         }
         $done = 0;
-        foreach ( array_keys( $dupes ) as $id ) {
-            if ( wp_trash_post( $id ) ) $done++;
+        foreach ( $dupes as $id => $kept ) {
+            if ( autolingo_bulk_trash_duplicate( $id, $kept ) ) $done++;
         }
         WP_CLI::success( "$done duplicate(s) moved to the trash." );
     }, [

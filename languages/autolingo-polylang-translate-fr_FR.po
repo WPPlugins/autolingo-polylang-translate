@@ -700,8 +700,8 @@ msgstr[1] "%1$d traductions manquantes, pour %2$d articles et pages."
 msgid "Translate what is missing"
 msgstr "Traduire ce qui manque"
 
-msgid "Translations to repair: %1$d with SEO fields left in the source language, %2$d with the address of the original (the old address redirects to the new one)."
-msgstr "Traductions à réparer : %1$d avec des champs SEO restés dans la langue source, %2$d avec l’adresse de l’original (l’ancienne adresse redirige vers la nouvelle)."
+msgid "Translations to repair: %1$d with SEO fields left in the source language, %2$d with an address to fix, the original’s or a -2 left by a duplicate (the old address redirects to the new one)."
+msgstr "Traductions à réparer : %1$d avec des champs SEO restés dans la langue source, %2$d avec une adresse à corriger, celle de l’original ou un -2 laissé par un doublon (l’ancienne adresse redirige vers la nouvelle)."
 
 msgid "Repair them"
 msgstr "Les réparer"
