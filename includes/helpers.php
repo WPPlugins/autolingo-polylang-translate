@@ -316,3 +316,16 @@ function autolingo_replace_internal_urls( string $content, string $target_lang_s
         $content
     ) ?? $content;
 }
+
+// ── Lingo (the reviewer in Pro, the assistant in every edition) ─────────────
+
+/** Lingo's name: AutoLingo's speech bubble with reading glasses (the assistant, and the reviewer in Pro). */
+function autolingo_reviewer_name(): string {
+    return (string) apply_filters( 'autolingo_reviewer_name', 'Lingo' );
+}
+
+/** Lingo's face (assets/lingo-64.png, -128.png for high-density screens), as an <img> tag: safe to echo. */
+function autolingo_lingo_img( int $size = 32 ): string {
+    $url = static fn( int $px ): string => esc_url( AUTOLINGO_PLUGIN_URL . 'assets/lingo-' . $px . '.png' );
+    return '<img src="' . ( $size > 64 ? $url( 128 ) : $url( 64 ) ) . '" srcset="' . $url( 64 ) . ' 64w, ' . $url( 128 ) . ' 128w" sizes="' . $size . 'px" width="' . $size . '" height="' . $size . '" alt="' . esc_attr( autolingo_reviewer_name() ) . '" style="flex:none;vertical-align:middle">';
+}

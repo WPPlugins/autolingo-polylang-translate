@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.10.2
+Stable tag: 1.11.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -56,7 +56,7 @@ https://www.youtube.com/watch?v=cZiq3PXC2-w
 * WooCommerce: custom product attributes, variations and purchase note; without Polylang for WooCommerce or WooCommerce Multilingual, translated products also get prices, variations and linked products, with a shared stock
 * Theme and plugin strings: Polylang's Languages → Translations or WPML String Translation (site title, widgets, cookie banner, plugin texts)
 * Lingo, the review agent: rereads each translation next to its original, like a proofreader, fixes what it is sure about and lists the rest
-* Lingo, the assistant: ask in your own words ("translate my products into Spanish as drafts"); Lingo looks at the site and proposes the actions, which run only when you confirm them
+* Lingo, the assistant: ask in your own words ("translate my products into Spanish as drafts"), from any admin page; Lingo looks at the site and proposes the actions, which run only when you confirm them
 
 = Lingo, the review agent (Pro) =
 
@@ -66,7 +66,7 @@ Machine translation is fast, not flawless: a price or an opening time that chang
 * "Fix the sure ones, list the others": the corrections any professional would make are applied for you
 * Translations created as drafts can be published once Lingo finds nothing to check
 * The whole site at once from Settings → AutoLingo → Tools, or `wp pdat review`
-* Reviews with AutoLingo AI (no key, on the same monthly credit), or your OpenAI or DeepSeek key
+* Reviews with AutoLingo AI (no key, on the same monthly credit)
 
 Pages built with Elementor, Bricks or Beaver Builder are reread text by text, and a fix is written back into the builder's own data (Beaver Builder global modules, shared between pages, are left alone).
 
@@ -77,7 +77,8 @@ Settings → AutoLingo → Lingo is a chat: say what you want, in your language.
 * Nothing changes until you confirm: each proposal is a card with Confirm and Cancel, and the card says what will run, written by AutoLingo from the action itself, not by the AI
 * Site content is treated as data: text written for an AI in a title or a page is detected, Lingo warns you, and actions that delete or change settings are not proposed after reading it
 * Every confirmed action goes to the AutoLingo log (who, what, when; the previous value of a changed setting); at most 40 messages an hour per person
-* With AutoLingo AI on the same monthly credit, or your OpenAI or DeepSeek key; the conversation stays in your browser tab
+* With AutoLingo AI, on the same monthly credit as translation (no key); Lingo never uses another AI
+* One click away on every admin page: a Lingo item in the top bar and a Lingo bubble in the corner open the chat in a panel (the bubble can be turned off); the conversation stays in your browser tab
 
 = Page builder support (Pro) =
 
@@ -270,6 +271,13 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.11.0 =
+* Lingo (the assistant and the reviewer) now works only with AutoLingo AI, included with Pro: it no longer uses an OpenAI or DeepSeek key
+* Lingo answers in the language of your admin (your profile's language), whatever language you write in
+* Lingo is one click away on every admin page: a Lingo item in the top bar and a Lingo bubble in the corner open the chat in a panel, without leaving the page; the conversation follows you from page to page and into the Lingo tab
+* The bubble can be turned off under the chat in the Lingo tab; the top bar item stays
+* Next to the Storekind assistant, the two bubbles sit side by side and only one panel is open at a time
 
 = 1.10.2 =
 * Lingo, the assistant, is sharper: it gives the exact count of what you ask for (Spanish and German products, not the site's total), keeps to one page when you ask about one, answers in your language and with your form of address, says settings in plain words, names only the real tabs of the settings, and explains how to do what no action does (adding a language)

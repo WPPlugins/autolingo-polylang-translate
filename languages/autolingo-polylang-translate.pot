@@ -2,14 +2,14 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: AutoLingo — Automatic Translation for Polylang & WPML 1.10.0\n"
+"Project-Id-Version: AutoLingo — Automatic Translation for Polylang & WPML 1.11.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/autolingo-polylang-translate\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-10T22:49:57+00:00\n"
+"POT-Creation-Date: 2026-11-11T17:21:11+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: autolingo-polylang-translate\n"
@@ -201,12 +201,12 @@ msgstr ""
 
 #: admin/settings.php:18
 #: admin/settings.php:854
-#: includes/assistant.php:590
 #: includes/bulk.php:413
 #: includes/hooks.php:198
-#: includes/review.php:907
+#: includes/review.php:854
 #: includes/strings.php:502
 #: includes/strings.php:522
+#: lib/agent/src/WordPress/Panel.php:172
 msgid "Permission denied."
 msgstr ""
 
@@ -261,6 +261,7 @@ msgstr ""
 
 #: admin/settings.php:170
 #: admin/settings.php:796
+#: includes/assistant.php:459
 msgid "Modules"
 msgstr ""
 
@@ -281,12 +282,12 @@ msgid "Content Types"
 msgstr ""
 
 #: admin/settings.php:177
-#: includes/assistant.php:394
+#: includes/assistant.php:403
 msgid "Auto-translate"
 msgstr ""
 
 #: admin/settings.php:178
-#: includes/assistant.php:394
+#: includes/assistant.php:403
 msgid "New translations"
 msgstr ""
 
@@ -647,6 +648,7 @@ msgstr ""
 
 #: admin/settings.php:552
 #: admin/settings.php:792
+#: includes/assistant.php:459
 msgid "Provider"
 msgstr ""
 
@@ -840,14 +842,18 @@ msgid "Translates the missing strings, for every target language or the ones giv
 msgstr ""
 
 #: admin/settings.php:793
+#: includes/assistant.php:459
+#: includes/assistant.php:470
 msgid "Languages & content"
 msgstr ""
 
 #: admin/settings.php:798
+#: includes/assistant.php:459
 msgid "Glossary & memory"
 msgstr ""
 
 #: admin/settings.php:799
+#: includes/assistant.php:459
 msgid "Tools"
 msgstr ""
 
@@ -899,28 +905,28 @@ msgstr ""
 msgid "✓ %1$d/%2$d glossaries synced."
 msgstr ""
 
-#: includes/assistant.php:360
+#: includes/assistant.php:367
 msgid "every target language"
 msgstr ""
 
-#: includes/assistant.php:361
+#: includes/assistant.php:368
 msgid "published"
 msgstr ""
 
-#: includes/assistant.php:361
+#: includes/assistant.php:368
 msgid "as drafts"
 msgstr ""
 
-#: includes/assistant.php:361
+#: includes/assistant.php:368
 msgid "pending review"
 msgstr ""
 
-#: includes/assistant.php:369
+#: includes/assistant.php:376
 msgid "all content types"
 msgstr ""
 
 #. translators: 1: number, 2: content type, 3: language, 4: status
-#: includes/assistant.php:371
+#: includes/assistant.php:378
 #, php-format
 msgid "Create %1$d missing translation (%2$s, %3$s), %4$s"
 msgid_plural "Create %1$d missing translations (%2$s, %3$s), %4$s"
@@ -928,7 +934,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: 1: number of posts, 2: their titles, 3: language, 4: status
-#: includes/assistant.php:375
+#: includes/assistant.php:382
 #, php-format
 msgid "Translate %1$d post again (%2$s) into %3$s; new translations %4$s"
 msgid_plural "Translate %1$d posts again (%2$s) into %3$s; new translations %4$s"
@@ -936,183 +942,111 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %d: number of translations
-#: includes/assistant.php:378
+#: includes/assistant.php:385
 #, php-format
 msgid "Repair %d translations (SEO fields and addresses left in the source language; old addresses redirect)"
 msgstr ""
 
 #. translators: 1: number, 2: titles
-#: includes/assistant.php:382
+#: includes/assistant.php:389
 #, php-format
 msgid "Move %1$d duplicates to the trash: %2$s"
 msgstr ""
 
 #. translators: 1: number at most, 2: language
-#: includes/assistant.php:386
+#: includes/assistant.php:395
 #, php-format
 msgid "Have up to %1$d translations reread by Lingo (%2$s)"
 msgstr ""
 
 #. translators: 1: number of menus, 2: number of languages
-#: includes/assistant.php:389
+#: includes/assistant.php:398
 #, php-format
 msgid "Translate %1$d menu(s) into %2$d language(s)"
 msgstr ""
 
 #. translators: %s: language
-#: includes/assistant.php:392
+#: includes/assistant.php:401
 #, php-format
 msgid "Translate the missing theme and plugin strings (%s)"
 msgstr ""
 
-#: includes/assistant.php:394
+#: includes/assistant.php:403
 msgid "Review agent"
 msgstr ""
 
-#: includes/assistant.php:394
+#: includes/assistant.php:403
 msgid "Formality"
 msgstr ""
 
 #. translators: 1: setting, 2: value
-#: includes/assistant.php:396
+#: includes/assistant.php:405
 #, php-format
 msgid "Change the setting “%1$s” to “%2$s”"
 msgstr ""
 
 #. translators: 1: term, 2: its translation
-#: includes/assistant.php:399
+#: includes/assistant.php:408
 #, php-format
 msgid "Add to the glossary: “%1$s” is always translated as “%2$s”"
 msgstr ""
 
-#: includes/assistant.php:437
-msgid "Lingo needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key."
+#: includes/assistant.php:433
+msgid "Lingo needs AutoLingo AI, included with AutoLingo Pro: check that the licence is active."
 msgstr ""
 
-#: includes/assistant.php:447
-#: includes/review.php:88
-msgid "The AI did not answer."
-msgstr ""
-
-#: includes/assistant.php:452
-#: includes/review.php:94
-msgid "The AI gave an answer that could not be read."
-msgstr ""
-
-#. translators: 1: provider, 2: HTTP status
-#: includes/assistant.php:473
-#: includes/review.php:124
-#, php-format
-msgid "%1$s returned HTTP %2$d."
-msgstr ""
-
-#: includes/assistant.php:535
+#: includes/assistant.php:481
 msgid "Lingo read site content that contains instructions addressed to an AI. Actions that delete or change settings were not proposed. Check the others carefully."
 msgstr ""
 
-#: includes/assistant.php:536
+#: includes/assistant.php:482
 msgid "Lingo read site content that contains instructions addressed to an AI. Check the proposals carefully."
 msgstr ""
 
-#: includes/assistant.php:540
+#: includes/assistant.php:483
 msgid "Lingo could not finish looking: ask again more precisely."
 msgstr ""
 
-#: includes/assistant.php:596
-msgid "Lingo has answered many messages this hour: try again in a little while."
-msgstr ""
-
-#: includes/assistant.php:605
+#: includes/assistant.php:484
 msgid "This proposal has expired: ask Lingo again."
 msgstr ""
 
+#: includes/assistant.php:485
+msgid "Lingo has answered many messages this hour: try again in a little while."
+msgstr ""
+
+#: includes/assistant.php:505
+msgid "What is left to translate?"
+msgstr ""
+
+#: includes/assistant.php:506
+msgid "Translate all my products into Spanish, as drafts"
+msgstr ""
+
+#: includes/assistant.php:507
+msgid "Never translate the name of my brand"
+msgstr ""
+
+#: includes/assistant.php:509
+msgid "For example: translate my new pages into German"
+msgstr ""
+
 #. translators: %s: Lingo
-#: includes/assistant.php:634
+#. translators: %s: the assistant's name
+#: includes/assistant.php:547
+#: lib/agent/src/WordPress/Panel.php:143
+#: lib/agent/src/WordPress/Panel.php:163
 #, php-format
 msgid "Ask %s"
 msgstr ""
 
 #. translators: %s: Lingo
-#: includes/assistant.php:635
+#: includes/assistant.php:548
 msgid "Say what you want in your own words. Lingo looks at the site and proposes the actions; nothing changes until you confirm each one."
 msgstr ""
 
-#: includes/assistant.php:637
-msgid "Lingo needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key in the Provider tab."
-msgstr ""
-
-#: includes/assistant.php:641
-msgid "What is left to translate?"
-msgstr ""
-
-#: includes/assistant.php:642
-msgid "Translate all my products into Spanish, as drafts"
-msgstr ""
-
-#: includes/assistant.php:643
-msgid "Never translate the name of my brand"
-msgstr ""
-
-#: includes/assistant.php:650
-msgid "For example: translate my new pages into German"
-msgstr ""
-
-#: includes/assistant.php:650
-msgid "Send"
-msgstr ""
-
-#: includes/assistant.php:653
+#: includes/assistant.php:554
 msgid "With AutoLingo AI, on the same credit as translation. The conversation is kept while this tab stays open."
-msgstr ""
-
-#. translators: %s: AI name
-#: includes/assistant.php:655
-#, php-format
-msgid "With your %s key. The conversation is kept while this tab stays open."
-msgstr ""
-
-#: includes/assistant.php:660
-msgid "You"
-msgstr ""
-
-#: includes/assistant.php:661
-msgid "Lingo is looking…"
-msgstr ""
-
-#: includes/assistant.php:662
-msgid "Confirm"
-msgstr ""
-
-#: includes/assistant.php:663
-msgid "Cancel"
-msgstr ""
-
-#: includes/assistant.php:664
-msgid "Cancelled."
-msgstr ""
-
-#. translators: %d: number done
-#: includes/assistant.php:666
-#, php-format
-msgid "Working… %d done"
-msgstr ""
-
-#. translators: %d: number done
-#: includes/assistant.php:668
-#: includes/bulk.php:524
-#, php-format
-msgid "✓ Done: %d"
-msgstr ""
-
-#. translators: %d: number of failures
-#: includes/assistant.php:670
-#: includes/bulk.php:526
-#, php-format
-msgid "%d could not be done"
-msgstr ""
-
-#: includes/assistant.php:671
-msgid "The server cut the request short. What was done is saved: confirm again to carry on."
 msgstr ""
 
 #: includes/bulk.php:58
@@ -1183,6 +1117,22 @@ msgstr ""
 #: includes/bulk.php:522
 #, php-format
 msgid "Working… %1$d / %2$d"
+msgstr ""
+
+#. translators: %d: number done
+#. translators: %d: items done
+#: includes/bulk.php:524
+#: lib/agent/src/WordPress/Panel.php:97
+#, php-format
+msgid "✓ Done: %d"
+msgstr ""
+
+#. translators: %d: number of failures
+#. translators: %d: items that could not be done
+#: includes/bulk.php:526
+#: lib/agent/src/WordPress/Panel.php:99
+#, php-format
+msgid "%d could not be done"
 msgstr ""
 
 #: includes/bulk.php:527
@@ -1394,6 +1344,7 @@ msgid "Sorry, you are not allowed to do that."
 msgstr ""
 
 #: includes/providers/class-autolingo-ai.php:326
+#: includes/review.php:43
 msgid "AutoLingo AI"
 msgstr ""
 
@@ -1433,33 +1384,41 @@ msgstr ""
 msgid "No glossary terms to sync."
 msgstr ""
 
-#: includes/review.php:78
-#: includes/review.php:867
-msgid "The review needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key."
+#: includes/review.php:60
+#: includes/review.php:814
+msgid "The review needs AutoLingo AI, included with AutoLingo Pro: check that the licence is active."
 msgstr ""
 
-#: includes/review.php:167
+#: includes/review.php:66
+msgid "The AI did not answer."
+msgstr ""
+
+#: includes/review.php:72
+msgid "The AI gave an answer that could not be read."
+msgstr ""
+
+#: includes/review.php:114
 msgid "Title"
 msgstr ""
 
-#: includes/review.php:168
+#: includes/review.php:115
 msgid "Excerpt"
 msgstr ""
 
-#: includes/review.php:169
+#: includes/review.php:116
 msgid "Content"
 msgstr ""
 
-#: includes/review.php:176
+#: includes/review.php:123
 msgid "SEO"
 msgstr ""
 
-#: includes/review.php:361
+#: includes/review.php:308
 msgid "This passage is still in the source language."
 msgstr ""
 
 #. translators: %d: number of translations
-#: includes/review.php:718
+#: includes/review.php:665
 #, php-format
 msgid "%d translation has points to check"
 msgid_plural "%d translations have points to check"
@@ -1467,7 +1426,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %d: number of points
-#: includes/review.php:725
+#: includes/review.php:672
 #, php-format
 msgid "%d point"
 msgid_plural "%d points"
@@ -1475,19 +1434,19 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: the review agent's name (Lingo)
-#: includes/review.php:734
+#: includes/review.php:681
 #, php-format
-msgid "%s, the review agent, needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key in the Provider tab."
+msgid "%s, the review agent, needs AutoLingo AI, included with AutoLingo Pro: check that the licence is active."
 msgstr ""
 
 #. translators: %s: the review agent's name (Lingo)
-#: includes/review.php:734
-#: includes/review.php:745
+#: includes/review.php:681
+#: includes/review.php:692
 msgid "Have them reread"
 msgstr ""
 
 #. translators: 1: the review agent's name (Lingo), 2: translations to reread, 3: AI name
-#: includes/review.php:740
+#: includes/review.php:687
 #, php-format
 msgid "%1$s, the review agent: %2$d translation not reread yet (or changed since), with %3$s."
 msgid_plural "%1$s, the review agent: %2$d translations not reread yet (or changed since), with %3$s."
@@ -1495,52 +1454,52 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: the review agent's name (Lingo)
-#: includes/review.php:789
-#: includes/review.php:932
+#: includes/review.php:736
+#: includes/review.php:879
 #, php-format
 msgid "%s, review agent"
 msgstr ""
 
-#: includes/review.php:795
+#: includes/review.php:742
 msgid "Meaning"
 msgstr ""
 
-#: includes/review.php:796
+#: includes/review.php:743
 msgid "Number or name"
 msgstr ""
 
-#: includes/review.php:797
+#: includes/review.php:744
 msgid "Not translated"
 msgstr ""
 
-#: includes/review.php:798
+#: includes/review.php:745
 msgid "Glossary"
 msgstr ""
 
-#: includes/review.php:799
+#: includes/review.php:746
 msgid "Grammar"
 msgstr ""
 
-#: includes/review.php:800
+#: includes/review.php:747
 msgid "Fluency"
 msgstr ""
 
-#: includes/review.php:801
+#: includes/review.php:748
 msgid "Tone"
 msgstr ""
 
-#: includes/review.php:802
+#: includes/review.php:749
 msgid "Other"
 msgstr ""
 
 #. translators: %s: the review agent's name (Lingo)
-#: includes/review.php:815
+#: includes/review.php:762
 #, php-format
 msgid "%s has not reread this translation yet."
 msgstr ""
 
 #. translators: 1: the review agent's name (Lingo), 2: date, 3: number of points
-#: includes/review.php:823
+#: includes/review.php:770
 #, php-format
 msgid "%1$s reread this translation on %2$s: %3$d point to check."
 msgid_plural "%1$s reread this translation on %2$s: %3$d points to check."
@@ -1548,25 +1507,25 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: 1: the review agent's name (Lingo), 2: date
-#: includes/review.php:828
+#: includes/review.php:775
 #, php-format
 msgid "%1$s reread this translation on %2$s: nothing to check."
 msgstr ""
 
-#: includes/review.php:838
+#: includes/review.php:785
 msgid "Original"
 msgstr ""
 
-#: includes/review.php:841
+#: includes/review.php:788
 msgid "Apply"
 msgstr ""
 
-#: includes/review.php:843
+#: includes/review.php:790
 msgid "Ignore"
 msgstr ""
 
 #. translators: %d: number of fixes
-#: includes/review.php:849
+#: includes/review.php:796
 #, php-format
 msgid "%d correction made"
 msgid_plural "%d corrections made"
@@ -1574,56 +1533,56 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: the review agent's name (Lingo)
-#: includes/review.php:861
+#: includes/review.php:808
 #, php-format
 msgid "Ask %s to reread it"
 msgstr ""
 
-#: includes/review.php:872
+#: includes/review.php:819
 msgid "Working…"
 msgstr ""
 
-#: includes/review.php:873
+#: includes/review.php:820
 msgid "Done. The page reloads to show the change (save your other edits first)."
 msgstr ""
 
-#: includes/review.php:874
+#: includes/review.php:821
 msgid "Applying a fix reloads the page: unsaved changes in the editor would be lost. Continue?"
 msgstr ""
 
-#: includes/review.php:918
+#: includes/review.php:865
 msgid "This passage changed since the review: review again."
 msgstr ""
 
-#: includes/review.php:940
+#: includes/review.php:887
 msgid "Off"
 msgstr ""
 
-#: includes/review.php:941
+#: includes/review.php:888
 msgid "List the points for me to check"
 msgstr ""
 
-#: includes/review.php:942
+#: includes/review.php:889
 msgid "Fix the sure ones, list the others"
 msgstr ""
 
 #. translators: %s: the review agent's name (Lingo)
-#: includes/review.php:949
+#: includes/review.php:896
 #, php-format
 msgid "After each translation, %s rereads it next to the original, like a proofreader: meaning, numbers and names, passages left untranslated, glossary, grammar, tone. The points to check are listed in the editor and in the Tools tab."
 msgstr ""
 
 #. translators: %s: AI name
-#: includes/review.php:955
+#: includes/review.php:902
 #, php-format
 msgid "Reviews with %s. It costs about as many characters as the translation itself."
 msgstr ""
 
-#: includes/review.php:956
-msgid "Needs AutoLingo AI (Premium licence), or an OpenAI or DeepSeek key in the Provider tab."
+#: includes/review.php:903
+msgid "Needs AutoLingo AI, included with AutoLingo Pro: check that the licence is active."
 msgstr ""
 
-#: includes/review.php:959
+#: includes/review.php:906
 msgid "Publish a translation created as a draft once the review finds nothing to check"
 msgstr ""
 
@@ -1730,4 +1689,116 @@ msgstr ""
 
 #: includes/strings.php:608
 msgid "Some strings could not be saved. Check them in Languages → Translations."
+msgstr ""
+
+#: lib/agent/src/WordPress/Gateway.php:52
+msgid "The AI gave an answer that could not be read. Try again."
+msgstr ""
+
+#: lib/agent/src/WordPress/Gateway.php:61
+msgid "The assistant needs the AI included with the Pro version: check that the licence is active."
+msgstr ""
+
+#: lib/agent/src/WordPress/Gateway.php:84
+msgid "The AI allowance of this month is used up. It comes back next month."
+msgstr ""
+
+#: lib/agent/src/WordPress/Gateway.php:85
+msgid "The Pro licence is not valid or has expired."
+msgstr ""
+
+#: lib/agent/src/WordPress/Gateway.php:86
+msgid "The licence is already used on its maximum number of sites."
+msgstr ""
+
+#. translators: %d: HTTP status
+#: lib/agent/src/WordPress/Gateway.php:88
+#, php-format
+msgid "The AI service returned HTTP %d. Try again in a minute."
+msgstr ""
+
+#: lib/agent/src/WordPress/Gateway.php:94
+msgid "The AI did not answer. Try again."
+msgstr ""
+
+#. translators: %s: the assistant's name
+#: lib/agent/src/WordPress/Panel.php:87
+#, php-format
+msgid "%s is looking…"
+msgstr ""
+
+#: lib/agent/src/WordPress/Panel.php:88
+msgid "Confirm"
+msgstr ""
+
+#: lib/agent/src/WordPress/Panel.php:89
+msgid "Cancel"
+msgstr ""
+
+#: lib/agent/src/WordPress/Panel.php:90
+msgid "Cancelled."
+msgstr ""
+
+#. translators: %d: number of other items
+#: lib/agent/src/WordPress/Panel.php:92
+#, php-format
+msgid "… and %d more"
+msgstr ""
+
+#: lib/agent/src/WordPress/Panel.php:93
+msgid "This change is large (prices lowered a lot, or to zero, or many items). Are you sure?"
+msgstr ""
+
+#. translators: %d: items done
+#: lib/agent/src/WordPress/Panel.php:95
+#, php-format
+msgid "Working… %d done"
+msgstr ""
+
+#: lib/agent/src/WordPress/Panel.php:100
+msgid "Undo"
+msgstr ""
+
+#. translators: %d: items restored
+#: lib/agent/src/WordPress/Panel.php:102
+#, php-format
+msgid "✓ Undone: %d restored"
+msgstr ""
+
+#. translators: %s: names
+#: lib/agent/src/WordPress/Panel.php:104
+#, php-format
+msgid "kept as they are (changed since): %s"
+msgstr ""
+
+#: lib/agent/src/WordPress/Panel.php:105
+msgid "The server cut the request short. What was done is saved: confirm again to carry on."
+msgstr ""
+
+#: lib/agent/src/WordPress/Panel.php:120
+msgid "Your request"
+msgstr ""
+
+#: lib/agent/src/WordPress/Panel.php:122
+msgid "Send"
+msgstr ""
+
+#. translators: %s: the assistant's name
+#: lib/agent/src/WordPress/Panel.php:130
+#, php-format
+msgid "Show the %s bubble in the corner of every admin page"
+msgstr ""
+
+#. translators: %s: the assistant's name
+#: lib/agent/src/WordPress/Panel.php:132
+#, php-format
+msgid "%s stays in the top bar either way."
+msgstr ""
+
+#: lib/agent/src/WordPress/Panel.php:156
+msgid "Full page"
+msgstr ""
+
+#: lib/agent/src/WordPress/Panel.php:158
+msgid "Close"
 msgstr ""
