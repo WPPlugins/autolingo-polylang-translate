@@ -178,6 +178,30 @@ function autolingo_tm_segment( string $html ): array {
     $trimmed = trim( $html );
     if ( $trimmed === '' ) return [];
 
+    // A Gutenberg page: its block comments are placeholders (<!--PDT0-->, and <!--ALOP0--> for
+    // protected blocks) between the blocks. Cut there, keeping every block's markup exactly as
+    // it is: each block is a segment of its own (the translation memory then reuses blocks, and
+    // an AI provider gets short requests; a whole long page in one request timed out after 60 s).
+    // [notranslate] placeholders (<!--ALNO0-->) can sit inside a sentence: never cut there.
+    if ( preg_match( '/<!--(?:PDT|ALOP)\d+-->/', $html ) ) {
+        $segments = [];
+        foreach ( preg_split( '/(<!--(?:PDT|ALOP)\d+-->)/', $html, -1, PREG_SPLIT_DELIM_CAPTURE ) as $k => $part ) {
+            if ( $part === '' ) continue;
+            $core = trim( $part );
+            if ( $k % 2 === 1 || $core === '' || trim( html_entity_decode( strip_tags( $part ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ) === '' ) {
+                $segments[] = [ 'text' => $part, 'translate' => false ]; // a placeholder, whitespace, or markup with no text
+                continue;
+            }
+            // The whitespace around a block stays out of the request (an AI would drop it).
+            $start = strpos( $part, $core );
+            if ( $start > 0 ) $segments[] = [ 'text' => substr( $part, 0, $start ), 'translate' => false ];
+            $segments[] = [ 'text' => $core, 'translate' => true ];
+            $rest = substr( $part, $start + strlen( $core ) );
+            if ( $rest !== '' ) $segments[] = [ 'text' => $rest, 'translate' => false ];
+        }
+        return $segments;
+    }
+
     if ( ! preg_match( '/<[a-z][^>]*>/i', $trimmed ) ) {
         return [ [ 'text' => $html, 'translate' => true ] ];
     }

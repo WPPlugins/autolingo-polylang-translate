@@ -22,7 +22,40 @@ class AUTOLINGO_Provider_Google implements AUTOLINGO_Provider {
     public function translate( string $text, string $target_lang ): string|false {
         $this->quota_exceeded = false;
         if ( empty( trim( $text ) ) ) return $text;
+        $r = $this->request( [ $text ], $target_lang );
+        return $r === false ? false : $r[0];
+    }
 
+    /**
+     * Several texts: up to 100 texts and about 25,000 characters per request (Google takes 128
+     * and recommends under 30,000), so a long page (one text per block) needs few requests.
+     */
+    public function translate_batch( array $texts, string $target_lang ): array|false {
+        $this->quota_exceeded = false;
+        $texts = array_values( $texts );
+        $out   = $texts;
+        $todo  = array_filter( $texts, static fn( $t ) => trim( (string) $t ) !== '' );
+        $chunk = [];
+        $size  = 0;
+        $flush = function () use ( &$chunk, &$size, &$out, $target_lang ): bool {
+            if ( ! $chunk ) return true;
+            $done = $this->request( array_values( $chunk ), $target_lang );
+            if ( $done === false ) return false;
+            foreach ( array_keys( $chunk ) as $n => $i ) $out[ $i ] = $done[ $n ];
+            $chunk = [];
+            $size  = 0;
+            return true;
+        };
+        foreach ( $todo as $i => $text ) {
+            if ( $chunk && ( count( $chunk ) >= 100 || $size + mb_strlen( $text ) > 25000 ) && ! $flush() ) return false;
+            $chunk[ $i ] = $text;
+            $size       += mb_strlen( $text );
+        }
+        return $flush() ? $out : false;
+    }
+
+    /** One request; the translations in the same order, or false (logged, quota flagged). */
+    private function request( array $texts, string $target_lang ): array|false {
         $api_key = $this->api_key();
         if ( empty( $api_key ) ) {
             autolingo_log_error( 'Google Translate API key not configured.' );
@@ -32,10 +65,10 @@ class AUTOLINGO_Provider_Google implements AUTOLINGO_Provider {
         $response = wp_remote_post(
             'https://translation.googleapis.com/language/translate/v2?key=' . urlencode( $api_key ),
             [
-                'timeout' => 30,
+                'timeout' => 60,
                 'headers' => [ 'Content-Type' => 'application/json' ],
                 'body'    => wp_json_encode( [
-                    'q'      => $text,
+                    'q'      => count( $texts ) === 1 ? $texts[0] : $texts,
                     'source' => strtolower( autolingo_source_lang() ),
                     'target' => strtolower( $target_lang ),
                     'format' => 'html',
@@ -61,10 +94,13 @@ class AUTOLINGO_Provider_Google implements AUTOLINGO_Provider {
         }
 
         $body = json_decode( wp_remote_retrieve_body( $response ), true );
-        $raw  = $body['data']['translations'][0]['translatedText'] ?? false;
-
-        // Google HTML-encodes some entities in the response — decode them back.
-        return $raw !== false ? html_entity_decode( $raw, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) : false;
+        $out  = [];
+        foreach ( (array) ( $body['data']['translations'] ?? [] ) as $t ) {
+            if ( ! isset( $t['translatedText'] ) ) return false;
+            // Google HTML-encodes some entities in the response — decode them back.
+            $out[] = html_entity_decode( (string) $t['translatedText'], ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+        }
+        return count( $out ) === count( $texts ) ? $out : false;
     }
 
     /** Google Cloud Translation v2 has no simple usage-balance endpoint. */

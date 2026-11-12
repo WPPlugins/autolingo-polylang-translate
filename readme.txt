@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.11.0
+Stable tag: 1.11.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -271,6 +271,13 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.11.1 =
+* Long pages no longer time out with OpenAI or DeepSeek: a Gutenberg page is now translated block by block, several blocks per request (about 4,000 characters, changeable with the `autolingo_chat_batch_chars` filter), instead of the whole page in one request that could take more than 60 seconds
+* The requests of one page go to OpenAI or DeepSeek at the same time: a long page takes about as long as one request (a 29,000-character page: 13 s instead of 78 s)
+* Each block goes through the translation memory: a page translated again only sends the blocks that changed
+* DeepL: a page of more than 50 blocks is sent in several requests (DeepL's limit); Google Translate: several blocks per request instead of one request per block
+* An OpenAI account with no credit left is recognised again (OpenAI changed its error code): the next provider with a key translates instead
 
 = 1.11.0 =
 * Lingo (the assistant and the reviewer) now works only with AutoLingo AI, included with Pro: it no longer uses an OpenAI or DeepSeek key
