@@ -169,6 +169,7 @@ function autolingo_call_deepl_batch( array $texts, string $target_lang ): array|
     $block_maps       = [];
     $placeholder_maps = [];
     $attribute_maps   = [];
+    $block_attr_maps  = [];
     $prepared         = [];
 
     foreach ( $texts as $text ) {
@@ -185,6 +186,7 @@ function autolingo_call_deepl_batch( array $texts, string $target_lang ): array|
         $t      = autolingo_extract_html_attributes( $t, $attrs );
 
         $prepared[]           = $t;
+        $block_attr_maps[]    = autolingo_extract_block_attributes( $blocks );
         $attribute_maps[]     = $attrs;
         $notranslate_maps[]   = $nt;
         $opaque_maps[]        = $opaque;
@@ -202,8 +204,12 @@ function autolingo_call_deepl_batch( array $texts, string $target_lang ): array|
         return $out;
     };
 
-    // alt/title values travel as extra texts of the same call, after the texts themselves.
-    $segments = array_merge( [], ...array_map( 'array_values', $attribute_maps ) );
+    // alt/title values, then the texts kept in block settings (Kadence tab titles, buttons…), travel
+    // as extra texts of the same call, after the texts themselves.
+    $segments = array_merge(
+        array_merge( [], ...array_map( 'array_values', $attribute_maps ) ),
+        array_merge( [], ...array_map( static fn( array $m ): array => array_column( $m, 'text' ), $block_attr_maps ) )
+    );
     $results  = autolingo_tm_translate_batch( array_merge( $prepared, $segments ), autolingo_source_lang(), $target_lang, $api_translate );
 
     if ( $results === false ) return false;
@@ -253,6 +259,15 @@ function autolingo_call_deepl_batch( array $texts, string $target_lang ): array|
             $results[ $i ] = autolingo_restore_html_attributes( $results[ $i ], $values );
         }
     }
+    foreach ( $block_attr_maps as $i => $entries ) {
+        if ( empty( $entries ) ) continue;
+        $translated = [];
+        foreach ( $entries as $n => $entry ) {
+            $translated[ $n ] = is_string( $all_results[ $offset ] ?? null ) ? $all_results[ $offset ] : $entry['text'];
+            $offset++;
+        }
+        $block_maps[ $i ] = autolingo_restore_block_attributes( $block_maps[ $i ], $entries, $translated );
+    }
 
     foreach ( $results as $i => &$result ) {
         if ( ! is_string( $result ) ) continue;
@@ -261,6 +276,7 @@ function autolingo_call_deepl_batch( array $texts, string $target_lang ): array|
         }
         if ( ! empty( $block_maps[ $i ] ) ) {
             $result = str_replace( array_keys( $block_maps[ $i ] ), array_values( $block_maps[ $i ] ), $result );
+            if ( str_contains( $result, '<!-- wp:kadence/tabs ' ) ) $result = autolingo_kadence_tabs_sync( $result );
         }
         if ( ! empty( $opaque_maps[ $i ] ) ) {
             $result = str_replace( array_keys( $opaque_maps[ $i ] ), array_values( $opaque_maps[ $i ] ), $result );
@@ -414,6 +430,133 @@ function autolingo_strip_block_comments( string $content, array &$comments ): st
             return $key;
         },
         $content
+    );
+}
+
+/**
+ * Blocks that keep text in their settings (the JSON of their block comment) rather than in
+ * their HTML, and where: "titles.*.text" is the text of each item of the "titles" list. Kadence
+ * Blocks' tabs and buttons are the reason (a tab title left in the source language makes the
+ * block invalid in the editor, a button's text is only there). Other plugins add theirs with
+ * the "autolingo_block_text_attributes" filter.
+ *
+ * @return array<string, string[]> Block name => attribute paths.
+ */
+function autolingo_block_text_attributes(): array {
+    return (array) apply_filters( 'autolingo_block_text_attributes', [
+        'core/search'              => [ 'label', 'placeholder', 'buttonText' ],
+        'core/navigation-link'     => [ 'label', 'title', 'description' ],
+        'core/navigation-submenu'  => [ 'label', 'title', 'description' ],
+        'kadence/tabs'             => [ 'titles.*.text', 'titles.*.subText' ],
+        'kadence/singlebtn'        => [ 'text', 'label', 'tooltip' ],
+        'kadence/advancedbtn'      => [ 'btns.*.text' ],
+        'kadence/iconlist'         => [ 'items.*.text' ],
+        'kadence/testimonial'      => [ 'title', 'content', 'name', 'occupation' ],
+        'kadence/countup'          => [ 'title' ],
+        'kadence/progress-bar'     => [ 'label' ],
+        'kadence/tableofcontents'  => [ 'title' ],
+        'kadence/table'            => [ 'caption' ],
+        'kadence/single-icon'      => [ 'title' ],
+        'kadence/search'           => [ 'label' ],
+        'kadence/navigation-link'  => [ 'label', 'title', 'description' ],
+        'kadence/lottie'           => [ 'label' ],
+        'kadence/videopopup'       => [ 'ariaLabel' ],
+    ] );
+}
+
+/** A block comment's parts: name ("kadence/tabs"; "core/…" for unprefixed names), attributes, self-closing. */
+function autolingo_parse_block_comment( string $comment ): ?array {
+    if ( ! preg_match( '/^<!--\s+wp:([a-z][a-z0-9_-]*(?:\/[a-z][a-z0-9_-]*)?)\s+(\{.*\})\s+(\/)?-->$/s', $comment, $m ) ) return null;
+    $attrs = json_decode( $m[2], true );
+    if ( ! is_array( $attrs ) ) return null;
+    return [ 'raw' => $m[1], 'name' => str_contains( $m[1], '/' ) ? $m[1] : 'core/' . $m[1], 'attrs' => $attrs, 'void' => ! empty( $m[3] ) ];
+}
+
+/**
+ * The texts kept in the settings of the blocks of autolingo_block_text_attributes().
+ *
+ * @param  array<string, string> $comments Placeholder => block comment (autolingo_strip_block_comments()).
+ * @return array<int, array{key:string, path:array, text:string}>
+ */
+function autolingo_extract_block_attributes( array $comments ): array {
+    $map = autolingo_block_text_attributes();
+    $out = [];
+    foreach ( $comments as $key => $comment ) {
+        $block = autolingo_parse_block_comment( $comment );
+        if ( ! $block || empty( $map[ $block['name'] ] ) ) continue;
+        foreach ( $map[ $block['name'] ] as $path ) {
+            $walk = static function ( $node, array $rest, array $at ) use ( &$walk, &$out, $key ): void {
+                if ( ! $rest ) {
+                    if ( is_string( $node ) && trim( html_entity_decode( strip_tags( $node ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ) !== '' ) {
+                        $out[] = [ 'key' => $key, 'path' => $at, 'text' => $node ];
+                    }
+                    return;
+                }
+                $step = array_shift( $rest );
+                if ( ! is_array( $node ) ) return;
+                foreach ( $step === '*' ? array_keys( $node ) : [ $step ] as $k ) {
+                    if ( array_key_exists( $k, $node ) ) $walk( $node[ $k ], $rest, array_merge( $at, [ $k ] ) );
+                }
+            };
+            $walk( $block['attrs'], explode( '.', $path ), [] );
+        }
+    }
+    return $out;
+}
+
+/**
+ * The block comments with their translated texts, written back the way WordPress writes block
+ * attributes (serialize_block_attributes()).
+ *
+ * @param array<string, string> $comments
+ * @param array<int, array{key:string, path:array, text:string}> $entries
+ * @param array<int, string> $translated By the entries' index.
+ * @return array<string, string>
+ */
+function autolingo_restore_block_attributes( array $comments, array $entries, array $translated ): array {
+    $by_key = [];
+    foreach ( $entries as $n => $entry ) $by_key[ $entry['key'] ][] = [ $entry['path'], $translated[ $n ] ?? $entry['text'] ];
+    foreach ( $by_key as $key => $values ) {
+        $block = autolingo_parse_block_comment( $comments[ $key ] );
+        if ( ! $block ) continue;
+        $attrs = $block['attrs'];
+        foreach ( $values as [ $path, $text ] ) {
+            $node = &$attrs;
+            foreach ( $path as $k ) $node = &$node[ $k ];
+            $node = $text;
+            unset( $node );
+        }
+        $comments[ $key ] = '<!-- wp:' . $block['raw'] . ' ' . serialize_block_attributes( $attrs ) . ( $block['void'] ? ' /-->' : ' -->' );
+    }
+    return $comments;
+}
+
+/**
+ * Kadence tabs write their titles twice: in the block's settings and in the title list of its
+ * HTML, where each tab's anchor (id="tab-…", href="#tab-…") is made from its title. Translated
+ * separately, the two can differ, and the editor then calls the block invalid. Rewrites each
+ * title list from the (translated) settings, the way Kadence's save() writes it.
+ */
+function autolingo_kadence_tabs_sync( string $html ): string {
+    return (string) preg_replace_callback(
+        '/(<!-- wp:kadence\/tabs (\{.*?\}) -->)(.*?)(<ul class="kt-tabs-title-list[^"]*">)(.*?)(<\/ul>)/s',
+        static function ( array $m ): string {
+            $titles = json_decode( $m[2], true )['titles'] ?? null;
+            if ( ! is_array( $titles ) ) return $m[0];
+            $n    = 0;
+            $list = preg_replace_callback(
+                '/<li id="[^"]*"(.*?)<a href="#[^"]*"(.*?)<span class="kt-title-text">.*?<\/span>/s',
+                static function ( array $li ) use ( $titles, &$n ): string {
+                    $t = $titles[ $n++ ] ?? null;
+                    if ( ! is_array( $t ) || ! isset( $t['text'] ) ) return $li[0];
+                    $anchor = ! empty( $t['anchor'] ) ? (string) $t['anchor'] : 'tab-' . preg_replace( '/[^0-9a-z-]/', '', mb_strtolower( (string) $t['text'] ) );
+                    return '<li id="' . $anchor . '"' . $li[1] . '<a href="#' . $anchor . '"' . $li[2] . '<span class="kt-title-text">' . $t['text'] . '</span>';
+                },
+                $m[5]
+            );
+            return $m[1] . $m[3] . $m[4] . $list . $m[6];
+        },
+        $html
     );
 }
 
