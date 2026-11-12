@@ -290,7 +290,55 @@ function autolingo_call_deepl_batch( array $texts, string $target_lang ): array|
     }
     unset( $result );
 
+    // Blocks whose HTML is their text setting wrapped in a tag (GreenShift elements): the HTML
+    // takes the translated setting, so that the two stay identical, as the block requires.
+    foreach ( $block_attr_maps as $i => $entries ) {
+        if ( $entries && is_string( $results[ $i ] ?? null ) ) $results[ $i ] = autolingo_sync_mirrored_html( (string) $texts[ $i ], $results[ $i ] );
+    }
+
     return $results;
+}
+
+/** A value inside nested arrays, by a dotted path ("titles.0.text"), or null. */
+function autolingo_array_path( array $data, string $path ): mixed {
+    foreach ( explode( '.', $path ) as $k ) {
+        if ( ! is_array( $data ) || ! array_key_exists( $k, $data ) ) return null;
+        $data = $data[ $k ];
+    }
+    return $data;
+}
+
+/**
+ * Some blocks write a text setting into their HTML as well: GreenShift's element saves
+ * "textContent" as <h2>…</h2>. Translated separately, the two copies differ and the editor asks to
+ * recover the block. Where the source block's HTML is exactly one tag around that setting, the
+ * translated HTML gets the translated setting.
+ */
+function autolingo_sync_mirrored_html( string $source, string $translated ): string {
+    $re  = '/(<!--\s*\/?wp:[\s\S]*?-->)/';
+    $src = preg_split( $re, $source, -1, PREG_SPLIT_DELIM_CAPTURE );
+    $dst = preg_split( $re, $translated, -1, PREG_SPLIT_DELIM_CAPTURE );
+    if ( ! $src || ! $dst || count( $src ) !== count( $dst ) ) return $translated;
+    $map  = autolingo_block_text_attributes();
+    $wrap = '/^(\s*<([a-z][a-z0-9-]*)\b[^>]*>)(.*)(<\/\2>\s*)$/s';
+    for ( $k = 1; $k < count( $src ) - 1; $k += 2 ) {
+        $from = autolingo_parse_block_comment( $src[ $k ] );
+        $to   = autolingo_parse_block_comment( $dst[ $k ] );
+        if ( ! $from || ! $to || $from['void'] || empty( $map[ $from['name'] ] ) ) continue;
+        if ( ! preg_match( $wrap, $src[ $k + 1 ], $sm ) ) continue;
+        if ( ! preg_match( $wrap, $dst[ $k + 1 ], $dm ) ) $dm = $sm; // the provider reshaped it: the source's tag around the translated setting
+        foreach ( $map[ $from['name'] ] as $path ) {
+            if ( str_contains( $path, '*' ) ) continue;
+            $was = autolingo_array_path( $from['attrs'], $path );
+            $now = autolingo_array_path( $to['attrs'], $path );
+            if ( ! is_string( $was ) || ! is_string( $now ) || trim( $was ) === '' ) continue;
+            if ( $sm[3] === $was || html_entity_decode( $sm[3], ENT_QUOTES | ENT_HTML5, 'UTF-8' ) === html_entity_decode( $was, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ) {
+                $dst[ $k + 1 ] = $dm[1] . $now . $dm[4];
+                break;
+            }
+        }
+    }
+    return implode( '', $dst );
 }
 
 // ── Image alt text and titles inside HTML ────────────────────────────────────
@@ -443,7 +491,16 @@ function autolingo_strip_block_comments( string $content, array &$comments ): st
  * @return array<string, string[]> Block name => attribute paths.
  */
 function autolingo_block_text_attributes(): array {
-    return (array) apply_filters( 'autolingo_block_text_attributes', [
+    static $map = null;
+    if ( $map !== null ) return $map;
+    $map = array_merge_recursive( autolingo_block_text_attributes_defaults(), autolingo_wpml_config_block_keys() );
+    foreach ( $map as $block => $paths ) $map[ $block ] = array_values( array_unique( $paths ) );
+    return $map = (array) apply_filters( 'autolingo_block_text_attributes', $map );
+}
+
+/** AutoLingo's own list, for when a plugin ships no wpml-config.xml. */
+function autolingo_block_text_attributes_defaults(): array {
+    return [
         'core/search'              => [ 'label', 'placeholder', 'buttonText' ],
         'core/navigation-link'     => [ 'label', 'title', 'description' ],
         'core/navigation-submenu'  => [ 'label', 'title', 'description' ],
@@ -461,7 +518,54 @@ function autolingo_block_text_attributes(): array {
         'kadence/navigation-link'  => [ 'label', 'title', 'description' ],
         'kadence/lottie'           => [ 'label' ],
         'kadence/videopopup'       => [ 'ariaLabel' ],
-    ] );
+        'greenshift-blocks/element' => [ 'textContent', 'tooltipText', 'alt', 'title' ],
+        'greenshift-blocks/button'  => [ 'label', 'closeLabel', 'openLabel' ],
+    ];
+}
+
+/**
+ * Block settings that hold text, as declared by the active plugins and theme for WPML in their
+ * wpml-config.xml (<gutenberg-block type="…" translate="1"><key name="…"/>): GreenShift,
+ * Kadence and many others ship one. Keys that hold a link, an anchor, an id or a class are left
+ * as they are. Cached until a file changes.
+ *
+ * @return array<string, string[]> Block name => attribute paths ("titles.*.text" for nested keys).
+ */
+function autolingo_wpml_config_block_keys(): array {
+    if ( ! function_exists( 'simplexml_load_string' ) ) return [];
+    $plugins = array_merge( (array) get_option( 'active_plugins', [] ), array_keys( (array) get_site_option( 'active_sitewide_plugins', [] ) ) );
+    $files   = [];
+    foreach ( $plugins as $plugin ) $files[] = WP_PLUGIN_DIR . '/' . dirname( (string) $plugin ) . '/wpml-config.xml';
+    $files[] = get_stylesheet_directory() . '/wpml-config.xml';
+    $files[] = get_template_directory() . '/wpml-config.xml';
+    $files   = array_values( array_unique( array_filter( $files, 'is_readable' ) ) );
+    $sig     = md5( implode( '|', array_map( static fn( $f ) => $f . ':' . filemtime( $f ), $files ) ) );
+    $cached  = get_transient( 'autolingo_wpml_block_keys' );
+    if ( is_array( $cached ) && ( $cached['sig'] ?? '' ) === $sig ) return (array) $cached['map'];
+
+    $map  = [];
+    $walk = static function ( SimpleXMLElement $key, string $prefix, string $block ) use ( &$walk, &$map ): void {
+        $name = (string) $key['name'];
+        if ( $name === '' ) return;
+        $path = $prefix === '' ? $name : $prefix . '.' . $name;
+        if ( count( $key->key ) ) {
+            foreach ( $key->key as $child ) $walk( $child, $path, $block );
+            return;
+        }
+        if ( (string) $key['type'] === 'link' || preg_match( '/(link|url|href|anchor|class|id|icon|image|src)$/i', $name ) ) return;
+        $map[ $block ][] = $path;
+    };
+    foreach ( $files as $file ) {
+        $xml = simplexml_load_string( (string) file_get_contents( $file ), 'SimpleXMLElement', LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING );
+        if ( ! $xml ) continue;
+        foreach ( (array) $xml->xpath( '//gutenberg-blocks/gutenberg-block[@translate="1"]' ) as $block ) {
+            $type = (string) $block['type'];
+            if ( $type === '' ) continue;
+            foreach ( $block->key as $key ) $walk( $key, '', $type );
+        }
+    }
+    set_transient( 'autolingo_wpml_block_keys', [ 'sig' => $sig, 'map' => $map ], WEEK_IN_SECONDS );
+    return $map;
 }
 
 /** A block comment's parts: name ("kadence/tabs"; "core/…" for unprefixed names), attributes, self-closing. */

@@ -28,7 +28,11 @@ function autolingo_save_post( array $postarr, bool $update = false ): int|WP_Err
         $had[ $hook ] = has_filter( $hook, $cb );
         if ( $had[ $hook ] ) remove_filter( $hook, $cb );
     }
-    $result = $update ? wp_update_post( $postarr ) : wp_insert_post( $postarr );
+    // wp_insert_post() / wp_update_post() strip one level of backslashes (they expect slashed data,
+    // as from a form): unslashed, the "\u003c" WordPress writes in block settings for "<" (a
+    // button text in bold) came out as "u003c" on the translated page.
+    $postarr = wp_slash( $postarr );
+    $result  = $update ? wp_update_post( $postarr ) : wp_insert_post( $postarr );
     foreach ( $hooks as $hook => $cb ) {
         if ( $had[ $hook ] ) add_filter( $hook, $cb );
     }

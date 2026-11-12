@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.11.2
+Stable tag: 1.11.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -271,6 +271,11 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.11.3 =
+* Buttons with bold or other formatting no longer show "u003cstrongu003e" on the translated page: the escapes WordPress writes in block settings were lost when the translation was saved
+* GreenShift: element blocks (buttons, headings, texts) stay valid after translation, their text setting and their HTML now match
+* The block settings to translate are read from the plugins' and theme's wpml-config.xml, as WPML does: GreenShift, Kadence and any plugin that supports WPML are covered
 
 = 1.11.2 =
 * Kadence Blocks: buttons, tab titles, testimonials, icon lists, counters, tables of contents and the other texts Kadence keeps in a block's settings are now translated
