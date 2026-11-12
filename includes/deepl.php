@@ -325,15 +325,22 @@ function autolingo_sync_mirrored_html( string $source, string $translated ): str
         $from = autolingo_parse_block_comment( $src[ $k ] );
         $to   = autolingo_parse_block_comment( $dst[ $k ] );
         if ( ! $from || ! $to || $from['void'] || empty( $map[ $from['name'] ] ) ) continue;
-        if ( ! preg_match( $wrap, $src[ $k + 1 ], $sm ) ) continue;
-        if ( ! preg_match( $wrap, $dst[ $k + 1 ], $dm ) ) $dm = $sm; // the provider reshaped it: the source's tag around the translated setting
+        $html = $src[ $k + 1 ];
+        $one  = preg_match( $wrap, $html, $sm ) === 1;
+        if ( ! $one || ! preg_match( $wrap, $dst[ $k + 1 ], $dm ) ) $dm = $sm; // the provider reshaped it: the source's tag around the translated setting
         foreach ( $map[ $from['name'] ] as $path ) {
             if ( str_contains( $path, '*' ) ) continue;
             $was = autolingo_array_path( $from['attrs'], $path );
             $now = autolingo_array_path( $to['attrs'], $path );
             if ( ! is_string( $was ) || ! is_string( $now ) || trim( $was ) === '' ) continue;
-            if ( $sm[3] === $was || html_entity_decode( $sm[3], ENT_QUOTES | ENT_HTML5, 'UTF-8' ) === html_entity_decode( $was, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ) {
+            if ( $one && ( $sm[3] === $was || html_entity_decode( $sm[3], ENT_QUOTES | ENT_HTML5, 'UTF-8' ) === html_entity_decode( $was, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ) ) {
                 $dst[ $k + 1 ] = $dm[1] . $now . $dm[4];
+                break;
+            }
+            // Text nested deeper (a GreenShift button's label inside its link): when the setting is the
+            // block's only text, the source HTML with the translated setting in its place.
+            if ( substr_count( $html, $was ) === 1 && trim( wp_strip_all_tags( str_replace( $was, '', $html ) ) ) === '' ) {
+                $dst[ $k + 1 ] = str_replace( $was, $now, $html );
                 break;
             }
         }
@@ -518,8 +525,19 @@ function autolingo_block_text_attributes_defaults(): array {
         'kadence/navigation-link'  => [ 'label', 'title', 'description' ],
         'kadence/lottie'           => [ 'label' ],
         'kadence/videopopup'       => [ 'ariaLabel' ],
-        'greenshift-blocks/element' => [ 'textContent', 'tooltipText', 'alt', 'title' ],
-        'greenshift-blocks/button'  => [ 'label', 'closeLabel', 'openLabel' ],
+        'greenshift-blocks/element'       => [ 'textContent', 'tooltipText', 'alt', 'title' ],
+        'greenshift-blocks/text'          => [ 'textContent' ],
+        'greenshift-blocks/heading'       => [ 'headingContent', 'subTitle', 'textbefore', 'textafter' ],
+        'greenshift-blocks/button'        => [ 'buttonContent', 'label', 'closeLabel', 'openLabel' ],
+        'greenshift-blocks/buttonbox'     => [ 'buttonContent', 'label', 'closeLabel', 'openLabel' ],
+        'greenshift-blocks/accordionitem' => [ 'title' ],
+        'greenshift-blocks/titlebox'      => [ 'title' ],
+        'greenshift-blocks/progressbar'   => [ 'title', 'label' ],
+        'greenshift-blocks/toggler'       => [ 'openlabel', 'closelabel' ],
+        'greenshift-blocks/counter'       => [ 'label' ],
+        'greenshift-blocks/countdown'     => [ 'labelDay', 'labelHour', 'labelMin', 'labelSec' ],
+        'greenshift-blocks/swipe'         => [ 'caption' ],
+        'greenshift-blocks/image'         => [ 'title' ],
     ];
 }
 
