@@ -1886,3 +1886,11 @@ msgstr ""
 #, php-format
 msgid "%d image(s) waiting in the background."
 msgstr ""
+
+#: includes/alt-text.php
+msgid "AutoLingo AI is looking at the image…"
+msgstr ""
+
+#: includes/alt-text.php
+msgid "Alternative text written."
+msgstr ""
