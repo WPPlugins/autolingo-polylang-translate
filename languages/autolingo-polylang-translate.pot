@@ -1802,3 +1802,87 @@ msgstr ""
 #: lib/agent/src/WordPress/Panel.php:158
 msgid "Close"
 msgstr ""
+
+#: includes/alt-text.php
+msgid "This image already has alternative text."
+msgstr ""
+
+#: includes/alt-text.php
+msgid "This file is not an image AutoLingo AI can read."
+msgstr ""
+
+#: includes/alt-text.php
+msgid "AutoLingo AI could not describe this image. Try again later."
+msgstr ""
+
+#: includes/alt-text.php
+msgid "AutoLingo AI found this image decorative: no alternative text."
+msgstr ""
+
+#. translators: attachment ID
+#: includes/alt-text.php
+#, php-format
+msgid "Alternative text written for image #%d."
+msgstr ""
+
+#: includes/alt-text.php
+msgid "Write alt text (AutoLingo AI)"
+msgstr ""
+
+#: includes/alt-text.php
+msgid "You are not allowed to do this."
+msgstr ""
+
+#. translators: the alt text written
+#: includes/alt-text.php
+#, php-format
+msgid "Alternative text written: “%s”"
+msgstr ""
+
+#: includes/alt-text.php
+msgid "Write missing alt texts (AutoLingo AI)"
+msgstr ""
+
+#. translators: 1: images added, 2: images waiting in all
+#: includes/alt-text.php
+#, php-format
+msgid "%1$d image(s) without alt text added. AutoLingo AI writes them in the background (%2$d waiting)."
+msgstr ""
+
+#: includes/alt-text.php
+msgid "Image alt text (AutoLingo AI)"
+msgstr ""
+
+#: includes/alt-text.php
+msgid "Alternative text"
+msgstr ""
+
+#: includes/alt-text.php
+msgid "Write the alt text of new images when they are uploaded"
+msgstr ""
+
+#: includes/alt-text.php
+msgid "Show the library’s alt text, in the page’s language, on images inserted in posts without one"
+msgstr ""
+
+#: includes/alt-text.php
+msgid "AutoLingo AI looks at each image and writes one short sentence in the image’s language, then AutoLingo translates it onto the image’s translations. An alt text already there is never replaced. Each image counts 500 characters of your AutoLingo AI allowance."
+msgstr ""
+
+#. translators: number of images
+#: includes/alt-text.php
+#, php-format
+msgid "Write the missing alt text (%d image)"
+msgid_plural "Write the missing alt texts (%d images)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/alt-text.php
+msgid "Every image has alternative text."
+msgstr ""
+
+#. translators: number of images
+#: includes/alt-text.php
+#, php-format
+msgid "%d image(s) waiting in the background."
+msgstr ""

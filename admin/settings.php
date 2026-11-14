@@ -652,6 +652,7 @@ function autolingo_settings_page_html(): void {
             <?php if ( autolingo_settings_has_section( 'autolingo_section_modules' ) ) : ?>
             <div class="autolingo-panel" id="autolingo-tab-modules">
                 <?php autolingo_render_settings_section( 'autolingo_section_modules' ); ?>
+                <?php autolingo_render_settings_section( 'autolingo_section_images' ); ?>
             </div>
             <?php endif; ?>
             <div class="autolingo-panel" id="autolingo-tab-memory">

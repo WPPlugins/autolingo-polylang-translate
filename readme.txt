@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.11.4
+Stable tag: 1.12.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -220,6 +220,7 @@ On a new install, AutoLingo takes its source and target languages from Polylang 
 `wp pdat repair --dry-run` — list the translations with SEO fields or an address left in the source language; without `--dry-run`, translate them (the old address redirects)
 `wp pdat duplicates [--trash]` — list the posts of a target language linked to no original that duplicate a translation; `--trash` moves them to the trash
 `wp pdat review [--ids=] [--lang=] [--all] [--dry-run]` — (Premium) Lingo rereads the translations not reviewed yet, or changed since, and lists or fixes what it finds
+`wp pdat alt [--ids=] [--dry-run]` — (Premium) AutoLingo AI writes the alternative text of the images that have none
 `wp pdat ask "…"` — (Premium) asks Lingo, the assistant, in plain words; it answers and lists the actions it proposes, without running them
 `wp pdat translate-options` — translate ACF Options Page fields
 `wp pdat audit-acf` — list all translatable ACF fields
@@ -271,6 +272,11 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.12.0 =
+* Premium: AutoLingo AI writes the alternative text of images that have none. It looks at each image and writes one short sentence in the image's language, then AutoLingo translates it onto the image's translations. From the media library (a link on each image and a bulk action, list view), for every image at once from Settings → AutoLingo → Modules, for new uploads (option), or with `wp pdat alt`. An alt text already there is never replaced; each image counts 500 characters of the AutoLingo AI allowance
+* Premium: an image inserted in a post without alt text shows the media library's alt text, in the page's language (option, on by default); the post itself is not changed
+* The caption, description and title of a translated media item are now translated too, not only its alt text; a text edited by hand on the translation is kept
 
 = 1.11.4 =
 * GreenShift: Advanced text, heading and button blocks are translated in their settings too, so they no longer need recovering in the editor (which brought the original language back)

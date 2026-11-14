@@ -1800,3 +1800,87 @@ msgstr "Afficher la bulle de %s dans le coin de chaque page de l’administratio
 #, php-format
 msgid "%s stays in the top bar either way."
 msgstr "%s reste dans la barre du haut dans tous les cas."
+
+#: includes/alt-text.php
+msgid "This image already has alternative text."
+msgstr "Cette image a déjà un texte alternatif."
+
+#: includes/alt-text.php
+msgid "This file is not an image AutoLingo AI can read."
+msgstr "Ce fichier n’est pas une image qu’AutoLingo AI peut lire."
+
+#: includes/alt-text.php
+msgid "AutoLingo AI could not describe this image. Try again later."
+msgstr "AutoLingo AI n’a pas pu décrire cette image. Réessayez plus tard."
+
+#: includes/alt-text.php
+msgid "AutoLingo AI found this image decorative: no alternative text."
+msgstr "AutoLingo AI juge cette image décorative : pas de texte alternatif."
+
+#. translators: attachment ID
+#: includes/alt-text.php
+#, php-format
+msgid "Alternative text written for image #%d."
+msgstr "Texte alternatif écrit pour l’image n° %d."
+
+#: includes/alt-text.php
+msgid "Write alt text (AutoLingo AI)"
+msgstr "Écrire le texte alternatif (AutoLingo AI)"
+
+#: includes/alt-text.php
+msgid "You are not allowed to do this."
+msgstr "Vous n’avez pas le droit de faire cela."
+
+#. translators: the alt text written
+#: includes/alt-text.php
+#, php-format
+msgid "Alternative text written: “%s”"
+msgstr "Texte alternatif écrit : « %s »"
+
+#: includes/alt-text.php
+msgid "Write missing alt texts (AutoLingo AI)"
+msgstr "Écrire les textes alternatifs manquants (AutoLingo AI)"
+
+#. translators: 1: images added, 2: images waiting in all
+#: includes/alt-text.php
+#, php-format
+msgid "%1$d image(s) without alt text added. AutoLingo AI writes them in the background (%2$d waiting)."
+msgstr "%1$d image(s) sans texte alternatif ajoutée(s). AutoLingo AI les écrit en arrière-plan (%2$d en attente)."
+
+#: includes/alt-text.php
+msgid "Image alt text (AutoLingo AI)"
+msgstr "Texte alternatif des images (AutoLingo AI)"
+
+#: includes/alt-text.php
+msgid "Alternative text"
+msgstr "Texte alternatif"
+
+#: includes/alt-text.php
+msgid "Write the alt text of new images when they are uploaded"
+msgstr "Écrire le texte alternatif des nouvelles images à leur envoi"
+
+#: includes/alt-text.php
+msgid "Show the library’s alt text, in the page’s language, on images inserted in posts without one"
+msgstr "Afficher le texte alternatif de la médiathèque, dans la langue de la page, sur les images insérées sans texte alternatif"
+
+#: includes/alt-text.php
+msgid "AutoLingo AI looks at each image and writes one short sentence in the image’s language, then AutoLingo translates it onto the image’s translations. An alt text already there is never replaced. Each image counts 500 characters of your AutoLingo AI allowance."
+msgstr "AutoLingo AI regarde chaque image et écrit une phrase courte dans la langue de l’image, puis AutoLingo la traduit sur les traductions de l’image. Un texte alternatif existant n’est jamais remplacé. Chaque image compte pour 500 caractères de votre forfait AutoLingo AI."
+
+#. translators: number of images
+#: includes/alt-text.php
+#, php-format
+msgid "Write the missing alt text (%d image)"
+msgid_plural "Write the missing alt texts (%d images)"
+msgstr[0] "Écrire le texte alternatif manquant (%d image)"
+msgstr[1] "Écrire les textes alternatifs manquants (%d images)"
+
+#: includes/alt-text.php
+msgid "Every image has alternative text."
+msgstr "Toutes les images ont un texte alternatif."
+
+#. translators: number of images
+#: includes/alt-text.php
+#, php-format
+msgid "%d image(s) waiting in the background."
+msgstr "%d image(s) en attente en arrière-plan."
