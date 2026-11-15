@@ -124,6 +124,18 @@ function autolingo_translation_failure_message( string $action, string $target_l
  * @param  string  $lang_slug    Code langue minuscules (ex: 'en').
  * @return int|false             ID du nouveau post ou false.
  */
+/**
+ * The publication date of the original, for its new translation: without it the translation is dated the day
+ * it is created, and a blog listed by date shows old articles first in that language. Nothing for a draft that
+ * has no date of its own yet.
+ *
+ * @return array{post_date?: string, post_date_gmt?: string}
+ */
+function autolingo_source_dates( WP_Post $source ): array {
+    if ( $source->post_date_gmt === '0000-00-00 00:00:00' || $source->post_date_gmt === '' ) return [];
+    return [ 'post_date' => $source->post_date, 'post_date_gmt' => $source->post_date_gmt ];
+}
+
 function autolingo_create_translation( WP_Post $source_post, string $target_lang, string $lang_slug ) {
 
     // ── Traduire le contenu via une seule requête batch ───
@@ -176,7 +188,7 @@ function autolingo_create_translation( WP_Post $source_post, string $target_lang
             'post_status'  => autolingo_new_translation_status(),
             'post_type'    => $source_post->post_type,
             'post_author'  => $source_post->post_author,
-        ] );
+        ] + autolingo_source_dates( $source_post ) );
 
         if ( is_wp_error( $new_post_id ) ) {
             add_action( 'save_post', 'autolingo_on_save_post', 20, 3 );

@@ -134,7 +134,7 @@ class AutoLingo_WPML_Adapter implements AutoLingo_Multilingual_Adapter {
             'ping_status'    => $source->ping_status,
             'menu_order'     => $source->menu_order,
             'post_parent'    => $source->post_parent,
-        ];
+        ] + autolingo_source_dates( $source );
 
         // Prevent autolingo_on_save_post from re-entering and trying to translate
         // the newly created translation (matching what autolingo_create_translation does).

@@ -56,7 +56,7 @@ class AutoLingo_Polylang_Adapter implements AutoLingo_Multilingual_Adapter {
             'ping_status'    => $source->ping_status,
             'menu_order'     => $source->menu_order,
             'post_parent'    => $source->post_parent,
-        ];
+        ] + autolingo_source_dates( $source );
 
         $new_id = autolingo_save_post( $postarr );
         if ( is_wp_error( $new_id ) || ! $new_id ) return 0;

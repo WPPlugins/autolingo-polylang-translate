@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.12.1
+Stable tag: 1.12.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -272,6 +272,9 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.12.2 =
+* A new translation keeps the publication date of its original. It used to be dated the day it was created, so a language added later listed old articles as the newest ones on the blog and the home page
 
 = 1.12.1 =
 * Premium: a "Write alt text (AutoLingo AI)" button next to the Alternative text field, in the media library's image details (grid view), on the media edit screen and in the media window of the block editor. It fills the field in place, so an image inserted right after carries the new text
