@@ -1894,3 +1894,19 @@ msgstr ""
 #: includes/alt-text.php
 msgid "Alternative text written."
 msgstr ""
+
+#. translators: %d: number of translations
+#: includes/bulk.php
+#, php-format
+msgid "%d translation dated the day it was created instead of its original’s publication date (old articles shown first on the blog)."
+msgid_plural "%d translations dated the day they were created instead of their original’s publication date (old articles shown first on the blog)."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/bulk.php
+msgid "Give them their original’s date"
+msgstr ""
+
+#: admin/settings.php
+msgid "Lists the translations dated the day they were created instead of their original’s publication date; without --dry-run, gives them the original’s date"
+msgstr ""

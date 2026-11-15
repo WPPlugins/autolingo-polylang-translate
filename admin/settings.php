@@ -736,6 +736,7 @@ function autolingo_settings_page_html(): void {
                 <tr><td><code>wp pdat translate-all</code></td><td><?php esc_html_e( 'Translates or updates all source posts', 'autolingo-polylang-translate' ); ?></td></tr>
                 <tr><td><code>wp pdat translate-menus</code></td><td><?php esc_html_e( 'Translates all nav menus (same as the button above)', 'autolingo-polylang-translate' ); ?></td></tr>
                 <tr><td><code>wp pdat translate-menus --menu=main-menu</code></td><td><?php esc_html_e( 'Translates one specific menu by slug', 'autolingo-polylang-translate' ); ?></td></tr>
+                <tr><td><code>wp pdat fix-dates --dry-run</code></td><td><?php esc_html_e( 'Lists the translations dated the day they were created instead of their original’s publication date; without --dry-run, gives them the original’s date', 'autolingo-polylang-translate' ); ?></td></tr>
                 <tr><td><code>wp pdat repair --dry-run</code></td><td><?php esc_html_e( 'Lists the translations with SEO fields or an address left in the source language; without --dry-run, translates them (the old address redirects)', 'autolingo-polylang-translate' ); ?></td></tr>
                 <tr><td><code>wp pdat duplicates</code></td><td><?php esc_html_e( 'Lists the duplicates linked to no original; --trash moves them to the trash', 'autolingo-polylang-translate' ); ?></td></tr>
                 <?php if ( function_exists( 'autolingo_assistant_turn' ) ) : ?>

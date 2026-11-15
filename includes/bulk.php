@@ -138,6 +138,43 @@ function autolingo_bulk_slug_untranslated( int $source_id, int $target_id ): boo
  *
  * @return array<int, array{source:int, lang:string, id:int, seo:array, slug:bool}>
  */
+/**
+ * Translations made by AutoLingo before 1.12.2 dated the day they were created instead of their original's
+ * publication date, so a blog listed by date showed old articles first in that language. Only the types listed
+ * by date (not pages), only translations AutoLingo made (the original carries its _autolingo_hash_<lang>), and
+ * only when the translation is dated after its published original: a date set on purpose is left alone.
+ *
+ * @return array<int, array{source: int, lang: string, id: int, date: string}>
+ */
+function autolingo_bulk_dates(): array {
+    $out = [];
+    foreach ( autolingo_bulk_translation_pairs() as [ $source_id, $lang, $id ] ) {
+        $type = get_post_type( $source_id );
+        if ( ! $type || is_post_type_hierarchical( $type ) ) continue;
+        if ( (string) get_post_meta( $source_id, '_autolingo_hash_' . $lang, true ) === '' ) continue;
+        $source = get_post( $source_id );
+        $copy   = get_post( $id );
+        if ( ! $source || ! $copy || $source->post_status !== 'publish' || $source->post_date_gmt === '0000-00-00 00:00:00' ) continue;
+        if ( $copy->post_date_gmt <= $source->post_date_gmt ) continue;
+        $out[] = [ 'source' => $source_id, 'lang' => $lang, 'id' => $id, 'date' => $copy->post_date ];
+    }
+    return $out;
+}
+
+/** Gives those translations their original's publication date. Returns how many were fixed. */
+function autolingo_bulk_fix_dates(): int {
+    global $wpdb;
+    $done = 0;
+    foreach ( autolingo_bulk_dates() as $d ) {
+        $source = get_post( $d['source'] );
+        // Direct update: wp_update_post() would run save_post and translate the post again.
+        $wpdb->update( $wpdb->posts, [ 'post_date' => $source->post_date, 'post_date_gmt' => $source->post_date_gmt ], [ 'ID' => $d['id'] ] ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- a date only, without the save hooks
+        clean_post_cache( $d['id'] );
+        $done++;
+    }
+    return $done;
+}
+
 function autolingo_bulk_repairs(): array {
     $out = [];
     foreach ( autolingo_bulk_translation_pairs() as [ $source_id, $lang, $id ] ) {
@@ -424,6 +461,9 @@ function autolingo_handle_bulk(): void {
         case 'repair':
             wp_send_json_success( autolingo_bulk_repair( AUTOLINGO_BULK_BUDGET, $exclude ) );
             break;
+        case 'dates':
+            wp_send_json_success( [ 'done' => autolingo_bulk_fix_dates(), 'remaining' => 0, 'failed' => [], 'error' => '' ] );
+            break;
         case 'duplicates':
             $done = 0;
             foreach ( autolingo_bulk_duplicates() as $id => $kept ) {
@@ -451,6 +491,7 @@ function autolingo_bulk_settings_section(): void {
     $seo     = count( array_filter( $repairs, static fn( array $r ): bool => (bool) $r['seo'] ) );
     $slugs   = count( array_filter( $repairs, static fn( array $r ): bool => $r['slug'] ) );
     $dupes   = autolingo_bulk_duplicates();
+    $dates   = count( autolingo_bulk_dates() );
 
     $rows = [
         'missing'    => [
@@ -472,6 +513,15 @@ function autolingo_bulk_settings_section(): void {
             ),
             __( 'Repair them', 'autolingo-polylang-translate' ),
             count( $repairs ),
+        ],
+        'dates'      => [
+            sprintf(
+                /* translators: %d: number of translations */
+                _n( '%d translation dated the day it was created instead of its original’s publication date (old articles shown first on the blog).', '%d translations dated the day they were created instead of their original’s publication date (old articles shown first on the blog).', $dates, 'autolingo-polylang-translate' ),
+                $dates
+            ),
+            __( 'Give them their original’s date', 'autolingo-polylang-translate' ),
+            $dates,
         ],
         'duplicates' => [
             sprintf(
@@ -586,6 +636,21 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
     }, [
         'shortdesc' => 'Translates the SEO fields and addresses that translations still have in the source language (the old address redirects).',
         'synopsis'  => [ [ 'type' => 'flag', 'name' => 'dry-run', 'optional' => true, 'description' => 'Lists the translations to repair.' ] ],
+    ] );
+
+    WP_CLI::add_command( 'pdat fix-dates', function ( array $args, array $assoc_args ): void {
+        $dates = autolingo_bulk_dates();
+        foreach ( $dates as $d ) {
+            WP_CLI::line( sprintf( '  #%d %s "%s" — %s → %s', $d['id'], strtoupper( $d['lang'] ), mb_substr( get_the_title( $d['id'] ), 0, 40 ), $d['date'], get_post_field( 'post_date', $d['source'] ) ) );
+        }
+        if ( isset( $assoc_args['dry-run'] ) ) {
+            WP_CLI::success( count( $dates ) . ' translation(s) to date. Dry run.' );
+            return;
+        }
+        WP_CLI::success( autolingo_bulk_fix_dates() . ' translation(s) now carry their original’s publication date.' );
+    }, [
+        'shortdesc' => 'Gives the translations AutoLingo dated the day they were created their original’s publication date.',
+        'synopsis'  => [ [ 'type' => 'flag', 'name' => 'dry-run', 'optional' => true, 'description' => 'Lists the translations to date.' ] ],
     ] );
 
     WP_CLI::add_command( 'pdat duplicates', function ( array $args, array $assoc_args ): void {

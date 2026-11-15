@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.12.2
+Stable tag: 1.12.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -221,6 +221,7 @@ On a new install, AutoLingo takes its source and target languages from Polylang 
 `wp pdat duplicates [--trash]` — list the posts of a target language linked to no original that duplicate a translation; `--trash` moves them to the trash
 `wp pdat review [--ids=] [--lang=] [--all] [--dry-run]` — (Premium) Lingo rereads the translations not reviewed yet, or changed since, and lists or fixes what it finds
 `wp pdat alt [--ids=] [--dry-run]` — (Premium) AutoLingo AI writes the alternative text of the images that have none
+`wp pdat fix-dates [--dry-run]` — gives the translations dated the day they were created their original's publication date
 `wp pdat ask "…"` — (Premium) asks Lingo, the assistant, in plain words; it answers and lists the actions it proposes, without running them
 `wp pdat translate-options` — translate ACF Options Page fields
 `wp pdat audit-acf` — list all translatable ACF fields
@@ -272,6 +273,9 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.12.3 =
+* Repair tool: the translations AutoLingo made before 1.12.2, dated the day they were created, get their original's publication date back (Settings → AutoLingo → Tools, or `wp pdat fix-dates`). Only AutoLingo's own translations of posts listed by date are changed
 
 = 1.12.2 =
 * A new translation keeps the publication date of its original. It used to be dated the day it was created, so a language added later listed old articles as the newest ones on the blog and the home page

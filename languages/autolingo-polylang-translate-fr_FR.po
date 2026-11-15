@@ -1892,3 +1892,19 @@ msgstr "AutoLingo AI regarde l’image…"
 #: includes/alt-text.php
 msgid "Alternative text written."
 msgstr "Texte alternatif écrit."
+
+#. translators: %d: number of translations
+#: includes/bulk.php
+#, php-format
+msgid "%d translation dated the day it was created instead of its original’s publication date (old articles shown first on the blog)."
+msgid_plural "%d translations dated the day they were created instead of their original’s publication date (old articles shown first on the blog)."
+msgstr[0] "%d traduction datée du jour de sa création au lieu de la date de publication de son original (anciens articles affichés en premier sur le blog)."
+msgstr[1] "%d traductions datées du jour de leur création au lieu de la date de publication de leur original (anciens articles affichés en premier sur le blog)."
+
+#: includes/bulk.php
+msgid "Give them their original’s date"
+msgstr "Leur donner la date de l’original"
+
+#: admin/settings.php
+msgid "Lists the translations dated the day they were created instead of their original’s publication date; without --dry-run, gives them the original’s date"
+msgstr "Liste les traductions datées du jour de leur création au lieu de la date de publication de leur original ; sans --dry-run, leur donne la date de l’original"
