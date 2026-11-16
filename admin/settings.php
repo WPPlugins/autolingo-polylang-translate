@@ -8,6 +8,44 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 add_action( 'admin_menu',             'autolingo_add_settings_page' );
 add_action( 'admin_init',             'autolingo_register_settings' );
 add_action( 'admin_init',             'autolingo_handle_pro_banner_dismiss' );
+/** The options holding a provider's API key. */
+const AUTOLINGO_KEY_OPTIONS = [ 'autolingo_api_key', 'autolingo_openai_api_key', 'autolingo_google_api_key', 'autolingo_deepseek_api_key', 'autolingo_microsoft_api_key' ];
+
+/**
+ * A saved API key is never written back into the page: the field stays empty, its placeholder
+ * shows the key's last four characters, and saving the form with it empty keeps the key
+ * (a "Delete" box removes it). Outside the settings form (WP-CLI, code) the value is taken as given.
+ */
+function autolingo_sanitize_api_key( string $option, $value ): string {
+    $value = sanitize_text_field( (string) $value );
+    // phpcs:disable WordPress.Security.NonceVerification.Missing -- options.php checked the settings nonce before sanitizing.
+    $from_form = isset( $_POST['option_page'] ) && sanitize_key( wp_unslash( $_POST['option_page'] ) ) === 'autolingo_settings_group';
+    if ( ! $from_form ) return $value;
+    if ( ! empty( $_POST[ $option . '_delete' ] ) ) return '';
+    // phpcs:enable
+    return trim( $value ) === '' ? (string) get_option( $option, '' ) : trim( $value );
+}
+
+/** The key field: empty, with the saved key's end as a placeholder and a box to delete it. */
+function autolingo_key_field( string $option, string $saved ): void {
+    $placeholder = $saved === ''
+        ? ''
+        /* translators: %s: last four characters of the saved key */
+        : sprintf( __( 'Saved key ending in %s. Leave empty to keep it.', 'autolingo-polylang-translate' ), substr( $saved, -4 ) );
+    printf(
+        '<input type="password" name="%1$s" value="" placeholder="%2$s" class="regular-text" autocomplete="new-password">',
+        esc_attr( $option ),
+        esc_attr( $placeholder )
+    );
+    if ( $saved !== '' ) {
+        printf(
+            ' <label><input type="checkbox" name="%1$s_delete" value="1"> %2$s</label>',
+            esc_attr( $option ),
+            esc_html__( 'Delete', 'autolingo-polylang-translate' )
+        );
+    }
+}
+
 add_action( 'admin_post_autolingo_translate_menus', 'autolingo_handle_translate_menus' );
 add_action( 'admin_notices',          'autolingo_pro_banner' );
 add_action( 'admin_enqueue_scripts',  'autolingo_settings_enqueue' );
@@ -143,11 +181,9 @@ function autolingo_add_settings_page(): void {
 
 function autolingo_register_settings(): void {
     register_setting( 'autolingo_settings_group', 'autolingo_provider',        [ 'sanitize_callback' => 'sanitize_text_field' ] );
-    register_setting( 'autolingo_settings_group', 'autolingo_api_key',         [ 'sanitize_callback' => 'sanitize_text_field' ] );
-    register_setting( 'autolingo_settings_group', 'autolingo_openai_api_key',  [ 'sanitize_callback' => 'sanitize_text_field' ] );
-    register_setting( 'autolingo_settings_group', 'autolingo_google_api_key',  [ 'sanitize_callback' => 'sanitize_text_field' ] );
-    register_setting( 'autolingo_settings_group', 'autolingo_deepseek_api_key', [ 'sanitize_callback' => 'sanitize_text_field' ] );
-    register_setting( 'autolingo_settings_group', 'autolingo_microsoft_api_key', [ 'sanitize_callback' => 'sanitize_text_field' ] );
+    foreach ( AUTOLINGO_KEY_OPTIONS as $key_option ) {
+        register_setting( 'autolingo_settings_group', $key_option, [ 'sanitize_callback' => static fn( $value ): string => autolingo_sanitize_api_key( $key_option, $value ) ] );
+    }
     register_setting( 'autolingo_settings_group', 'autolingo_microsoft_region', [ 'sanitize_callback' => 'sanitize_text_field' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_fallback',         [ 'sanitize_callback' => 'absint', 'default' => 1 ] );
     register_setting( 'autolingo_settings_group', 'autolingo_source_lang',     [ 'sanitize_callback' => 'sanitize_text_field' ] );
@@ -574,7 +610,7 @@ function autolingo_settings_page_html(): void {
                                 : ' <span style="color:#2271b1">✓ Pro</span>';
                         }
                         ?>
-                        <input type="password" name="autolingo_api_key" value="<?php echo esc_attr( $deepl_key ); ?>" class="regular-text" autocomplete="off"><?php echo $plan_badge; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- hardcoded HTML spans, no user input. ?>
+                        <?php autolingo_key_field( 'autolingo_api_key', $deepl_key ); ?><?php echo $plan_badge; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- hardcoded HTML spans, no user input. ?>
                         <p class="description">
                             <?php printf(
                                 /* translators: %s: code suffix :fx */
@@ -588,7 +624,7 @@ function autolingo_settings_page_html(): void {
                 <tr class="autolingo-key-row" id="autolingo-key-openai">
                     <th scope="row"><?php esc_html_e( 'OpenAI API Key', 'autolingo-polylang-translate' ); ?></th>
                     <td>
-                        <input type="password" name="autolingo_openai_api_key" value="<?php echo esc_attr( $openai_key ); ?>" class="regular-text" autocomplete="off">
+                        <?php autolingo_key_field( 'autolingo_openai_api_key', $openai_key ); ?>
                         <p class="description">
                             <?php esc_html_e( 'Uses gpt-4o-mini. Billed per token on your OpenAI account.', 'autolingo-polylang-translate' ); ?>
                             <a href="https://platform.openai.com/api-keys" target="_blank"><?php esc_html_e( 'Get a key →', 'autolingo-polylang-translate' ); ?></a>
@@ -598,7 +634,7 @@ function autolingo_settings_page_html(): void {
                 <tr class="autolingo-key-row" id="autolingo-key-google">
                     <th scope="row"><?php esc_html_e( 'Google API Key', 'autolingo-polylang-translate' ); ?></th>
                     <td>
-                        <input type="password" name="autolingo_google_api_key" value="<?php echo esc_attr( $google_key ); ?>" class="regular-text" autocomplete="off">
+                        <?php autolingo_key_field( 'autolingo_google_api_key', $google_key ); ?>
                         <p class="description">
                             <?php esc_html_e( 'Cloud Translation API v2 (Basic). Enable it in your Google Cloud project.', 'autolingo-polylang-translate' ); ?>
                             <a href="https://console.cloud.google.com/apis/library/translate.googleapis.com" target="_blank"><?php esc_html_e( 'Enable API →', 'autolingo-polylang-translate' ); ?></a>
@@ -608,7 +644,7 @@ function autolingo_settings_page_html(): void {
                 <tr class="autolingo-key-row" id="autolingo-key-deepseek">
                     <th scope="row"><?php esc_html_e( 'DeepSeek API Key', 'autolingo-polylang-translate' ); ?></th>
                     <td>
-                        <input type="password" name="autolingo_deepseek_api_key" value="<?php echo esc_attr( $deepseek_key ); ?>" class="regular-text" autocomplete="off">
+                        <?php autolingo_key_field( 'autolingo_deepseek_api_key', $deepseek_key ); ?>
                         <p class="description">
                             <?php esc_html_e( 'Uses deepseek-chat. Billed per token on your DeepSeek account.', 'autolingo-polylang-translate' ); ?>
                             <a href="https://platform.deepseek.com/api_keys" target="_blank"><?php esc_html_e( 'Get a key →', 'autolingo-polylang-translate' ); ?></a>
@@ -618,7 +654,7 @@ function autolingo_settings_page_html(): void {
                 <tr class="autolingo-key-row" id="autolingo-key-microsoft">
                     <th scope="row"><?php esc_html_e( 'Microsoft Translator Key', 'autolingo-polylang-translate' ); ?></th>
                     <td>
-                        <input type="password" name="autolingo_microsoft_api_key" value="<?php echo esc_attr( $microsoft_key ); ?>" class="regular-text" autocomplete="off">
+                        <?php autolingo_key_field( 'autolingo_microsoft_api_key', $microsoft_key ); ?>
                         <p class="description">
                             <?php esc_html_e( 'Azure AI Translator resource key. The free tier (F0) includes 2,000,000 characters a month.', 'autolingo-polylang-translate' ); ?>
                             <a href="https://portal.azure.com/#create/Microsoft.CognitiveServicesTextTranslation" target="_blank"><?php esc_html_e( 'Get a key →', 'autolingo-polylang-translate' ); ?></a>

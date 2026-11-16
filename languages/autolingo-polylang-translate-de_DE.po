@@ -1908,3 +1908,12 @@ msgstr "Ihnen das Datum des Originals geben"
 #: admin/settings.php
 msgid "Lists the translations dated the day they were created instead of their original’s publication date; without --dry-run, gives them the original’s date"
 msgstr "Listet die Übersetzungen mit dem Datum ihrer Erstellung statt dem Veröffentlichungsdatum ihres Originals; ohne --dry-run erhalten sie das Datum des Originals"
+
+#: admin/settings.php
+#. translators: %s: last four characters of the saved key
+msgid "Saved key ending in %s. Leave empty to keep it."
+msgstr "Gespeicherter Schlüssel endet auf %s. Leer lassen, um ihn zu behalten."
+
+#: admin/settings.php
+msgid "Delete"
+msgstr "Löschen"

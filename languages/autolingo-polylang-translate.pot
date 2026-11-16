@@ -1910,3 +1910,12 @@ msgstr ""
 #: admin/settings.php
 msgid "Lists the translations dated the day they were created instead of their original’s publication date; without --dry-run, gives them the original’s date"
 msgstr ""
+
+#: admin/settings.php
+#. translators: %s: last four characters of the saved key
+msgid "Saved key ending in %s. Leave empty to keep it."
+msgstr ""
+
+#: admin/settings.php
+msgid "Delete"
+msgstr ""

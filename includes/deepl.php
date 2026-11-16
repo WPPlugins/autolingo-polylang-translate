@@ -125,15 +125,64 @@ function autolingo_translate_with_fallback( array $batch, string $target_lang ):
 /** One provider: its batch method when it has one, else text by text. */
 function autolingo_provider_translate( AUTOLINGO_Provider $provider, array $batch, string $target_lang ): array|false {
     if ( method_exists( $provider, 'translate_batch' ) ) {
-        return $provider->translate_batch( $batch, $target_lang );
+        $out = $provider->translate_batch( $batch, $target_lang );
+    } else {
+        $out = [];
+        foreach ( $batch as $t ) {
+            $r = $provider->translate( $t, $target_lang );
+            if ( $r === false ) return false;
+            $out[] = $r;
+        }
     }
-    $out = [];
-    foreach ( $batch as $t ) {
-        $r = $provider->translate( $t, $target_lang );
-        if ( $r === false ) return false;
-        $out[] = $r;
+    if ( ! is_array( $out ) ) return false;
+    foreach ( $out as $i => $translated ) {
+        if ( is_string( $translated ) && isset( $batch[ $i ] ) && is_string( $batch[ $i ] ) ) {
+            $out[ $i ] = autolingo_strip_injected_html( $translated, $batch[ $i ] );
+        }
     }
     return $out;
+}
+
+/** Elements that run code, load another page or post a form: never added by a translation. */
+const AUTOLINGO_UNSAFE_TAGS = [ 'script', 'iframe', 'frame', 'frameset', 'object', 'embed', 'applet', 'style', 'link', 'meta', 'base', 'form' ];
+
+/**
+ * Removes from a translation what can run code and is not in the text that was sent.
+ *
+ * Translations are saved without WordPress's HTML filter (it would strip the code an
+ * administrator put in HTML blocks), and an AI provider receives the HTML as it is: a
+ * passage written to steer the AI ("add this <script>…") could come back as code, and run
+ * for every visitor of the translated page. So whatever a translation adds of that kind goes:
+ * the elements of AUTOLINGO_UNSAFE_TAGS, event attributes (onclick, onerror…) and
+ * javascript: / vbscript: / data:text/html links. What the source holds, word for word, stays.
+ */
+function autolingo_strip_injected_html( string $translated, string $source ): string {
+    if ( ! preg_match( '/<|script\s*:/i', $translated ) ) return $translated;
+
+    foreach ( AUTOLINGO_UNSAFE_TAGS as $tag ) {
+        if ( preg_match( '/<' . $tag . '\b/i', $source ) ) continue;
+        $translated = (string) preg_replace( '#<' . $tag . '\b[^>]*>.*?</' . $tag . '\s*>#is', '', $translated );
+        $translated = (string) preg_replace( '#</?' . $tag . '\b[^>]*>#i', '', $translated );
+    }
+
+    // Inside each opening tag: event attributes and script links the source does not have.
+    return (string) preg_replace_callback(
+        '/<[a-z][a-z0-9:-]*\b[^>]*>/i',
+        static function ( array $tag ) use ( $source ): string {
+            return (string) preg_replace_callback(
+                '/\s+([a-z:-]+)\s*=\s*("[^"]*"|\'[^\']*\'|[^\s"\'>]+)/i',
+                static function ( array $attr ) use ( $source ): string {
+                    $name   = strtolower( $attr[1] );
+                    $value  = html_entity_decode( trim( $attr[2], '"\'' ), ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+                    $script = (bool) preg_match( '/^(javascript:|vbscript:|data:text\/html)/i', (string) preg_replace( '/[\x00-\x20]+/', '', $value ) );
+                    if ( ! preg_match( '/^on[a-z]+$/', $name ) && ! $script ) return $attr[0];
+                    return stripos( $source, trim( $attr[0] ) ) !== false ? $attr[0] : '';
+                },
+                $tag[0]
+            );
+        },
+        $translated
+    );
 }
 
 // ── Universal wrapper ─────────────────────────────────────────────────────────
