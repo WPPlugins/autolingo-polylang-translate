@@ -58,6 +58,7 @@ function autolingo_source_content_hash( WP_Post $post ): string {
 function autolingo_translate_post( int $post_id ): bool {
     $post = get_post( $post_id );
     if ( ! $post ) return false;
+    autolingo_extend_time_limit();
 
     if ( ! autolingo_multilingual() ) {
         autolingo_log_error( 'Traduction annulée : aucun plugin multilingue détecté (Polylang ou WPML requis).', [], $post_id );

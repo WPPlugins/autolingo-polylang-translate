@@ -137,6 +137,25 @@ function autolingo_auto_translate_enabled(): bool {
 }
 
 /**
+ * Gives a translation time to finish. A long page sends several requests to the provider, each of
+ * which may take tens of seconds; on hosts with PHP's default 30-second limit the request died
+ * mid-translation ("Maximum execution time of 30 seconds exceeded" in Requests' Curl transport).
+ * Raises the limit to $seconds (never lowers it: 0 = unlimited stays unlimited) where the host
+ * allows set_time_limit(), and keeps the work going if the browser gives up waiting.
+ */
+function autolingo_extend_time_limit( int $seconds = 300 ): void {
+    $current = (int) ini_get( 'max_execution_time' );
+    if ( $current === 0 || $current >= $seconds ) return;
+    $disabled = array_map( 'trim', explode( ',', (string) ini_get( 'disable_functions' ) ) );
+    if ( function_exists( 'set_time_limit' ) && ! in_array( 'set_time_limit', $disabled, true ) ) {
+        set_time_limit( $seconds ); // phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged -- a long translation needs more than PHP's default 30 s.
+    }
+    if ( function_exists( 'ignore_user_abort' ) && ! in_array( 'ignore_user_abort', $disabled, true ) ) {
+        ignore_user_abort( true );
+    }
+}
+
+/**
  * La traduction asynchrone (WP-Cron) est-elle activée ?
  */
 function autolingo_async_enabled(): bool {

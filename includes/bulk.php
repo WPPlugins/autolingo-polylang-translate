@@ -40,6 +40,7 @@ function autolingo_bulk_missing(): array {
  * @return array{done:int, remaining:int, failed:string[], error:string}
  */
 function autolingo_bulk_translate_missing( float $budget, array $exclude = [] ): array {
+    autolingo_extend_time_limit();
     $start  = microtime( true );
     $result = [ 'done' => 0, 'remaining' => 0, 'failed' => [], 'error' => '' ];
     $skip   = array_flip( $exclude );
@@ -308,6 +309,7 @@ function autolingo_bulk_fix_seo( int $id, string $lang, array $fields ): int {
  * @return array{done:int, remaining:int, failed:string[], error:string}
  */
 function autolingo_bulk_repair( float $budget, array $exclude = [] ): array {
+    autolingo_extend_time_limit();
     $start  = microtime( true );
     $result = [ 'done' => 0, 'remaining' => 0, 'failed' => [], 'error' => '' ];
     $skip   = array_flip( $exclude );

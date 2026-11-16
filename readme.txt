@@ -4,7 +4,7 @@ Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.12.3
+Stable tag: 1.12.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -273,6 +273,9 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.12.4 =
+* Long pages no longer stop with "Maximum execution time of 30 seconds exceeded": while it translates, AutoLingo gives PHP up to 5 minutes where the host allows it, and finishes the work even if the browser stops waiting
 
 = 1.12.3 =
 * Repair tool: the translations AutoLingo made before 1.12.2, dated the day they were created, get their original's publication date back (Settings → AutoLingo → Tools, or `wp pdat fix-dates`). Only AutoLingo's own translations of posts listed by date are changed

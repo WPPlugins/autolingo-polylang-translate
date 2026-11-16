@@ -63,6 +63,7 @@ function autolingo_translate_all_menus(): array {
  * @return array{menu:string, lang:string, menu_id:int, items:int, error:string}
  */
 function autolingo_translate_menu_to_lang( WP_Term $source_menu, string $lang_slug ): array {
+    autolingo_extend_time_limit();
     $result = [
         'menu'    => $source_menu->name,
         'lang'    => $lang_slug,
