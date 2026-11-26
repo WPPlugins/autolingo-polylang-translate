@@ -3,7 +3,8 @@
  * WPML adapter — wraps the wpml_* filter/action public API.
  *
  * Uses only the documented WPML String Translation / Multilingual CMS API
- * (apply_filters / do_action), never direct DB queries or internal classes.
+ * (apply_filters / do_action), never direct DB queries or internal classes,
+ * except mark_translation_current(), which has no public equivalent.
  * Requires WPML 4.0+.
  *
  * Language codes: WPML codes can carry a region or script (en-us, pt-br,
@@ -124,7 +125,7 @@ class AutoLingo_WPML_Adapter implements AutoLingo_Multilingual_Adapter {
         // We create the post normally and then link it via save_post_translations().
         $postarr = [
             'post_author'    => $source->post_author,
-            'post_status'    => 'publish',
+            'post_status'    => autolingo_new_translation_status( $source->post_type ),
             'post_type'      => $source->post_type,
             'post_title'     => $data['title']   ?? $source->post_title,
             'post_content'   => $data['content'] ?? $source->post_content,
@@ -133,7 +134,7 @@ class AutoLingo_WPML_Adapter implements AutoLingo_Multilingual_Adapter {
             'ping_status'    => $source->ping_status,
             'menu_order'     => $source->menu_order,
             'post_parent'    => $source->post_parent,
-        ];
+        ] + autolingo_source_dates( $source );
 
         // Prevent autolingo_on_save_post from re-entering and trying to translate
         // the newly created translation (matching what autolingo_create_translation does).
@@ -148,6 +149,35 @@ class AutoLingo_WPML_Adapter implements AutoLingo_Multilingual_Adapter {
         $this->save_post_translations( $source->ID, $new_id, $lang_slug, $source_lang );
 
         return $new_id;
+    }
+
+    /**
+     * WPML compares the source's checksum with the one in the translation's status
+     * row each time the source is saved; a translation made outside WPML has no row,
+     * so the block editor's second save (meta boxes) flagged every new translation
+     * "needs update". WPML has no public hook for this: its translation management
+     * object and checksum helper are used when present, as WPML does for its own
+     * baseline rows (status complete, service "local").
+     */
+    public function mark_translation_current( int $source_id, int $translated_id ): void {
+        global $iclTranslationManagement;
+        if ( ! class_exists( 'WPML_TM_Action_Helper' ) || ! is_object( $iclTranslationManagement )
+            || ! method_exists( $iclTranslationManagement, 'update_translation_status' ) ) return;
+
+        $type = 'post_' . get_post_type( $source_id );
+        $trid = apply_filters( 'wpml_element_trid', null, $source_id, $type );
+        if ( ! $trid ) return;
+
+        foreach ( (array) apply_filters( 'wpml_get_element_translations', [], $trid, $type ) as $translation ) {
+            if ( (int) ( $translation->element_id ?? 0 ) !== $translated_id || empty( $translation->translation_id ) ) continue;
+            $iclTranslationManagement->update_translation_status( [
+                'translation_id'      => (int) $translation->translation_id,
+                'status'              => defined( 'ICL_TM_COMPLETE' ) ? ICL_TM_COMPLETE : 10,
+                'needs_update'        => 0,
+                'md5'                 => ( new WPML_TM_Action_Helper() )->post_md5( $source_id ),
+                'translation_service' => 'local',
+            ] );
+        }
     }
 
     // ── Look-ups ──────────────────────────────────────────────────────────────

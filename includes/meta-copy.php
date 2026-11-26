@@ -54,9 +54,12 @@ function autolingo_copy_post_meta( int $source_id, int $target_id ): void {
         // Effacer les éventuelles valeurs existantes sur le post cible
         delete_post_meta( $target_id, $key );
 
-        // Copier chaque valeur (get_post_meta renvoie déjà les valeurs désérialisées)
+        // get_post_meta() without a key returns the values as stored, still serialized:
+        // unserialize them, or add_post_meta() serializes them a second time (an ACF link,
+        // a theme's settings array… read back as a string). add_post_meta() also unslashes
+        // what it gets: slash it, or JSON and other texts with backslashes lose them.
         foreach ( $values as $value ) {
-            add_post_meta( $target_id, $key, $value );
+            add_post_meta( $target_id, $key, wp_slash( maybe_unserialize( $value ) ) );
         }
     }
 }
@@ -114,4 +117,37 @@ function autolingo_copy_meta_excluded_prefixes(): array {
         '_wpml_',         // WPML internal
         '_oembed_',       // oEmbed cache
     ] );
+}
+
+/**
+ * WPBakery's page settings, the same in every language: which editor the page opens in
+ * (_wpb_vc_js_status, 'true' = WPBakery's), the design CSS built from the elements' css=""
+ * settings, the page's own CSS / JS and layout. Copied from the source after every translation,
+ * not only when it is created: WPBakery writes them in save_post from the edit form
+ * (Vc_Post_Admin::setPostMeta(), WPBakery 7.9), so a translation saved by AutoLingo with no form
+ * lost the editor status (opened in the block editor) when an admin clicked Translate, and kept
+ * an old design CSS after an update made in the background.
+ */
+const AUTOLINGO_WPBAKERY_PAGE_META = [
+    '_wpb_vc_js_status',
+    '_wpb_shortcodes_custom_css',
+    '_wpb_shortcodes_default_css',
+    '_wpb_post_custom_css',
+    '_wpb_post_custom_js_header',
+    '_wpb_post_custom_js_footer',
+    '_wpb_post_custom_layout',
+];
+
+add_action( 'autolingo_translated', 'autolingo_wpbakery_sync_page_meta', 15, 2 );
+
+function autolingo_wpbakery_sync_page_meta( WP_Post $source, int $target_id ): void {
+    if ( ! defined( 'WPB_VC_VERSION' ) ) return;
+    foreach ( AUTOLINGO_WPBAKERY_PAGE_META as $key ) {
+        $value = get_post_meta( $source->ID, $key, true );
+        if ( '' === $value || false === $value ) {
+            delete_post_meta( $target_id, $key );
+        } else {
+            update_post_meta( $target_id, $key, wp_slash( $value ) );
+        }
+    }
 }

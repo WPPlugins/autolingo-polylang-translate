@@ -2,9 +2,9 @@
 Contributors: delsuza
 Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
-Tested up to: 7.1
+Tested up to: 7.2
 Requires PHP: 8.0
-Stable tag: 1.4.8
+Stable tag: 1.13.10
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,11 +19,11 @@ https://www.youtube.com/watch?v=cZiq3PXC2-w
 **The free version includes**
 
 * All five providers, with automatic fallback when a quota runs out: about 3,000,000 free characters a month with free DeepL, Google and Microsoft accounts
-* Translation on publish, a Translate link in the post list and the editor, and bulk translation with WP-CLI
+* Translation on publish, a Translate link in the post list and the editor, and the whole site in one click from the admin (or with WP-CLI)
 * Categories, tags, menus and image alt text, not just posts
 * Gutenberg, the Classic Editor and shortcode builders (Divi, WPBakery, Flatsome)
 
-**AutoLingo Pro** adds Elementor, Bricks and Beaver Builder, SEO meta (Yoast, RankMath, SEOPress, The SEO Framework), ACF fields and WooCommerce, plus AutoLingo AI with no API key.
+**AutoLingo Pro** adds Elementor, Bricks and Beaver Builder, Divi (module texts and Theme Builder), Contact Form 7, SEO meta (Yoast, RankMath, SEOPress, The SEO Framework), ACF fields and WooCommerce, plus AutoLingo AI with no API key. Try it free for 14 days, no card needed.
 
 <a href="https://wphealthkit.com/directory/autolingo-polylang-translate"><img src="https://wphealthkit.com/api/badge/autolingo-polylang-translate" alt="Autolingo Polylang Translate security audit by WP HealthKit" /></a>
 
@@ -31,7 +31,9 @@ https://www.youtube.com/watch?v=cZiq3PXC2-w
 
 * Translate Gutenberg content (title, blocks, excerpt) on publish or manually
 * Manual translate button in the post editor and post list
-* Bulk translation via WP-CLI (`translate-missing`, `translate-all`)
+* Translate the whole site from Settings → AutoLingo → Tools: one button creates every missing translation, a few seconds per request so that no host or cache time limit stops it, with no shell access needed (or `wp pdat translate-missing`, `translate-all`)
+* Review before publishing: new translations can be published right away, saved as drafts, or left pending review; updates keep the status a translation has
+* Repair tools: translations whose address is still the original's get one from their translated title, and the old address redirects to the new one; duplicates linked to no original are listed and can be moved to the trash, the translation kept getting its clean address back (`wp pdat repair`, `wp pdat duplicates`)
 * Nav menu translation (Polylang and WPML)
 * Five providers: DeepL (Free and Pro, auto-detected from the `:fx` key suffix), Google Translate, Microsoft Translator, OpenAI and DeepSeek
 * Automatic fallback: when the selected provider runs out of quota, the next one that has a key translates — free DeepL, Google and Microsoft accounts add up to about 3,000,000 characters a month
@@ -42,16 +44,44 @@ https://www.youtube.com/watch?v=cZiq3PXC2-w
 * Image alt and title text inside your content (Gutenberg images, HTML) translated in the same call as the rest
 * Context-aware: the provider is told what it translates (blog post, page, product, category, menu item) for better short texts
 * Post meta copy on creation (theme settings, page templates, layout options)
-* Shortcode-based builders (Divi, WPBakery, Flatsome) — shortcodes preserved verbatim
+* Shortcode-based builders (Divi, WPBakery, Avada, Flatsome) — the text between shortcodes is translated, the shortcodes are preserved verbatim
 
 = Features (Pro) =
 
 [AutoLingo Pro](https://auto-lingo.com) adds:
 
-* Page builder support: Elementor, Beaver Builder, Bricks Builder
+* Page builder support: Elementor, Beaver Builder, Bricks Builder, Breakdance
+* WPBakery and Avada: the texts in element settings (button labels, tab and accordion titles, headings, form labels)
+* Divi 4 and Divi 5, DiviFlash: the texts in module settings (button labels, titles, headings, alt text); Theme Builder layouts and menu modules follow each page's language
+* Contact Form 7: labels, submit button, placeholders, visitor messages and auto-reply translated; each page shows the form of its language
 * SEO meta translation: Yoast SEO, RankMath, SEOPress, The SEO Framework
 * ACF field translation: text, textarea, wysiwyg, link, repeater, flexible content
-* WooCommerce: custom product attributes and purchase note
+* WooCommerce: product attributes, variations and purchase note; without Polylang for WooCommerce or WooCommerce Multilingual, prices, linked products and stock follow the source
+* Theme and plugin strings: Polylang's Languages → Translations or WPML String Translation (site title, widgets, cookie banner, plugin texts)
+* Lingo, the review agent: rereads each translation next to its original, like a proofreader, fixes what it is sure about and lists the rest
+* Lingo, the assistant: ask in your own words ("translate my products into Spanish as drafts"), from any admin page; Lingo looks at the site and proposes the actions, which run only when you confirm them
+
+= Lingo, the review agent (Pro) =
+
+Machine translation is fast, not flawless: a price or an opening time that changes, a sentence left in the original language, a brand name translated word for word. After each translation, Lingo rereads it next to its original, the title, excerpt, content passage by passage, Elementor, Bricks and Beaver Builder texts, and SEO fields, and checks the meaning, numbers and names, passages left untranslated, your glossary, grammar, fluency and the tone you chose.
+
+* "List the points to check": each point shows the passage, a suggestion and why, with Apply and Ignore buttons in the editor; a point you ignore does not come back
+* "Fix the sure ones, list the others": the corrections any professional would make are applied for you
+* Translations created as drafts can be published once Lingo finds nothing to check
+* The whole site at once from Settings → AutoLingo → Tools, or `wp pdat review`
+* Reviews with AutoLingo AI (no key, on the same monthly credit)
+
+Pages built with Elementor, Bricks or Beaver Builder are reread text by text, and a fix is written back into the builder's own data (Beaver Builder global modules, shared between pages, are left alone).
+
+= Lingo, the assistant (Pro) =
+
+Settings → AutoLingo → Lingo is a chat: say what you want, in your language. Lingo looks at the site (what is missing, a page by its title, the review points) and answers with real numbers, then proposes the actions: translate what is missing, by content type, language and status; translate pages again; repair translations; move duplicates to the trash; have translations reread; translate menus and theme strings; change a setting; add a glossary term.
+
+* Nothing changes until you confirm: each proposal is a card with Confirm and Cancel, and the card says what will run, written by AutoLingo from the action itself, not by the AI
+* Site content is treated as data: text written for an AI in a title or a page is detected, Lingo warns you, and actions that delete or change settings are not proposed after reading it
+* Every confirmed action goes to the AutoLingo log (who, what, when; the previous value of a changed setting); at most 40 messages an hour per person
+* With AutoLingo AI, on the same monthly credit as translation (no key); Lingo never uses another AI
+* One click away on every admin page: a Lingo item in the top bar and a Lingo bubble in the corner open the chat in a panel (the bubble can be turned off); the conversation stays in your browser tab
 
 = Page builder support (Pro) =
 
@@ -59,7 +89,7 @@ https://www.youtube.com/watch?v=cZiq3PXC2-w
 * **Beaver Builder** — `_fl_builder_data` (serialized PHP), global nodes skipped
 * **Bricks Builder** — `_bricks_page_content_2` (JSON), nested items (accordion, tabs)
 
-Shortcode-based builders (Divi, WPBakery, Flatsome) are supported on the free plan — their shortcodes are preserved verbatim during translation.
+Shortcode-based builders (Divi, WPBakery, Avada, Flatsome) are supported on the free plan — the text between shortcodes is translated and the shortcodes are preserved verbatim. With AutoLingo Pro, the texts kept in WPBakery and Avada element settings and in Divi and DiviFlash module settings (button labels, tab, toggle and blurb titles, headings, image alt text) are translated too, and Theme Builder layouts follow each page's language; colours, sizes, links and other settings are left as they are.
 
 = SEO plugin support (Pro) =
 
@@ -68,6 +98,7 @@ Shortcode-based builders (Divi, WPBakery, Flatsome) are supported on the free pl
 * SEOPress — title, description
 * The SEO Framework — title, description
 * SEO template variables (`%%title%%`, `%sep%`, `%sitename%`…) are preserved automatically
+* Translations whose SEO title or description stayed in the source language (copied by hand, or translated before the SEO module was on) are found and translated in Settings → AutoLingo → Tools or with `wp pdat repair`
 
 = ACF (Pro) =
 
@@ -75,14 +106,23 @@ Translates `text`, `textarea`, `wysiwyg`, and `link` (title only) fields, includ
 
 = WooCommerce (Pro) =
 
-Translates custom product attributes (name + pipe-separated values) and the purchase note. Price, stock, and SKU are never modified.
+Translates custom product attributes (name + pipe-separated values), variation descriptions and the purchase note.
+
+Without Polylang for WooCommerce or WooCommerce Multilingual (which keep translated products in sync themselves), AutoLingo makes each translation sellable like its source: same product type, prices and sale dates, tax, stock and shipping settings, images and downloads; one variation per source variation, with its attributes pointing at the translated ones; upsells, cross-sells and grouped products pointing at their translations. Saving the source updates its translations, and the stock is shared: a sale, a refund or an edit in any language sets the same stock everywhere. The SKU is never copied, as WooCommerce wants it unique. For products translated before, `wp pdat sync-products` brings the whole catalogue in line without translating the texts again (`--dry-run`, `--ids=`, `--lang=`).
+
+= Theme and plugin strings (Pro) =
+
+Themes and plugins declare their interface texts for translation: site title and tagline, widgets, footer and header texts, cookie banner, e-mail templates. Settings → AutoLingo → Tools fills in the missing translations, language by language, or `wp pdat translate-strings` does it from the command line. Translations already entered are never changed; date and time formats, addresses and placeholders such as `%s` or `{title}` are kept as they are.
+
+* **Polylang** — the strings of Languages → Translations.
+* **WPML** — the strings of WPML String Translation (version 5 or later), each translated from the language it is written in and marked complete. You pick the domains to translate; those of installed plugins and themes, which their own .mo files translate, are left out by default (`wp pdat translate-strings --list-domains`, `--domains=`).
 
 = Reliability =
 
 * Exponential back-off retry on HTTP 429 (rate limit): 2 s → 4 s → 8 s, up to 3 retries
 * Dual lock (static + transient) prevents duplicate translations on Gutenberg REST saves
 * Translation log viewer in the admin (DB-backed, 30-day retention)
-* Integration test suite — 41 tests covering all modules
+* Integration test suite — 54 tests covering all modules
 
 == External Services ==
 
@@ -180,14 +220,22 @@ On a new install, AutoLingo takes its source and target languages from Polylang 
 `wp pdat translate-missing --dry-run` — simulate without creating anything
 `wp pdat translate-missing` — translate only missing translations
 `wp pdat translate-all` — translate or update all source posts
+`wp pdat repair --dry-run` — list the translations with SEO fields or an address left in the source language; without `--dry-run`, translate them (the old address redirects)
+`wp pdat duplicates [--trash]` — list the posts of a target language linked to no original that duplicate a translation; `--trash` moves them to the trash
+`wp pdat review [--ids=] [--lang=] [--all] [--dry-run]` — (Premium) Lingo rereads the translations not reviewed yet, or changed since, and lists or fixes what it finds
+`wp pdat alt [--ids=] [--dry-run]` — (Premium) AutoLingo AI writes the alternative text of the images that have none
+`wp pdat fix-dates [--dry-run]` — gives the translations dated the day they were created their original's publication date
+`wp pdat ask "…"` — (Premium) asks Lingo, the assistant, in plain words; it answers and lists the actions it proposes, without running them
 `wp pdat translate-options` — translate ACF Options Page fields
 `wp pdat audit-acf` — list all translatable ACF fields
 
 == Screenshots ==
 
-1. Settings page — choose your translation provider (DeepL, Google, Microsoft, OpenAI, DeepSeek), API keys, source and target languages, and which modules to enable.
-2. Post list — one-click translate action link next to each source-language post.
-3. Dashboard widget — translation coverage per language, estimated time and money saved vs. a translation agency, and remaining API credit at a glance.
+1. Settings, Provider tab: choose DeepL, Google, Microsoft, OpenAI or DeepSeek, paste your key, and see the remaining credit. The settings are split into tabs: Provider, Languages & content, Modules, Glossary & memory, Tools, WP-CLI.
+2. Post list: the translation status of each post per language, and a one-click Translate link next to each source-language post.
+3. Dashboard widget: translation coverage per language, estimated time and money saved, and remaining credit at a glance.
+4. Tools tab: translate what is missing on the whole site, repair translations and duplicates, translate navigation menus, and (Premium) the theme and plugin strings of Polylang's Languages → Translations, language by language.
+5. Languages & content tab: source and target languages, content types, automatic translation on publish, and background translation for long posts.
 
 == Frequently Asked Questions ==
 
@@ -205,7 +253,7 @@ AutoLingo only translates posts written in the source language set under **Setti
 
 = Does the free version translate Elementor pages? =
 
-No. Elementor, Beaver Builder and Bricks content is translated by AutoLingo Pro. Gutenberg, the Classic Editor and shortcode builders (Divi, WPBakery, Flatsome) are translated by the free version.
+No. Elementor, Beaver Builder and Bricks content is translated by AutoLingo Pro. Gutenberg, the Classic Editor and shortcode builders (Divi, WPBakery, Flatsome) are translated by the free version; Divi's module settings and Theme Builder layouts need AutoLingo Pro.
 
 = Does it work with Polylang free or only Polylang Pro? =
 
@@ -217,7 +265,17 @@ No translation you edited by hand is overwritten: when the source post changes, 
 
 = Are shortcodes translated? =
 
-No. Shortcodes (`[contact-form-7 …]`, `[vc_row]`, Divi modules, etc.) are replaced by neutral placeholders before sending to the translation API and restored verbatim in the output. This protection applies to all five providers (DeepL, Google Translate, Microsoft Translator, OpenAI, DeepSeek). SEO template variables (`%%title%%`, `%sep%`) are also preserved automatically.
+No. Shortcodes (`[contact-form-7 …]`, `[vc_row]`, Divi modules, etc.) are replaced by neutral placeholders before sending to the translation API and restored verbatim in the output; with AutoLingo Pro, the text settings of Divi and DiviFlash modules (a button label, a tab title) are translated, in the shortcode itself. This protection applies to all five providers (DeepL, Google Translate, Microsoft Translator, OpenAI, DeepSeek). SEO template variables (`%%title%%`, `%sep%`) are also preserved automatically.
+
+= What about scripts, styles and structured data in my content? =
+
+A Divi Code module or an HTML block can hold code. AutoLingo never sends that code to the translation provider, and only translates the texts a visitor reads in it:
+
+* Structured data (`<script type="application/ld+json">`): the texts (name, headline, description, FAQ questions and answers) are translated, `inLanguage` takes the language of the translation, and the page's address points to the translated page.
+* CSS: the words of `content: "…"` values (a label shown with `::before`). Icons and symbols stay.
+* JavaScript: only in a script you mark with `data-autolingo="translate"`, as in `<script data-autolingo="translate">`. Its texts are translated (`'Montant hors taxes (€)'`), and the locale it formats numbers with (`toLocaleString('fr-FR')`) follows the page. IDs, classes, selectors, compared values, object keys and URLs stay as they are. Without the attribute a script is never changed: only its author knows which strings the code depends on.
+
+To turn marked scripts off on a whole site: `add_filter( 'autolingo_translate_script_strings', '__return_false' );`
 
 = What happens if the DeepL rate limit is hit? =
 
@@ -228,6 +286,173 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.13.10 =
+* Contact Form 7 (Pro): a form not translated yet into a page's language now shows in its original language; Polylang made Contact Form 7 report "contact form not found"
+* Divi (Pro): Theme Builder headers, bodies and footers follow the page's language through Divi's own filter, for every Divi 4 version
+* Divi Theme Builder layouts and Contact Form 7 forms are always published when translated, whatever the setting for new translations: no screen lets you publish them as drafts. Those created as drafts before are published once
+
+= 1.13.9 =
+* Tested with WordPress 7.2 and PHP 8.6: translation on publish from the block editor, settings, the bulk tools, and images uploaded with WordPress 7.2's in-browser processing
+* Plugin Check clean (no errors) with Plugin Check 2.2
+
+= 1.13.8 =
+* Divi (Pro): a menu module in a translated page or Theme Builder header or footer now shows the menu of the page's language, whether the menus were translated before or after it
+* Divi (Pro): a translated page or Theme Builder layout with a menu module is updated again when its original changes; it was taken for a translation edited by hand and left as it was
+
+= 1.13.7 =
+* WPBakery 9 (Pro): checked on a real WPBakery 9.2 page: button labels, tabs, call-to-action headings translated, quotes and brackets kept. Also translated now: the grid's load-more button text and the default texts of the tweet button
+
+= 1.13.6 =
+* Breakdance 3 (Pro): its new Fundamental elements (text, rich text, text link, image alt text), icon boxes, marquee text, menu links and buttons, slider accessibility messages, search placeholder, product review buttons and the titles of WordPress and WooCommerce widgets are translated too. Tested on a real Breakdance 3.0.2 page: texts translated, links, field IDs and the layout kept, and the translation follows the page's changes
+
+= 1.13.5 =
+* Breakdance (Pro): the texts of its elements are translated (headings, texts, buttons, tabs, FAQ, testimonials, pricing tables, forms…), the layout copied as it is; Oxygen 6: its text and text link elements
+* Divi 5 (Pro): the texts of its modules are translated (text, titles, buttons, form fields, sliders, pricing tables…), for each screen size; links, images and field IDs are left as they are
+* WPBakery and Avada (Pro): the texts in element settings are translated: button labels, tab, toggle and accordion titles, call-to-action headings, flip boxes, Avada form labels and messages. Which settings hold text comes from WPML's configuration for each builder; links, images and IDs are left as they are
+* Shortcodes listed in an active plugin's or theme's wpml-config.xml (Pro): their text settings are translated too
+* WPBakery raw HTML and raw JS blocks, Avada code blocks and Avada image elements are no longer sent for translation: their content (code stored as base64, or an image address) stays exactly as it is
+* WPBakery: a translation made in the background or with WP-CLI kept losing its raw HTML, raw JS and Google Maps elements (WPBakery removes them when no user with the unfiltered_html right saves the page), and AutoLingo then took the page for manually edited and stopped updating it. Fixed
+* WPBakery: translations open in WPBakery's editor like their source, and keep its design settings and page CSS after each update
+* AutoLingo AI during the 14-day free trial: the trial includes 100,000 characters (shown in Settings → AutoLingo, with a Subscribe link); once they are used up, a clear message says so and offers the subscription for 1,000,000 characters a month
+
+= 1.13.4 =
+* AutoLingo Pro can be tried free for 14 days, no card needed: the links of the free version open the trial
+* The free version says which content it leaves out on Divi pages and WooCommerce products, and once, in a notice you can hide for good, when the site uses a plugin only Pro translates
+
+= 1.13.3 =
+* Labels written in CSS (content: "…", such as a table's mobile labels shown with ::before) are translated. Icons and symbols are left alone
+* A script marked data-autolingo="translate" has its texts translated: the labels a calculator or a form writes with JavaScript, and the locale it formats numbers with ('fr-FR' becomes the page's language). Unmarked scripts are never changed
+
+= 1.13.2 =
+* DiviFlash: FAQ questions and the other texts of DiviFlash modules are translated (Pro)
+* Divi: a module's tablet, phone and hover texts are translated, the Text module's included (Pro)
+* Structured data written by hand in the content (a <script type="application/ld+json"> in a Divi Code module or an HTML block): its texts (name, headline, description, answers…) are translated, inLanguage takes the language of the translation, and the site's addresses point to the translated pages
+* Scripts and styles in the content are no longer sent to the translation provider: an AI provider could otherwise rewrite code, and they cost characters
+* Internal links keep their anchor (#section) when they are pointed to the translated page
+
+= 1.13.1 =
+* Divi (module settings, Theme Builder, menu modules) and Contact Form 7 are now part of AutoLingo Pro, like the other page builders. The free version still translates the text between Divi shortcodes and keeps the shortcodes as they are
+
+= 1.13.0 =
+* Catalan is now a target language, with every provider: DeepL (a standard DeepL language on every plan, Free included), Google, Microsoft, OpenAI, DeepSeek and AutoLingo AI
+* Divi and DiviFlash: the texts kept in module settings are translated: button labels, tab, toggle and blurb titles, headings, image alt text. Colours, sizes, links and other settings are left as they are
+* Menus with Polylang: a translated menu now takes the theme locations of its original (Appearance → Menus → Manage Locations), so visitors see it in their language without a manual step. A location that already has a menu for that language keeps it
+* Contact Form 7: forms are translated like pages: the labels, the submit button, placeholders, the messages visitors see and the auto-reply. A page shows the form of its own language, with the same [contact-form-7] shortcode. Menu and checkbox options are kept, as they are the values the form sends
+* Divi Theme Builder: headers, footers and body layouts are translated, and each page shows the ones of its language. A Divi menu module shows the translated menu. Divi's clean-up of unused layouts no longer trashes the translations of a layout still in use
+* A provider per language: Settings → Provider per language picks a provider for one language (DeepL for Catalan, for example) while the others use the default one
+
+= 1.12.5 =
+* Security: a translation can no longer add code its original does not hold (scripts, frames, forms, onclick-style attributes, javascript: links). An AI provider receives the page's HTML, and a passage written to steer it could otherwise have come back as a script on the translated page. Code that is in the original, such as an administrator's HTML block, is kept
+* Security: saved API keys are no longer written into the settings page. The field shows the key's last four characters; leave it empty to keep the key, or tick "Delete" to remove it
+
+= 1.12.4 =
+* Long pages no longer stop with "Maximum execution time of 30 seconds exceeded": while it translates, AutoLingo gives PHP up to 5 minutes where the host allows it, and finishes the work even if the browser stops waiting
+
+= 1.12.3 =
+* Repair tool: the translations AutoLingo made before 1.12.2, dated the day they were created, get their original's publication date back (Settings → AutoLingo → Tools, or `wp pdat fix-dates`). Only AutoLingo's own translations of posts listed by date are changed
+
+= 1.12.2 =
+* A new translation keeps the publication date of its original. It used to be dated the day it was created, so a language added later listed old articles as the newest ones on the blog and the home page
+
+= 1.12.1 =
+* Premium: a "Write alt text (AutoLingo AI)" button next to the Alternative text field, in the media library's image details (grid view), on the media edit screen and in the media window of the block editor. It fills the field in place, so an image inserted right after carries the new text
+
+= 1.12.0 =
+* Premium: AutoLingo AI writes the alternative text of images that have none. It looks at each image and writes one short sentence in the image's language, then AutoLingo translates it onto the image's translations. From the media library (a link on each image and a bulk action, list view), for every image at once from Settings → AutoLingo → Modules, for new uploads (option), or with `wp pdat alt`. An alt text already there is never replaced; each image counts 500 characters of the AutoLingo AI allowance
+* Premium: an image inserted in a post without alt text shows the media library's alt text, in the page's language (option, on by default); the post itself is not changed
+* The caption, description and title of a translated media item are now translated too, not only its alt text; a text edited by hand on the translation is kept
+
+= 1.11.4 =
+* GreenShift: Advanced text, heading and button blocks are translated in their settings too, so they no longer need recovering in the editor (which brought the original language back)
+* GreenShift accordions, title boxes, progress bars, togglers, counters and countdowns: their labels are translated
+
+= 1.11.3 =
+* Buttons with bold or other formatting no longer show "u003cstrongu003e" on the translated page: the escapes WordPress writes in block settings were lost when the translation was saved
+* GreenShift: element blocks (buttons, headings, texts) stay valid after translation, their text setting and their HTML now match
+* The block settings to translate are read from the plugins' and theme's wpml-config.xml, as WPML does: GreenShift, Kadence and any plugin that supports WPML are covered
+
+= 1.11.2 =
+* Kadence Blocks: buttons, tab titles, testimonials, icon lists, counters, tables of contents and the other texts Kadence keeps in a block's settings are now translated
+* Kadence tabs stay valid in the editor after translation: their titles and anchors follow the translated titles
+* Texts kept in block settings are also translated for WordPress's search and navigation blocks; other plugins can add theirs with the `autolingo_block_text_attributes` filter
+
+= 1.11.1 =
+* Long pages no longer time out with OpenAI or DeepSeek: a Gutenberg page is now translated block by block, several blocks per request (about 4,000 characters, changeable with the `autolingo_chat_batch_chars` filter), instead of the whole page in one request that could take more than 60 seconds
+* The requests of one page go to OpenAI or DeepSeek at the same time: a long page takes about as long as one request (a 29,000-character page: 13 s instead of 78 s)
+* Each block goes through the translation memory: a page translated again only sends the blocks that changed
+* DeepL: a page of more than 50 blocks is sent in several requests (DeepL's limit); Google Translate: several blocks per request instead of one request per block
+* An OpenAI account with no credit left is recognised again (OpenAI changed its error code): the next provider with a key translates instead
+
+= 1.11.0 =
+* Lingo (the assistant and the reviewer) now works only with AutoLingo AI, included with Pro: it no longer uses an OpenAI or DeepSeek key
+* Lingo answers in the language of your admin (your profile's language), whatever language you write in
+* Lingo is one click away on every admin page: a Lingo item in the top bar and a Lingo bubble in the corner open the chat in a panel, without leaving the page; the conversation follows you from page to page and into the Lingo tab
+* The bubble can be turned off under the chat in the Lingo tab; the top bar item stays
+* Next to the Storekind assistant, the two bubbles sit side by side and only one panel is open at a time
+
+= 1.10.2 =
+* Lingo, the assistant, is sharper: it gives the exact count of what you ask for (Spanish and German products, not the site's total), keeps to one page when you ask about one, answers in your language and with your form of address, says settings in plain words, names only the real tabs of the settings, and explains how to do what no action does (adding a language)
+* A proposal that would do nothing is withdrawn and Lingo corrects its answer
+* The review card counts the translations of the language asked for
+
+= 1.10.1 =
+* German translation of the plugin (de_DE): the whole admin, Lingo and the assistant included
+* French translation completed: 74 texts of the admin were still in English (dashboard widget, menus, API keys, DeepL glossary, modules)
+* Lingo's review of the whole site stops at once when AutoLingo AI refuses, whatever the admin language
+
+= 1.10.0 =
+* Premium: Lingo, the assistant. A chat in Settings → AutoLingo → Lingo: ask in your own words, Lingo looks at the site and proposes the actions (translate what is missing, translate again, repair, duplicates, review, menus, strings, settings, glossary); nothing runs until you confirm each one
+* Premium: Lingo, the review agent, now rereads pages built with Elementor, Bricks and Beaver Builder, and fixes them in the builder's own data
+
+= 1.9.0 =
+* Premium: Lingo, the review agent. After each translation it rereads it next to the original, like a proofreader (meaning, numbers and names, passages left untranslated, glossary, grammar, fluency, tone), fixes what it is sure about and lists the rest in the editor, with Apply and Ignore. Choose it in Settings → AutoLingo → Modules; the whole site at once from the Tools tab or with `wp pdat review`
+* Premium: a translation created as a draft can be published once Lingo finds nothing to check
+
+= 1.8.2 =
+* When AutoLingo gives a translation a new address (repair tool, duplicates), the Redirection rules that sent that address to the old one are disabled: they would now send visitors in a loop
+
+= 1.8.1 =
+* Moving a duplicate to the trash gives the translation kept its clean address back, when it had the duplicate's plus -2, -3…; the -2 address redirects to it
+* The repair tool also finds these addresses when the duplicates were trashed before 1.8.1
+
+= 1.8.0 =
+* Translate the whole site from the admin: Settings → AutoLingo → Tools creates every missing translation with one button, a few seconds per request, so it works on hosts with no WP-CLI and behind caches that cut long requests
+* Review before publishing: new translations can be published right away (default), saved as drafts, or left pending review (Settings → Languages & content)
+* Fix: updating a translation published it again, even one you had unpublished or one still under review
+* Repair tool (Tools tab, or `wp pdat repair`): translations with the address of their original get one from their translated title, and the old address redirects to the new one; Premium: SEO titles, descriptions and focus keywords left in the source language are translated
+* Duplicates tool (Tools tab, or `wp pdat duplicates --trash`): posts of a target language linked to no original, with the title of a translation, are listed and can be moved to the trash
+* Premium, RankMath: its fields are now read under their real names (`rank_math_title`, `rank_math_description`, `rank_math_focus_keyword`)
+* The "Menus & strings" settings tab is now "Tools"
+
+= 1.7.1 =
+* Premium, WooCommerce: `wp pdat sync-products` gives the translations made before 1.7 the type, prices, stock, variations and linked products of their source, for the whole catalogue at once, without translating their texts again
+
+= 1.7.0 =
+* Premium, WooCommerce: without Polylang for WooCommerce or WooCommerce Multilingual, a translated product now gets the type, prices, stock and shipping settings, images, variations and linked products of its source, so it can be sold; saving the source updates it, and the stock is shared between languages. Products translated before get this the next time their source is saved, or all at once with `wp pdat sync-products` (1.7.1)
+* Fix: the translation of a variable product with its own attributes found no variation on its product page
+* The SKU is never copied to translations (WooCommerce wants it unique)
+
+= 1.6.0 =
+* Premium: theme and plugin strings are now translated with WPML String Translation (version 5 or later) too: each string from the language it is written in, marked complete; pick the domains to translate in Settings → AutoLingo → Menus & strings, or with `wp pdat translate-strings --list-domains` / `--domains=`
+* Fix: a new translation got its source's settings stored as text instead of arrays (an ACF link, a theme's page settings…), and lost the backslashes of JSON settings
+* ACF flexible content now covered by the test suite (tested with Secure Custom Fields)
+
+= 1.5.1 =
+* The settings page is organised in tabs: Provider, Languages & content, Modules, Glossary & memory, Menus & strings, WP-CLI
+* Premium: theme and plugin strings are translated in short requests that carry on by themselves, so a host or cache time limit no longer stops them; a request cut short shows a clear message instead of a JavaScript error
+* Fix: on WordPress 7.1, the dashboard widget's title was split, with the globe on the left and the text on the right
+* New screenshots
+
+= 1.5.0 =
+* Premium: translate the strings of Polylang's Languages → Translations (site title, widgets, cookie banner and other plugin texts) from Settings → AutoLingo or with `wp pdat translate-strings`. Only missing translations are filled in; formats, addresses and placeholders are kept
+
+= 1.4.10 =
+* Fix: with Polylang and a language prefix in the address, images and files lost their address in translated pages and answered 404. Pages translated before this fix need translating again
+
+= 1.4.9 =
+* Fix: with WPML, a post published in the block editor showed its new translation as needing an update in the posts list
+* The settings page links to the 90-second demo video
 
 = 1.4.8 =
 * Fix: with Polylang, publishing a new post in the block editor created its translation twice (one linked, one left unlinked)

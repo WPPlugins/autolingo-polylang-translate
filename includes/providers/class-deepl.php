@@ -110,8 +110,36 @@ class AUTOLINGO_Provider_DeepL implements AUTOLINGO_Provider {
      * @param  string   $target_lang  Target language code.
      * @return string[]|false
      */
+    /**
+     * Several texts: DeepL takes at most 50 texts and 128 KiB per request, so a long page (one
+     * text per block) goes in several requests.
+     */
     public function translate_batch( array $texts, string $target_lang ): array|false {
         $this->quota_exceeded = false;
+        $out   = [];
+        $chunk = [];
+        $bytes = 0;
+        foreach ( array_values( $texts ) as $text ) {
+            if ( $chunk && ( count( $chunk ) >= 50 || $bytes + strlen( $text ) > 100000 ) ) {
+                $done = $this->translate_chunk( $chunk, $target_lang );
+                if ( $done === false ) return false;
+                array_push( $out, ...$done );
+                $chunk = [];
+                $bytes = 0;
+            }
+            $chunk[] = $text;
+            $bytes  += strlen( $text );
+        }
+        if ( $chunk ) {
+            $done = $this->translate_chunk( $chunk, $target_lang );
+            if ( $done === false ) return false;
+            array_push( $out, ...$done );
+        }
+        return $out;
+    }
+
+    /** One request to DeepL (at most 50 texts). */
+    private function translate_chunk( array $texts, string $target_lang ): array|false {
         if ( empty( $texts ) ) return [];
 
         $api_key = $this->api_key();

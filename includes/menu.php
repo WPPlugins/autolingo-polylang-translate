@@ -63,6 +63,7 @@ function autolingo_translate_all_menus(): array {
  * @return array{menu:string, lang:string, menu_id:int, items:int, error:string}
  */
 function autolingo_translate_menu_to_lang( WP_Term $source_menu, string $lang_slug ): array {
+    autolingo_extend_time_limit();
     $result = [
         'menu'    => $source_menu->name,
         'lang'    => $lang_slug,
@@ -190,4 +191,12 @@ function autolingo_build_menu_translation( WP_Term $source_menu, array $items, s
     }
 
     return $result;
+}
+
+/** The $lang_slug copy of a menu made by AutoLingo (slug: original-slug-lang), 0 when there is none. */
+function autolingo_translated_menu_id( int $menu_id, string $lang_slug ): int {
+    $menu = wp_get_nav_menu_object( $menu_id );
+    if ( ! $menu || $lang_slug === '' ) return 0;
+    $copy = wp_get_nav_menu_object( $menu->slug . '-' . $lang_slug );
+    return $copy ? (int) $copy->term_id : 0;
 }

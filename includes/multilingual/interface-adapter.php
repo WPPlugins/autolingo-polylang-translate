@@ -55,6 +55,13 @@ interface AutoLingo_Multilingual_Adapter {
         array   $data      // [ 'title', 'content', 'excerpt' ]
     ): int;
 
+    /**
+     * Record that $translated_id matches $source_id as it is now, where the
+     * multilingual plugin tracks it (WPML's translation status): otherwise the
+     * next save of the source marks the translation as needing an update.
+     */
+    public function mark_translation_current( int $source_id, int $translated_id ): void;
+
     // ── Look-ups ──────────────────────────────────────────────────────────────
 
     /** Translated post ID in $lang_slug, or 0 if not found. */
