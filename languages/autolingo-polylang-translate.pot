@@ -167,9 +167,6 @@ msgstr ""
 msgid "This page is built with %1$s. The free version translates its title and WordPress content, not the %1$s layout."
 msgstr ""
 
-#: admin/metabox.php:64
-msgid "Page builders are translated by AutoLingo Pro."
-msgstr ""
 
 #. translators: %s: formatted number of characters
 #: admin/metabox.php:73
@@ -226,9 +223,6 @@ msgstr ""
 msgid "Translate page builders, SEO meta, ACF fields and WooCommerce products."
 msgstr ""
 
-#: admin/settings.php:118
-msgid "Elementor, Beaver Builder, Bricks"
-msgstr ""
 
 #: admin/settings.php:119
 msgid "Yoast, RankMath, SEOPress"
@@ -242,9 +236,6 @@ msgstr ""
 msgid "WooCommerce product attributes"
 msgstr ""
 
-#: admin/settings.php:126
-msgid "Get AutoLingo Pro →"
-msgstr ""
 
 #: admin/settings.php:136
 #: admin/settings.php:483
@@ -1918,4 +1909,66 @@ msgstr ""
 
 #: admin/settings.php
 msgid "Delete"
+msgstr ""
+
+#: admin/settings.php
+msgid "Catalan"
+msgstr ""
+
+#: admin/settings.php
+msgid "Provider per language"
+msgstr ""
+
+#: admin/settings.php
+msgid "Default provider"
+msgstr ""
+
+#: admin/settings.php
+msgid "Use another provider for a language than for the others, for example DeepL for Catalan. Each provider needs its key in the Provider tab; when its quota runs out, the fallback order applies as usual."
+msgstr ""
+
+#. translators: %s: plugin names, e.g. "Elementor, WooCommerce"
+#, php-format
+#: admin/notices.php
+msgid "This site uses %s: the free version translates the WordPress content but not theirs. AutoLingo Pro translates them too, with the same API key."
+msgstr ""
+
+#: admin/notices.php
+msgid "Try Pro free for 14 days"
+msgstr ""
+
+#: admin/metabox.php
+msgid "The free version translates the product title and descriptions, not its attributes, variations and purchase note."
+msgstr ""
+
+#: admin/metabox.php
+msgid "AutoLingo Pro translates it all: try it free for 14 days."
+msgstr ""
+
+#: admin/settings.php
+msgid "Try it free for 14 days →"
+msgstr ""
+
+#: admin/settings.php
+msgid "No card needed."
+msgstr ""
+
+#: admin/settings.php
+msgid "Prices"
+msgstr ""
+
+#: admin/settings.php
+msgid "Elementor, Divi, Beaver Builder, Bricks"
+msgstr ""
+
+msgid "AutoLingo AI: the free trial’s 100,000 characters are used up. Subscribe to AutoLingo Premium to get 1,000,000 characters a month (Settings → AutoLingo → Upgrade)."
+msgstr ""
+
+msgid "Free trial · 100,000 characters"
+msgstr ""
+
+msgid "The free trial includes 100,000 characters of AutoLingo AI to try it on a few pages. Subscribe to get 1,000,000 characters a month."
+msgstr ""
+
+msgid "Subscribe"
 msgstr ""

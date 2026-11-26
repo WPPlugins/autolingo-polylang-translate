@@ -12,6 +12,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * wp_filter_post_kses to content_save_pre and strips tags like <input>,
  * <style>, <script> that are present inside wp:html blocks. Bypass it for the
  * duration of the save — the source content was already trusted by an admin.
+ * WPBakery does the same on its own (wpb_remove_custom_html() on content_save_pre,
+ * WPBakery 6.3+): without unfiltered_html it deletes the raw HTML, raw JS and Google
+ * Maps elements and the buttons with a custom onclick, which AutoLingo copies unchanged.
  *
  * @param array $postarr Post data.
  * @param bool  $update  True → wp_update_post, false → wp_insert_post.
@@ -19,22 +22,23 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 function autolingo_save_post( array $postarr, bool $update = false ): int|WP_Error {
     $hooks = [
-        'content_save_pre'          => 'wp_filter_post_kses',
-        'content_filtered_save_pre' => 'wp_filter_post_kses',
-        'excerpt_save_pre'          => 'wp_filter_post_kses',
+        [ 'content_save_pre', 'wp_filter_post_kses' ],
+        [ 'content_filtered_save_pre', 'wp_filter_post_kses' ],
+        [ 'excerpt_save_pre', 'wp_filter_post_kses' ],
+        [ 'content_save_pre', 'wpb_remove_custom_html' ],
     ];
     $had = [];
-    foreach ( $hooks as $hook => $cb ) {
-        $had[ $hook ] = has_filter( $hook, $cb );
-        if ( $had[ $hook ] ) remove_filter( $hook, $cb );
+    foreach ( $hooks as $n => [ $hook, $cb ] ) {
+        $had[ $n ] = has_filter( $hook, $cb );
+        if ( false !== $had[ $n ] ) remove_filter( $hook, $cb, (int) $had[ $n ] );
     }
     // wp_insert_post() / wp_update_post() strip one level of backslashes (they expect slashed data,
     // as from a form): unslashed, the "\u003c" WordPress writes in block settings for "<" (a
     // button text in bold) came out as "u003c" on the translated page.
     $postarr = wp_slash( $postarr );
     $result  = $update ? wp_update_post( $postarr ) : wp_insert_post( $postarr );
-    foreach ( $hooks as $hook => $cb ) {
-        if ( $had[ $hook ] ) add_filter( $hook, $cb );
+    foreach ( $hooks as $n => [ $hook, $cb ] ) {
+        if ( false !== $had[ $n ] ) add_filter( $hook, $cb, (int) $had[ $n ] );
     }
     return $result;
 }
@@ -186,7 +190,7 @@ function autolingo_create_translation( WP_Post $source_post, string $target_lang
             'post_title'   => $translated_title,
             'post_content' => $translated_content,
             'post_excerpt' => $translated_excerpt,
-            'post_status'  => autolingo_new_translation_status(),
+            'post_status'  => autolingo_new_translation_status( $source_post->post_type ),
             'post_type'    => $source_post->post_type,
             'post_author'  => $source_post->post_author,
         ] + autolingo_source_dates( $source_post ) );
@@ -225,10 +229,15 @@ function autolingo_create_translation( WP_Post $source_post, string $target_lang
     if ( function_exists( 'autolingo_run_premium_modules' ) ) {
         autolingo_run_premium_modules( $source_post, $new_post_id, $target_lang, $lang_slug );
     }
+    /** After a translation is written: integrations (Contact Form 7, Divi Theme Builder) finish their own data. */
+    do_action( 'autolingo_translated', $source_post, (int) $new_post_id, $target_lang, $lang_slug );
 
     update_post_meta( $source_post->ID, '_autolingo_hash_' . $lang_slug, autolingo_source_content_hash( $source_post ) );
+    // The translation as saved, after the integrations above (a Divi menu module pointed at the translated menu):
+    // the next update compares with it to tell a manual edit, and must not take AutoLingo's own change for one.
+    $saved_translation = get_post( (int) $new_post_id );
     update_post_meta( $source_post->ID, '_autolingo_target_hash_' . $lang_slug,
-        md5( $translated_title . "\x00" . $translated_content . "\x00" . $translated_excerpt )
+        $saved_translation ? autolingo_source_content_hash( $saved_translation ) : md5( $translated_title . "\x00" . $translated_content . "\x00" . $translated_excerpt )
     );
     $ml->mark_translation_current( $source_post->ID, $new_post_id );
     // Created as a draft or pending review: the review agent (Premium) may publish it once it finds nothing.
@@ -269,7 +278,12 @@ function autolingo_update_translation( WP_Post $source_post, int $translated_id,
         $stored_target_hash = get_post_meta( $source_post->ID, $target_hash_key, true );
         if ( $stored_target_hash ) {
             $translated_post = get_post( $translated_id );
-            if ( $translated_post && autolingo_source_content_hash( $translated_post ) !== $stored_target_hash ) {
+            /**
+             * Whether a translation that differs from AutoLingo's last one is still untouched: an integration may
+             * have changed it itself (Divi: before 1.13.8, the menu module's ID swapped after the fingerprint).
+             */
+            $untouched = $translated_post && (bool) apply_filters( 'autolingo_translation_untouched', false, $translated_post, $stored_target_hash, $lang_slug );
+            if ( $translated_post && ! $untouched && autolingo_source_content_hash( $translated_post ) !== $stored_target_hash ) {
                 autolingo_log_info(
                     "Traduction {$target_lang} ignorée : le post traduit (#{$translated_id}) a été modifié manuellement depuis la dernière traduction automatique.",
                     [ 'source_id' => $source_post->ID, 'target_id' => $translated_id ],
@@ -364,6 +378,15 @@ function autolingo_update_translation( WP_Post $source_post, int $translated_id,
     if ( function_exists( 'autolingo_run_premium_modules' ) ) {
         autolingo_run_premium_modules( $source_post, $translated_id, $target_lang, $lang_slug );
     }
+    // A translation nobody edited by hand stays AutoLingo's after the integrations change it (a Divi menu module
+    // pointed at the translated menu): its fingerprint follows, else the next update would skip it as a manual edit.
+    $before          = get_post( $translated_id );
+    $ours            = $before && get_post_meta( $source_post->ID, $target_hash_key, true ) === autolingo_source_content_hash( $before );
+    do_action( 'autolingo_translated', $source_post, $translated_id, $target_lang, $lang_slug );
+    $after = $ours ? get_post( $translated_id ) : null;
+    if ( $after ) {
+        update_post_meta( $source_post->ID, $target_hash_key, autolingo_source_content_hash( $after ) );
+    }
 
     $ml = autolingo_multilingual();
     if ( $ml ) {
@@ -408,3 +431,8 @@ function autolingo_sync_terms( int $source_id, int $target_id, string $lang_slug
         wp_set_post_terms( $target_id, $target_terms, $taxonomy );
     }
 }
+
+// Structured data: the translation's own address, once it has one.
+add_action( 'autolingo_translated', static function ( WP_Post $source, int $target_id ): void {
+    autolingo_json_ld_own_url( $source, $target_id );
+}, 20, 2 );

@@ -134,30 +134,40 @@ function autolingo_build_menu_translation( WP_Term $source_menu, array $items, s
 
     foreach ( $items as $item ) {
 
-        // ── Translate the custom label ───────────────────────────────────────
-        $label = trim( $item->post_title );
-        if ( $label !== '' ) {
-            $previous_context = autolingo_translation_context( 'Label of a navigation menu item on a website (a short link text).' );
-            $translated       = autolingo_call_deepl( $label, $target_lang );
-            autolingo_translation_context( $previous_context );
-            $label = $translated !== false ? $translated : $item->post_title;
-        }
-
         // ── Re-point internal links to the translated object ─────────────────
-        $object_id = (int) $item->object_id;
+        $object_id     = (int) $item->object_id;
+        $source_title  = ''; // the title of what the item links to, in the source language
+        $translated_id = 0;
 
         $ml = autolingo_multilingual();
-        if ( $ml && $item->type === 'post_type' && $object_id ) {
-            $translated_id = $ml->get_translated_post( $object_id, $lang_slug );
-            if ( $translated_id ) {
-                $object_id = $translated_id;
-            }
-        } elseif ( $ml && $item->type === 'taxonomy' && $object_id ) {
+        if ( $item->type === 'post_type' && $object_id ) {
+            $source_title  = (string) get_post_field( 'post_title', $object_id );
+            $translated_id = $ml ? (int) $ml->get_translated_post( $object_id, $lang_slug ) : 0;
+        } elseif ( $item->type === 'taxonomy' && $object_id ) {
             $taxonomy      = is_string( $item->object ) ? $item->object : 'category';
-            $translated_id = $ml->get_translated_term( $object_id, $lang_slug, $taxonomy );
-            if ( $translated_id ) {
-                $object_id = $translated_id;
-            }
+            $term          = get_term( $object_id, $taxonomy );
+            $source_title  = $term instanceof WP_Term ? $term->name : '';
+            $translated_id = $ml ? (int) $ml->get_translated_term( $object_id, $lang_slug, $taxonomy ) : 0;
+        }
+        if ( $translated_id ) $object_id = $translated_id;
+
+        // ── The label ────────────────────────────────────────────────────────
+        $label = trim( $item->post_title );
+        if ( $label !== '' && $translated_id && $source_title !== '' && mb_strtolower( $label ) === mb_strtolower( trim( $source_title ) ) ) {
+            // The label is the linked page's title: left empty, the item shows the translated page's title, as
+            // WordPress does for an item without a label (and follows it if the page is renamed).
+            $label = '';
+        } elseif ( $label !== '' ) {
+            // A short label means little alone ("Holding" read as "holding on"): the page it leads to says which
+            // sense, and the memory keeps this label's translation apart from the same word elsewhere.
+            $context = 'Label of a navigation menu item on a website (a short link text).';
+            if ( $source_title !== '' ) $context .= ' It links to the page "' . wp_strip_all_tags( $source_title ) . '".';
+            $previous_context = autolingo_translation_context( $context );
+            $previous_scope   = function_exists( 'autolingo_tm_scope' ) ? autolingo_tm_scope( 'menu|' . $source_title ) : '';
+            $translated       = autolingo_call_deepl( $label, $target_lang );
+            autolingo_translation_context( $previous_context );
+            if ( function_exists( 'autolingo_tm_scope' ) ) autolingo_tm_scope( $previous_scope );
+            $label = $translated !== false ? $translated : $item->post_title;
         }
 
         // ── Map parent ID to the new translated item ID ──────────────────────
@@ -191,4 +201,12 @@ function autolingo_build_menu_translation( WP_Term $source_menu, array $items, s
     }
 
     return $result;
+}
+
+/** The $lang_slug copy of a menu made by AutoLingo (slug: original-slug-lang), 0 when there is none. */
+function autolingo_translated_menu_id( int $menu_id, string $lang_slug ): int {
+    $menu = wp_get_nav_menu_object( $menu_id );
+    if ( ! $menu || $lang_slug === '' ) return 0;
+    $copy = wp_get_nav_menu_object( $menu->slug . '-' . $lang_slug );
+    return $copy ? (int) $copy->term_id : 0;
 }

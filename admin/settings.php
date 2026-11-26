@@ -153,16 +153,20 @@ function autolingo_pro_banner(): void {
                 </p>
             </div>
             <ul style="flex:2;min-width:260px;margin:0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:3px 20px;font-size:12px;opacity:.92;">
-                <li>✓ <?php esc_html_e( 'Elementor, Beaver Builder, Bricks', 'autolingo-polylang-translate' ); ?></li>
+                <li>✓ <?php esc_html_e( 'Elementor, Divi, Beaver Builder, Bricks', 'autolingo-polylang-translate' ); ?></li>
                 <li>✓ <?php esc_html_e( 'Yoast, RankMath, SEOPress', 'autolingo-polylang-translate' ); ?></li>
                 <li>✓ <?php esc_html_e( 'ACF fields, repeater, flex content', 'autolingo-polylang-translate' ); ?></li>
                 <li>✓ <?php esc_html_e( 'WooCommerce product attributes', 'autolingo-polylang-translate' ); ?></li>
             </ul>
             <div>
-                <a href="<?php echo esc_url( autolingo_pro_url( 'banner' ) ); ?>" target="_blank" rel="noopener"
+                <a href="<?php echo esc_url( autolingo_trial_url( 'banner' ) ); ?>" target="_blank" rel="noopener"
                    style="display:inline-block;background:#fff;color:#1a5276;font-weight:700;padding:10px 22px;border-radius:4px;text-decoration:none;font-size:13px;white-space:nowrap;">
-                    <?php esc_html_e( 'Get AutoLingo Pro →', 'autolingo-polylang-translate' ); ?>
+                    <?php esc_html_e( 'Try it free for 14 days →', 'autolingo-polylang-translate' ); ?>
                 </a>
+                <div style="margin-top:6px;font-size:12px;opacity:.85;text-align:center;">
+                    <?php esc_html_e( 'No card needed.', 'autolingo-polylang-translate' ); ?>
+                    <a href="<?php echo esc_url( autolingo_pro_url( 'banner' ) ); ?>" target="_blank" rel="noopener" style="color:inherit;"><?php esc_html_e( 'Prices', 'autolingo-polylang-translate' ); ?></a>
+                </div>
             </div>
         </div>
     </div>
@@ -188,6 +192,7 @@ function autolingo_register_settings(): void {
     register_setting( 'autolingo_settings_group', 'autolingo_fallback',         [ 'sanitize_callback' => 'absint', 'default' => 1 ] );
     register_setting( 'autolingo_settings_group', 'autolingo_source_lang',     [ 'sanitize_callback' => 'sanitize_text_field' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_target_langs',    [ 'sanitize_callback' => 'autolingo_sanitize_array' ] );
+    register_setting( 'autolingo_settings_group', 'autolingo_language_providers', [ 'sanitize_callback' => 'autolingo_sanitize_language_providers' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_post_types',      [ 'sanitize_callback' => 'autolingo_sanitize_array' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_formality',            [ 'sanitize_callback' => 'sanitize_text_field' ] );
     register_setting( 'autolingo_settings_group', 'autolingo_auto_translate',       [ 'sanitize_callback' => 'sanitize_text_field' ] );
@@ -209,6 +214,7 @@ function autolingo_register_settings(): void {
 
     add_settings_field( 'autolingo_source_lang',     __( 'Source Language', 'autolingo-polylang-translate' ),        'autolingo_field_source_lang',     'autolingo-polylang-translate', 'autolingo_section_langs' );
     add_settings_field( 'autolingo_target_langs',    __( 'Target Languages', 'autolingo-polylang-translate' ),       'autolingo_field_target_langs',    'autolingo-polylang-translate', 'autolingo_section_langs' );
+    add_settings_field( 'autolingo_language_providers', __( 'Provider per language', 'autolingo-polylang-translate' ), 'autolingo_field_language_providers', 'autolingo-polylang-translate', 'autolingo_section_langs' );
     add_settings_field( 'autolingo_post_types',      __( 'Content Types', 'autolingo-polylang-translate' ),          'autolingo_field_post_types',      'autolingo-polylang-translate', 'autolingo_section_behavior' );
     add_settings_field( 'autolingo_auto_translate',  __( 'Auto-translate', 'autolingo-polylang-translate' ),         'autolingo_field_auto_translate',  'autolingo-polylang-translate', 'autolingo_section_behavior' );
     add_settings_field( 'autolingo_new_status',      __( 'New translations', 'autolingo-polylang-translate' ),       'autolingo_field_new_status',      'autolingo-polylang-translate', 'autolingo_section_behavior' );
@@ -261,6 +267,44 @@ function autolingo_field_target_langs(): void {
         echo '</label>';
     }
     echo '<p class="description">' . esc_html__( 'Languages to automatically translate into.', 'autolingo-polylang-translate' ) . '</p>';
+}
+
+/** [ lang => provider slug ], '' (the default provider) left out. */
+function autolingo_sanitize_language_providers( $value ): array {
+    $known = [ 'deepl', 'google', 'microsoft', 'openai', 'deepseek', 'autolingo' ];
+    $out   = [];
+    foreach ( (array) $value as $lang => $slug ) {
+        $lang = sanitize_key( (string) $lang );
+        $slug = sanitize_key( (string) $slug );
+        if ( $lang !== '' && in_array( $slug, $known, true ) ) $out[ $lang ] = $slug;
+    }
+    return $out;
+}
+
+/** A provider for each target language: the default one, or another (DeepL for Catalan, AutoLingo AI for the rest…). */
+function autolingo_field_language_providers(): void {
+    $names = [
+        'deepl'     => 'DeepL',
+        'google'    => 'Google',
+        'microsoft' => 'Microsoft',
+        'openai'    => 'OpenAI',
+        'deepseek'  => 'DeepSeek',
+    ];
+    if ( class_exists( 'AUTOLINGO_Provider_AI' ) ) $names['autolingo'] = 'AutoLingo AI';
+    $chosen = autolingo_language_providers();
+    $langs  = autolingo_available_languages();
+    echo '<table class="widefat striped" style="max-width:520px"><tbody>';
+    foreach ( autolingo_target_langs() as $lang ) {
+        echo '<tr><td style="width:45%">' . esc_html( $langs[ $lang ] ?? strtoupper( $lang ) ) . '</td><td>';
+        echo '<select name="autolingo_language_providers[' . esc_attr( $lang ) . ']">';
+        echo '<option value="">' . esc_html__( 'Default provider', 'autolingo-polylang-translate' ) . '</option>';
+        foreach ( $names as $slug => $name ) {
+            echo '<option value="' . esc_attr( $slug ) . '"' . selected( $chosen[ $lang ] ?? '', $slug, false ) . '>' . esc_html( $name ) . '</option>';
+        }
+        echo '</select></td></tr>';
+    }
+    echo '</tbody></table>';
+    echo '<p class="description">' . esc_html__( 'Use another provider for a language than for the others, for example DeepL for Catalan. Each provider needs its key in the Provider tab; when its quota runs out, the fallback order applies as usual.', 'autolingo-polylang-translate' ) . '</p>';
 }
 
 function autolingo_field_modules(): void {
@@ -440,6 +484,7 @@ function autolingo_available_languages(): array {
     return [
         'ar' => __( 'Arabic',     'autolingo-polylang-translate' ),
         'bg' => __( 'Bulgarian',  'autolingo-polylang-translate' ),
+        'ca' => __( 'Catalan',    'autolingo-polylang-translate' ),
         'cs' => __( 'Czech',      'autolingo-polylang-translate' ),
         'da' => __( 'Danish',     'autolingo-polylang-translate' ),
         'de' => __( 'German',     'autolingo-polylang-translate' ),
@@ -557,8 +602,9 @@ function autolingo_settings_page_html(): void {
             <?php
             $pct   = round( ( $usage['count'] / max( $usage['limit'], 1 ) ) * 100, 1 );
             $color = $usage['remaining'] < autolingo_alert_threshold() ? '#d63638' : '#00a32a';
+            $trial = $is_ai && ! empty( $usage['trial'] );
             $plan  = $is_ai
-                ? esc_html__( 'Included with Premium · monthly', 'autolingo-polylang-translate' )
+                ? ( $trial ? esc_html__( 'Free trial · 100,000 characters', 'autolingo-polylang-translate' ) : esc_html__( 'Included with Premium · monthly', 'autolingo-polylang-translate' ) )
                 : ( str_ends_with( $deepl_key, ':fx' )
                     ? esc_html__( 'Free plan · one-time credit', 'autolingo-polylang-translate' )
                     : esc_html__( 'Pro plan · monthly', 'autolingo-polylang-translate' ) );
@@ -568,6 +614,12 @@ function autolingo_settings_page_html(): void {
                 <div style="background:<?php echo esc_attr( $color ); ?>;width:<?php echo (float) $pct; ?>%;height:10px;border-radius:4px;"></div>
             </div>
             <span style="color:<?php echo esc_attr( $color ); ?>;font-weight:600"><?php echo number_format( $usage['remaining'], 0, ',', "\u{202F}" ); ?> <?php esc_html_e( 'remaining', 'autolingo-polylang-translate' ); ?></span>
+            <?php if ( $trial ) :
+                $fs          = function_exists( 'autolingo_fs' ) ? autolingo_fs() : null;
+                $upgrade_url = $fs && method_exists( $fs, 'get_upgrade_url' ) ? $fs->get_upgrade_url() : 'https://auto-lingo.com/wordpress#pricing'; ?>
+            <p style="margin:8px 0 0;color:#50575e;font-size:13px"><?php esc_html_e( 'The free trial includes 100,000 characters of AutoLingo AI to try it on a few pages. Subscribe to get 1,000,000 characters a month.', 'autolingo-polylang-translate' ); ?>
+                <a href="<?php echo esc_url( $upgrade_url ); ?>"><?php esc_html_e( 'Subscribe', 'autolingo-polylang-translate' ); ?></a></p>
+            <?php endif; ?>
             <span style="color:#666"> / <?php echo number_format( $usage['limit'], 0, ',', "\u{202F}" ); ?> <?php esc_html_e( 'total', 'autolingo-polylang-translate' ); ?></span>
             <span style="float:right"><a href="<?php echo esc_url( $test_url ); ?>">↻ <?php esc_html_e( 'Refresh', 'autolingo-polylang-translate' ); ?></a></span>
         </div>

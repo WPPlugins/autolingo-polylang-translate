@@ -118,3 +118,36 @@ function autolingo_copy_meta_excluded_prefixes(): array {
         '_oembed_',       // oEmbed cache
     ] );
 }
+
+/**
+ * WPBakery's page settings, the same in every language: which editor the page opens in
+ * (_wpb_vc_js_status, 'true' = WPBakery's), the design CSS built from the elements' css=""
+ * settings, the page's own CSS / JS and layout. Copied from the source after every translation,
+ * not only when it is created: WPBakery writes them in save_post from the edit form
+ * (Vc_Post_Admin::setPostMeta(), WPBakery 7.9), so a translation saved by AutoLingo with no form
+ * lost the editor status (opened in the block editor) when an admin clicked Translate, and kept
+ * an old design CSS after an update made in the background.
+ */
+const AUTOLINGO_WPBAKERY_PAGE_META = [
+    '_wpb_vc_js_status',
+    '_wpb_shortcodes_custom_css',
+    '_wpb_shortcodes_default_css',
+    '_wpb_post_custom_css',
+    '_wpb_post_custom_js_header',
+    '_wpb_post_custom_js_footer',
+    '_wpb_post_custom_layout',
+];
+
+add_action( 'autolingo_translated', 'autolingo_wpbakery_sync_page_meta', 15, 2 );
+
+function autolingo_wpbakery_sync_page_meta( WP_Post $source, int $target_id ): void {
+    if ( ! defined( 'WPB_VC_VERSION' ) ) return;
+    foreach ( AUTOLINGO_WPBAKERY_PAGE_META as $key ) {
+        $value = get_post_meta( $source->ID, $key, true );
+        if ( '' === $value || false === $value ) {
+            delete_post_meta( $target_id, $key );
+        } else {
+            update_post_meta( $target_id, $key, wp_slash( $value ) );
+        }
+    }
+}

@@ -2,9 +2,9 @@
 Contributors: delsuza
 Tags: polylang, wpml, translation, multilingual, automatic-translation
 Requires at least: 6.0
-Tested up to: 7.1
+Tested up to: 7.2
 Requires PHP: 8.0
-Stable tag: 1.12.5
+Stable tag: 1.13.11
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,7 +23,7 @@ https://www.youtube.com/watch?v=cZiq3PXC2-w
 * Categories, tags, menus and image alt text, not just posts
 * Gutenberg, the Classic Editor and shortcode builders (Divi, WPBakery, Flatsome)
 
-**AutoLingo Pro** adds Elementor, Bricks and Beaver Builder, SEO meta (Yoast, RankMath, SEOPress, The SEO Framework), ACF fields and WooCommerce, plus AutoLingo AI with no API key.
+**AutoLingo Pro** adds Elementor, Bricks and Beaver Builder, Divi (module texts and Theme Builder), Contact Form 7, SEO meta (Yoast, RankMath, SEOPress, The SEO Framework), ACF fields and WooCommerce, plus AutoLingo AI with no API key. Try it free for 14 days, no card needed.
 
 <a href="https://wphealthkit.com/directory/autolingo-polylang-translate"><img src="https://wphealthkit.com/api/badge/autolingo-polylang-translate" alt="Autolingo Polylang Translate security audit by WP HealthKit" /></a>
 
@@ -44,16 +44,19 @@ https://www.youtube.com/watch?v=cZiq3PXC2-w
 * Image alt and title text inside your content (Gutenberg images, HTML) translated in the same call as the rest
 * Context-aware: the provider is told what it translates (blog post, page, product, category, menu item) for better short texts
 * Post meta copy on creation (theme settings, page templates, layout options)
-* Shortcode-based builders (Divi, WPBakery, Flatsome) — shortcodes preserved verbatim
+* Shortcode-based builders (Divi, WPBakery, Avada, Flatsome) — the text between shortcodes is translated, the shortcodes are preserved verbatim
 
 = Features (Pro) =
 
 [AutoLingo Pro](https://auto-lingo.com) adds:
 
-* Page builder support: Elementor, Beaver Builder, Bricks Builder
+* Page builder support: Elementor, Beaver Builder, Bricks Builder, Breakdance
+* WPBakery and Avada: the texts in element settings (button labels, tab and accordion titles, headings, form labels)
+* Divi 4 and Divi 5, DiviFlash: the texts in module settings (button labels, titles, headings, alt text); Theme Builder layouts and menu modules follow each page's language
+* Contact Form 7: labels, submit button, placeholders, visitor messages and auto-reply translated; each page shows the form of its language
 * SEO meta translation: Yoast SEO, RankMath, SEOPress, The SEO Framework
 * ACF field translation: text, textarea, wysiwyg, link, repeater, flexible content
-* WooCommerce: custom product attributes, variations and purchase note; without Polylang for WooCommerce or WooCommerce Multilingual, translated products also get prices, variations and linked products, with a shared stock
+* WooCommerce: product attributes, variations and purchase note; without Polylang for WooCommerce or WooCommerce Multilingual, prices, linked products and stock follow the source
 * Theme and plugin strings: Polylang's Languages → Translations or WPML String Translation (site title, widgets, cookie banner, plugin texts)
 * Lingo, the review agent: rereads each translation next to its original, like a proofreader, fixes what it is sure about and lists the rest
 * Lingo, the assistant: ask in your own words ("translate my products into Spanish as drafts"), from any admin page; Lingo looks at the site and proposes the actions, which run only when you confirm them
@@ -86,7 +89,7 @@ Settings → AutoLingo → Lingo is a chat: say what you want, in your language.
 * **Beaver Builder** — `_fl_builder_data` (serialized PHP), global nodes skipped
 * **Bricks Builder** — `_bricks_page_content_2` (JSON), nested items (accordion, tabs)
 
-Shortcode-based builders (Divi, WPBakery, Flatsome) are supported on the free plan — their shortcodes are preserved verbatim during translation.
+Shortcode-based builders (Divi, WPBakery, Avada, Flatsome) are supported on the free plan — the text between shortcodes is translated and the shortcodes are preserved verbatim. With AutoLingo Pro, the texts kept in WPBakery and Avada element settings and in Divi and DiviFlash module settings (button labels, tab, toggle and blurb titles, headings, image alt text) are translated too, and Theme Builder layouts follow each page's language; colours, sizes, links and other settings are left as they are.
 
 = SEO plugin support (Pro) =
 
@@ -250,7 +253,7 @@ AutoLingo only translates posts written in the source language set under **Setti
 
 = Does the free version translate Elementor pages? =
 
-No. Elementor, Beaver Builder and Bricks content is translated by AutoLingo Pro. Gutenberg, the Classic Editor and shortcode builders (Divi, WPBakery, Flatsome) are translated by the free version.
+No. Elementor, Beaver Builder and Bricks content is translated by AutoLingo Pro. Gutenberg, the Classic Editor and shortcode builders (Divi, WPBakery, Flatsome) are translated by the free version; Divi's module settings and Theme Builder layouts need AutoLingo Pro.
 
 = Does it work with Polylang free or only Polylang Pro? =
 
@@ -262,7 +265,17 @@ No translation you edited by hand is overwritten: when the source post changes, 
 
 = Are shortcodes translated? =
 
-No. Shortcodes (`[contact-form-7 …]`, `[vc_row]`, Divi modules, etc.) are replaced by neutral placeholders before sending to the translation API and restored verbatim in the output. This protection applies to all five providers (DeepL, Google Translate, Microsoft Translator, OpenAI, DeepSeek). SEO template variables (`%%title%%`, `%sep%`) are also preserved automatically.
+No. Shortcodes (`[contact-form-7 …]`, `[vc_row]`, Divi modules, etc.) are replaced by neutral placeholders before sending to the translation API and restored verbatim in the output; with AutoLingo Pro, the text settings of Divi and DiviFlash modules (a button label, a tab title) are translated, in the shortcode itself. This protection applies to all five providers (DeepL, Google Translate, Microsoft Translator, OpenAI, DeepSeek). SEO template variables (`%%title%%`, `%sep%`) are also preserved automatically.
+
+= What about scripts, styles and structured data in my content? =
+
+A Divi Code module or an HTML block can hold code. AutoLingo never sends that code to the translation provider, and only translates the texts a visitor reads in it:
+
+* Structured data (`<script type="application/ld+json">`): the texts (name, headline, description, FAQ questions and answers) are translated, `inLanguage` takes the language of the translation, and the page's address points to the translated page.
+* CSS: the words of `content: "…"` values (a label shown with `::before`). Icons and symbols stay.
+* JavaScript: only in a script you mark with `data-autolingo="translate"`, as in `<script data-autolingo="translate">`. Its texts are translated (`'Montant hors taxes (€)'`), and the locale it formats numbers with (`toLocaleString('fr-FR')`) follows the page. IDs, classes, selectors, compared values, object keys and URLs stay as they are. Without the attribute a script is never changed: only its author knows which strings the code depends on.
+
+To turn marked scripts off on a whole site: `add_filter( 'autolingo_translate_script_strings', '__return_false' );`
 
 = What happens if the DeepL rate limit is hit? =
 
@@ -273,6 +286,65 @@ The plugin retries automatically up to 3 times with exponential back-off (2 s, 4
 Yes. AutoLingo supports both Polylang (free and Pro) and WPML via an adapter layer — the same translation logic works with whichever multilingual plugin is active. Posts are translated on publish, in bulk, or via WP-CLI, using DeepL, Microsoft Translator, OpenAI, DeepSeek or Google Translate.
 
 == Changelog ==
+
+= 1.13.11 =
+* Menus: a short label is translated knowing the page it opens ("Holding" leading to a holding company page is no longer translated as "maintenance"), and a label that is the page's own title becomes the translated page's title
+* Translation memory: menu labels have their own entries, so a word translated in another sense elsewhere is not reused
+
+= 1.13.10 =
+* Contact Form 7 (Pro): a form not translated yet into a page's language now shows in its original language; Polylang made Contact Form 7 report "contact form not found"
+* Divi (Pro): Theme Builder headers, bodies and footers follow the page's language through Divi's own filter, for every Divi 4 version
+* Divi Theme Builder layouts and Contact Form 7 forms are always published when translated, whatever the setting for new translations: no screen lets you publish them as drafts. Those created as drafts before are published once
+
+= 1.13.9 =
+* Tested with WordPress 7.2 and PHP 8.6: translation on publish from the block editor, settings, the bulk tools, and images uploaded with WordPress 7.2's in-browser processing
+* Plugin Check clean (no errors) with Plugin Check 2.2
+
+= 1.13.8 =
+* Divi (Pro): a menu module in a translated page or Theme Builder header or footer now shows the menu of the page's language, whether the menus were translated before or after it
+* Divi (Pro): a translated page or Theme Builder layout with a menu module is updated again when its original changes; it was taken for a translation edited by hand and left as it was
+
+= 1.13.7 =
+* WPBakery 9 (Pro): checked on a real WPBakery 9.2 page: button labels, tabs, call-to-action headings translated, quotes and brackets kept. Also translated now: the grid's load-more button text and the default texts of the tweet button
+
+= 1.13.6 =
+* Breakdance 3 (Pro): its new Fundamental elements (text, rich text, text link, image alt text), icon boxes, marquee text, menu links and buttons, slider accessibility messages, search placeholder, product review buttons and the titles of WordPress and WooCommerce widgets are translated too. Tested on a real Breakdance 3.0.2 page: texts translated, links, field IDs and the layout kept, and the translation follows the page's changes
+
+= 1.13.5 =
+* Breakdance (Pro): the texts of its elements are translated (headings, texts, buttons, tabs, FAQ, testimonials, pricing tables, forms…), the layout copied as it is; Oxygen 6: its text and text link elements
+* Divi 5 (Pro): the texts of its modules are translated (text, titles, buttons, form fields, sliders, pricing tables…), for each screen size; links, images and field IDs are left as they are
+* WPBakery and Avada (Pro): the texts in element settings are translated: button labels, tab, toggle and accordion titles, call-to-action headings, flip boxes, Avada form labels and messages. Which settings hold text comes from WPML's configuration for each builder; links, images and IDs are left as they are
+* Shortcodes listed in an active plugin's or theme's wpml-config.xml (Pro): their text settings are translated too
+* WPBakery raw HTML and raw JS blocks, Avada code blocks and Avada image elements are no longer sent for translation: their content (code stored as base64, or an image address) stays exactly as it is
+* WPBakery: a translation made in the background or with WP-CLI kept losing its raw HTML, raw JS and Google Maps elements (WPBakery removes them when no user with the unfiltered_html right saves the page), and AutoLingo then took the page for manually edited and stopped updating it. Fixed
+* WPBakery: translations open in WPBakery's editor like their source, and keep its design settings and page CSS after each update
+* AutoLingo AI during the 14-day free trial: the trial includes 100,000 characters (shown in Settings → AutoLingo, with a Subscribe link); once they are used up, a clear message says so and offers the subscription for 1,000,000 characters a month
+
+= 1.13.4 =
+* AutoLingo Pro can be tried free for 14 days, no card needed: the links of the free version open the trial
+* The free version says which content it leaves out on Divi pages and WooCommerce products, and once, in a notice you can hide for good, when the site uses a plugin only Pro translates
+
+= 1.13.3 =
+* Labels written in CSS (content: "…", such as a table's mobile labels shown with ::before) are translated. Icons and symbols are left alone
+* A script marked data-autolingo="translate" has its texts translated: the labels a calculator or a form writes with JavaScript, and the locale it formats numbers with ('fr-FR' becomes the page's language). Unmarked scripts are never changed
+
+= 1.13.2 =
+* DiviFlash: FAQ questions and the other texts of DiviFlash modules are translated (Pro)
+* Divi: a module's tablet, phone and hover texts are translated, the Text module's included (Pro)
+* Structured data written by hand in the content (a <script type="application/ld+json"> in a Divi Code module or an HTML block): its texts (name, headline, description, answers…) are translated, inLanguage takes the language of the translation, and the site's addresses point to the translated pages
+* Scripts and styles in the content are no longer sent to the translation provider: an AI provider could otherwise rewrite code, and they cost characters
+* Internal links keep their anchor (#section) when they are pointed to the translated page
+
+= 1.13.1 =
+* Divi (module settings, Theme Builder, menu modules) and Contact Form 7 are now part of AutoLingo Pro, like the other page builders. The free version still translates the text between Divi shortcodes and keeps the shortcodes as they are
+
+= 1.13.0 =
+* Catalan is now a target language, with every provider: DeepL (a standard DeepL language on every plan, Free included), Google, Microsoft, OpenAI, DeepSeek and AutoLingo AI
+* Divi and DiviFlash: the texts kept in module settings are translated: button labels, tab, toggle and blurb titles, headings, image alt text. Colours, sizes, links and other settings are left as they are
+* Menus with Polylang: a translated menu now takes the theme locations of its original (Appearance → Menus → Manage Locations), so visitors see it in their language without a manual step. A location that already has a menu for that language keeps it
+* Contact Form 7: forms are translated like pages: the labels, the submit button, placeholders, the messages visitors see and the auto-reply. A page shows the form of its own language, with the same [contact-form-7] shortcode. Menu and checkbox options are kept, as they are the values the form sends
+* Divi Theme Builder: headers, footers and body layouts are translated, and each page shows the ones of its language. A Divi menu module shows the translated menu. Divi's clean-up of unused layouts no longer trashes the translations of a layout still in use
+* A provider per language: Settings → Provider per language picks a provider for one language (DeepL for Catalan, for example) while the others use the default one
 
 = 1.12.5 =
 * Security: a translation can no longer add code its original does not hold (scripts, frames, forms, onclick-style attributes, javascript: links). An AI provider receives the page's HTML, and a passage written to steer it could otherwise have come back as a script on the translated page. Code that is in the original, such as an administrator's HTML block, is kept

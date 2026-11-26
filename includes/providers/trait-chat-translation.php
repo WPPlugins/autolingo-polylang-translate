@@ -261,7 +261,7 @@ trait AUTOLINGO_Chat_Translation {
 
     private function lang_name( string $code ): string {
         $map = [
-            'AR' => 'Arabic',     'BG' => 'Bulgarian',  'CS' => 'Czech',
+            'AR' => 'Arabic',     'BG' => 'Bulgarian',  'CA' => 'Catalan',     'CS' => 'Czech',
             'DA' => 'Danish',     'DE' => 'German',      'EL' => 'Greek',
             'EN' => 'English',    'ES' => 'Spanish',     'ET' => 'Estonian',
             'FI' => 'Finnish',    'FR' => 'French',      'HU' => 'Hungarian',

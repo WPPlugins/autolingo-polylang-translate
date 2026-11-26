@@ -165,9 +165,6 @@ msgstr "Disponible uniquement sur les contenus en %s."
 msgid "This page is built with %1$s. The free version translates its title and WordPress content, not the %1$s layout."
 msgstr "Cette page est construite avec %1$s. La version gratuite traduit son titre et son contenu WordPress, pas la mise en page %1$s."
 
-#: admin/metabox.php:64
-msgid "Page builders are translated by AutoLingo Pro."
-msgstr "Les page builders sont traduits par AutoLingo Pro."
 
 #. translators: %s: formatted number of characters
 #: admin/metabox.php:73
@@ -224,9 +221,6 @@ msgstr "AutoLingo Pro"
 msgid "Translate page builders, SEO meta, ACF fields and WooCommerce products."
 msgstr "Traduisez les constructeurs de pages, les métadonnées SEO, les champs ACF et les produits WooCommerce."
 
-#: admin/settings.php:118
-msgid "Elementor, Beaver Builder, Bricks"
-msgstr "Elementor, Beaver Builder, Bricks"
 
 #: admin/settings.php:119
 msgid "Yoast, RankMath, SEOPress"
@@ -240,9 +234,6 @@ msgstr "Champs ACF, répéteur, contenu flexible"
 msgid "WooCommerce product attributes"
 msgstr "Attributs de produits WooCommerce"
 
-#: admin/settings.php:126
-msgid "Get AutoLingo Pro →"
-msgstr "Obtenir AutoLingo Pro →"
 
 #: admin/settings.php:136
 #: admin/settings.php:483
@@ -1917,3 +1908,65 @@ msgstr "Clé enregistrée se terminant par %s. Laissez vide pour la garder."
 #: admin/settings.php
 msgid "Delete"
 msgstr "Supprimer"
+
+#: admin/settings.php
+msgid "Catalan"
+msgstr "Catalan"
+
+#: admin/settings.php
+msgid "Provider per language"
+msgstr "Fournisseur par langue"
+
+#: admin/settings.php
+msgid "Default provider"
+msgstr "Fournisseur par défaut"
+
+#: admin/settings.php
+msgid "Use another provider for a language than for the others, for example DeepL for Catalan. Each provider needs its key in the Provider tab; when its quota runs out, the fallback order applies as usual."
+msgstr "Utilisez un autre fournisseur pour une langue que pour les autres, par exemple DeepL pour le catalan. Chaque fournisseur a besoin de sa clé dans l’onglet Fournisseur ; quand son quota est épuisé, l’ordre de secours s’applique comme d’habitude."
+
+#. translators: %s: plugin names, e.g. "Elementor, WooCommerce"
+#, php-format
+#: admin/notices.php
+msgid "This site uses %s: the free version translates the WordPress content but not theirs. AutoLingo Pro translates them too, with the same API key."
+msgstr "Ce site utilise %s : la version gratuite traduit le contenu WordPress, pas le leur. AutoLingo Pro les traduit aussi, avec la même clé d’API."
+
+#: admin/notices.php
+msgid "Try Pro free for 14 days"
+msgstr "Essayer Pro gratuitement 14 jours"
+
+#: admin/metabox.php
+msgid "The free version translates the product title and descriptions, not its attributes, variations and purchase note."
+msgstr "La version gratuite traduit le titre et les descriptions du produit, pas ses attributs, variations et note d’achat."
+
+#: admin/metabox.php
+msgid "AutoLingo Pro translates it all: try it free for 14 days."
+msgstr "AutoLingo Pro traduit tout : essayez-le gratuitement 14 jours."
+
+#: admin/settings.php
+msgid "Try it free for 14 days →"
+msgstr "Essai gratuit 14 jours →"
+
+#: admin/settings.php
+msgid "No card needed."
+msgstr "Sans carte bancaire."
+
+#: admin/settings.php
+msgid "Prices"
+msgstr "Tarifs"
+
+#: admin/settings.php
+msgid "Elementor, Divi, Beaver Builder, Bricks"
+msgstr "Elementor, Divi, Beaver Builder, Bricks"
+
+msgid "AutoLingo AI: the free trial’s 100,000 characters are used up. Subscribe to AutoLingo Premium to get 1,000,000 characters a month (Settings → AutoLingo → Upgrade)."
+msgstr "IA AutoLingo : les 100 000 caractères de l’essai gratuit sont épuisés. Abonnez-vous à AutoLingo Premium pour avoir 1 000 000 de caractères par mois (Réglages → AutoLingo → Passer à la version payante)."
+
+msgid "Free trial · 100,000 characters"
+msgstr "Essai gratuit · 100 000 caractères"
+
+msgid "The free trial includes 100,000 characters of AutoLingo AI to try it on a few pages. Subscribe to get 1,000,000 characters a month."
+msgstr "L’essai gratuit comprend 100 000 caractères d’IA AutoLingo pour l’essayer sur quelques pages. Abonnez-vous pour avoir 1 000 000 de caractères par mois."
+
+msgid "Subscribe"
+msgstr "S’abonner"

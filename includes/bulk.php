@@ -239,7 +239,7 @@ function autolingo_bulk_disable_looping_redirects( string $new_url, string $old_
 
     $table = $wpdb->prefix . 'redirection_items';
     $last  = substr( $to, (int) strrpos( '/' . $to, '/' ) ); // basename() is not multibyte safe
-    // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Redirection's own table, admin tool only.
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Redirection's own table ($wpdb->prefix), admin tool only.
     $rows = $wpdb->get_results( $wpdb->prepare(
         "SELECT id, url, action_data FROM {$table} WHERE status = 'enabled' AND regex = 0 AND action_type = 'url' AND (action_data LIKE %s OR action_data LIKE %s)", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         '%' . $wpdb->esc_like( $last ) . '%',
@@ -275,7 +275,7 @@ function autolingo_bulk_slug_freed( int $id, string $lang ): string {
         'meta_key'         => '_wp_desired_post_slug', // phpcs:ignore WordPress.DB.SlowDBQuery -- admin tool only.
         'meta_value'       => $m[1],                   // phpcs:ignore WordPress.DB.SlowDBQuery
         'lang'             => '',
-        'suppress_filters' => true,
+        'suppress_filters' => true, // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.SuppressFilters_suppress_filters -- every language at once: WPML filters queries to the current one.
     ] ) as $trashed ) {
         if ( $ml && $ml->get_post_language( (int) $trashed ) !== $lang ) continue;
         $free = wp_unique_post_slug( $m[1], $id, $post->post_status, $post->post_type, $post->post_parent ) === $m[1];
@@ -370,7 +370,7 @@ function autolingo_bulk_duplicates(): array {
         'posts_per_page'   => -1,
         'fields'           => 'ids',
         'lang'             => '',
-        'suppress_filters' => true,
+        'suppress_filters' => true, // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.SuppressFilters_suppress_filters -- every language at once: WPML filters queries to the current one.
     ] );
     foreach ( $ids as $id ) {
         $lang = (string) $ml->get_post_language( (int) $id );
@@ -424,7 +424,7 @@ function autolingo_bulk_old_slug_redirect(): void {
         'meta_key'         => AUTOLINGO_OLD_SLUG, // phpcs:ignore WordPress.DB.SlowDBQuery -- only on a 404.
         'meta_value'       => $slug,              // phpcs:ignore WordPress.DB.SlowDBQuery
         'lang'             => '',                 // every language (Polylang)
-        'suppress_filters' => true,
+        'suppress_filters' => true, // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.SuppressFilters_suppress_filters -- every language at once: WPML filters queries to the current one.
     ] );
     if ( ! $ids ) return;
 

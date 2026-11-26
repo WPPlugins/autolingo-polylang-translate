@@ -55,7 +55,22 @@ function autolingo_tm_uninstall(): void {
 // ══════════════════════════════════════════════════════════
 
 function autolingo_tm_hash( string $source_lang, string $segment ): string {
-    return md5( strtolower( $source_lang ) . "\x1f" . trim( $segment ) );
+    $scope = autolingo_tm_scope();
+    return md5( strtolower( $source_lang ) . "\x1f" . trim( $segment ) . ( $scope !== '' ? "\x1f" . $scope : '' ) );
+}
+
+/**
+ * A scope for the segments translated now: a short text whose meaning depends on where it is (a menu label
+ * and the page it leads to) gets its own memory entry, not the one of the same word elsewhere.
+ *
+ * @param  string|null $set New scope ('' for none), or null to read it.
+ * @return string           The scope before this call (to restore it afterwards).
+ */
+function autolingo_tm_scope( ?string $set = null ): string {
+    static $scope = '';
+    $previous = $scope;
+    if ( $set !== null ) $scope = $set;
+    return $previous;
 }
 
 /**
@@ -188,7 +203,7 @@ function autolingo_tm_segment( string $html ): array {
         foreach ( preg_split( '/(<!--(?:PDT|ALOP)\d+-->)/', $html, -1, PREG_SPLIT_DELIM_CAPTURE ) as $k => $part ) {
             if ( $part === '' ) continue;
             $core = trim( $part );
-            if ( $k % 2 === 1 || $core === '' || trim( html_entity_decode( strip_tags( $part ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ) === '' ) {
+            if ( $k % 2 === 1 || $core === '' || trim( html_entity_decode( wp_strip_all_tags( $part ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ) === '' ) {
                 $segments[] = [ 'text' => $part, 'translate' => false ]; // a placeholder, whitespace, or markup with no text
                 continue;
             }

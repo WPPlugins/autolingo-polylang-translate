@@ -47,7 +47,7 @@ class AutoLingo_Polylang_Adapter implements AutoLingo_Multilingual_Adapter {
 
         $postarr = [
             'post_author'    => $source->post_author,
-            'post_status'    => autolingo_new_translation_status(),
+            'post_status'    => autolingo_new_translation_status( $source->post_type ),
             'post_type'      => $source->post_type,
             'post_title'     => $data['title']   ?? $source->post_title,
             'post_content'   => $data['content'] ?? $source->post_content,
@@ -134,8 +134,38 @@ class AutoLingo_Polylang_Adapter implements AutoLingo_Multilingual_Adapter {
 
     // ── Menus ─────────────────────────────────────────────────────────────────
 
+    /**
+     * Polylang shows one menu per language in each theme location (Appearance → Menus → Manage
+     * Locations, its setting nav_menus[theme][location][language]). The translated menu takes the
+     * locations of its source menu; a location that already has a menu for that language keeps it.
+     */
     public function link_menu_translation( int $source_menu_id, int $menu_id, string $lang_slug, string $source_lang_slug ): void {
-        // Polylang assigns menus to languages through its menu locations settings.
+        if ( ! function_exists( 'PLL' ) || ! PLL() || ! $menu_id ) return;
+        $options = PLL()->options ?? null;
+        $menus   = (array) ( $options ? ( $options['nav_menus'] ?? [] ) : ( (array) get_option( 'polylang', [] ) )['nav_menus'] ?? [] );
+        $theme   = get_stylesheet();
+        $current = (array) ( $menus[ $theme ] ?? [] );
+        $raw     = (array) get_theme_mod( 'nav_menu_locations', [] );
+        $changed = false;
+
+        foreach ( array_keys( get_registered_nav_menus() ) as $location ) {
+            $source_here = (int) ( $current[ $location ][ $source_lang_slug ] ?? $raw[ $location ] ?? 0 );
+            if ( $source_here !== $source_menu_id || ! empty( $current[ $location ][ $lang_slug ] ) ) continue;
+            $current[ $location ][ $source_lang_slug ] = $source_menu_id;
+            $current[ $location ][ $lang_slug ]        = $menu_id;
+            $changed = true;
+        }
+        if ( ! $changed ) return;
+
+        $menus[ $theme ] = $current;
+        if ( $options && method_exists( $options, 'set' ) ) {
+            $options->set( 'nav_menus', $menus );
+            if ( method_exists( $options, 'save' ) ) $options->save();
+        } else {
+            $all              = (array) get_option( 'polylang', [] );
+            $all['nav_menus'] = $menus;
+            update_option( 'polylang', $all );
+        }
     }
 
     public function switch_language( string $lang_slug ): string {
